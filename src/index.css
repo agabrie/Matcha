@@ -9,7 +9,7 @@ body {
 	border : 3px solid maroon;
 	border-radius:30px;
 	text-align: center;
-	color:maroon;
+	/* color:maroon; */;
 	height:80vh;
 }
 .Central
@@ -17,6 +17,8 @@ body {
 	float:left;
 	width:auto;
 	text-align:auto;
+	/* color :rgb(255, 109, 109);
+	color :blue; */
 }
 .info
 {
@@ -24,6 +26,7 @@ body {
 	border : 3px solid maroon;
 	border-radius:30px;
 	text-align: center;
+	/* width:fit-content; */
 	color:white;
 }
 .username
@@ -39,6 +42,16 @@ body {
 	width: 500px;
 	height:400px;
 	padding: 5%;
+	/* float:left; */
+}
+.genderblob
+{
+	font-size: 100%;
+	width: fit-content;
+	height:5px;
+	padding: 5%;
+	border-radius:50%;
+	border:10px solid maroon;
 	/* float:left; */
 }
 .age
@@ -74,13 +87,13 @@ progress[value]::-webkit-progress-bar
 	-webkit-linear-gradient(top, 
 							rgba(255, 255, 255, .25), 
 							rgba(0, 0, 0, .25)),
-	-webkit-linear-gradient(right, maroon,pink);
+	-webkit-linear-gradient(right, #ff99cc, #ff99cc);
 	-webkit-animation: animate-stripes 5s linear infinite;
         animation: animate-stripes 5s linear infinite;
 }
 progress[max]::-webkit-progress-value
 {
-	border-radius:10px;
+	border-radius:10px 0 0 10px;
 	background-image:
 	   -webkit-linear-gradient(-45deg, 
 	                           transparent 33%, rgba(0, 0, 0, .1) 33%, 
@@ -88,9 +101,9 @@ progress[max]::-webkit-progress-value
 	   -webkit-linear-gradient(top, 
 	                           rgba(255, 255, 255, .25), 
 	                           rgba(0, 0, 0, .25)),
-	   -webkit-linear-gradient(left,blue, #09c);
-	   -webkit-animation: animate-stripes 5s linear infinite;
-        animation: animate-stripes 5s linear infinite;
+	   -webkit-linear-gradient(left,#00bfff,#33ccff);
+	   /* -webkit-animation: animate-stripes 5s linear infinite;
+        animation: animate-stripes 5s linear infinite; */
 
 }
 .info:after
