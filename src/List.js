@@ -44,45 +44,19 @@ class MainImage extends React.Component
 	}
 	render(){
 		return(
-			<div>
-			<img className="info mainImage"
-				src={this.state.value}
-				alt=''
-			/>
-			<table>
-				{/* <tr> */}
-					<td><img className="info tiny"src={this.props.value.pp1} onClick={()=>this.setState({value:this.props.value.pp1})} /></td>
-					<td><img className="info tiny"src={this.props.value.pp2} onClick={()=>this.setState({value:this.props.value.pp2})} /></td>
-					<td><img className="info tiny"src={this.props.value.pp3} onClick={()=>this.setState({value:this.props.value.pp3})} /></td>
-					<td><img className="info tiny"src={this.props.value.pp4} onClick={()=>this.setState({value:this.props.value.pp4})} /></td>
-					<td><img className="info tiny"src={this.props.value.pp5} onClick={()=>this.setState({value:this.props.value.pp5})} /></td>
-				{/* </tr> */}
-			</table>
+			<div className='info' >
+				<img className="mainImage"
+					src={this.state.value}
+					alt={this.state.value}
+				/>
+				<table>
+						<td><img className="info tiny"src={this.props.value.pp1} alt='' onClick={()=>this.setState({value:this.props.value.pp1})} /></td>
+						<td><img className="info tiny"src={this.props.value.pp2} alt='' onClick={()=>this.setState({value:this.props.value.pp2})} /></td>
+						<td><img className="info tiny"src={this.props.value.pp3} alt='' onClick={()=>this.setState({value:this.props.value.pp3})} /></td>
+						<td><img className="info tiny"src={this.props.value.pp4} alt='' onClick={()=>this.setState({value:this.props.value.pp4})} /></td>
+						<td><img className="info tiny"src={this.props.value.pp5} alt='' onClick={()=>this.setState({value:this.props.value.pp5})} /></td>
+				</table>
 			</div>
-		);
-	}
-}
-class Images extends React.Component
-{
-	constructor(props){
-		super(props);
-		this.state = {
-			value:this.props,
-		};
-	}
-	render(){
-		return(
-			// <div className="info">
-						<table>
-							{/* <tr> */}
-								<td><img className="info tiny"src={this.props.value.pp1} onClick={()=>this.setState({value:this.src})} /></td>
-								<td><img className="info tiny"src={this.props.value.pp2} onClick={()=>this.setState({value:this.src})} /></td>
-								<td><img className="info tiny"src={this.props.value.pp3} onClick={()=>this.setState({value:this.src})} /></td>
-								<td><img className="info tiny"src={this.props.value.pp4} onClick={()=>this.setState({value:this.src})} /></td>
-								<td><img className="info tiny"src={this.props.value.pp5} onClick={()=>this.setState({value:this.src})} /></td>
-							{/* </tr> */}
-						</table>
-			// </div>
 		);
 	}
 }
@@ -100,7 +74,7 @@ class Tags extends React.Component
 			Tags :
 					{this.props.value.map(tag =>(
 						<div>
-							<a href=''>{'#'+tag}</a>
+							<a href={'match.js?search='+tag}>{'#'+tag}</a>
 						</div>
 					)
 					)
@@ -216,8 +190,6 @@ class List extends React.Component {
 				return <Age value={val} />;
 			case 'MainImage':
 				return <MainImage value={val} />;
-			case 'Images':
-				return <Images value={val} />;
 			case 'Gender':
 				return <Gender value={val} />;
 			case 'GenderBlob':
@@ -238,9 +210,8 @@ class List extends React.Component {
 			{
 				"user_name":"antonina.brown",
 				"age":38,
-				"gender":0.5,
+				"gender":0.1,
 				"pref":0.81,
-				// "images":require('./nanana.jpg'),
 				"images": {	pp1:require("./nanana.jpg"),
 							pp2:require("./roses.png"),
 							pp3:require("./avaj_uml.jpg"),
@@ -252,11 +223,6 @@ class List extends React.Component {
 				"tags":"nana tags aloha quay",
 				"likes":"Harum corporis quis est labore consequatur totam. Possimus aut quam sed. Doloribus et aspernatur vero numquam ducimus officia. Totam reiciendis quae rerum eaque."
 			}
-			// 4.675680253925442,
-			// null,
-			// 0,
-			// 6092.92,
-			// 0
 		];
 	  return(
 				dun.map( dundun => (
