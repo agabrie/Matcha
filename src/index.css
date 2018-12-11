@@ -36,11 +36,19 @@ body {
 	padding: 5%;
 	float:left;
 }
-.pp
+.mainImage
 {
 	font-size: 100%;
 	width: 500px;
 	height:400px;
+	padding: 5%;
+	/* float:left; */
+}
+.tiny
+{
+	font-size: 100%;
+	width: 100px;
+	height:80px;
 	padding: 5%;
 	/* float:left; */
 }
