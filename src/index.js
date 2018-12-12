@@ -9,8 +9,8 @@ class GUI extends React.Component
 	{
 		return(
 			<div className='non'>
-				<Header />
-				<List />
+				<Header key="nani"/>
+				<List key="nan"/>
 			</div>
 		);
 	}

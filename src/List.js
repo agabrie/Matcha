@@ -1,19 +1,96 @@
 import React from "react";
 // import Username from "./Username";
 // import Age from "./age";
-
+function decimalToHex(number)
+{
+  if (number < 0)
+	number = 0xFFFFFF + number + 1;
+	var hex = number.toString(16).toUpperCase();
+	var len = hex.length;
+	while(len < 6)
+	{
+		hex = '0'+hex;
+		len++;
+	}
+  return '#'+hex;
+}
+function	generateColor(i)
+{
+	// ff99cc pink
+	// cc66ff purple
+	// 33ccff blue
+	var baser, baseg, baseb, r, b, g;
+	if(i < 0.5)
+	{
+		baser = 0xff;
+		baseg = 0x99;
+		baseb = 0xcc;
+	
+		r = baser - parseInt((i) * 102);
+		g = baseg - parseInt((i) * 102);
+		b = baseb + parseInt((i) * 102);
+	}else{
+		baser = 0xcc;
+		baseg = 0x66;
+		baseb = 0xff;
+	
+		r = baser - parseInt((i-0.5) * (0xcc-0x33)); //153
+		g = baseg + parseInt((i-0.5) * 102);
+		b = baseb + parseInt((i-0.5) * 0);
+	}
+	var rgb = (r<<16) | (g <<8) | b;
+	// alert(this.decimalToHex(rgb));
+	return(decimalToHex(rgb));
+}
+function	generateColorRGB(i)
+{
+	// ff99cc pink
+	// cc66ff purple
+	// 33ccff blue
+	var baser, baseg, baseb, r, b, g;
+	if(i < 0.5)
+	{
+		baser = 0xff;
+		baseg = 0x99;
+		baseb = 0xcc;
+	
+		r = baser - parseInt((i) * 102);
+		g = baseg - parseInt((i) * 102);
+		b = baseb + parseInt((i) * 102);
+	}else{
+		baser = 0xcc;
+		baseg = 0x66;
+		baseb = 0xff;
+	
+		r = baser - parseInt((i-0.5) * (0xcc-0x33)); //153
+		g = baseg + parseInt((i-0.5) * 102);
+		b = baseb + parseInt((i-0.5) * 0);
+	}
+	// var rgb = (r<<16) | (g <<8) | b;
+	// alert(this.decimalToHex(rgb));
+	return('rgb('+r+','+g+','+b+')');
+}
+function generateColorDiv(i)
+{
+	var base = generateColorRGB(i);
+	var alpha = 'radial-gradient('+base+',red)'; 
+	return(alpha);
+	// return('rgb(0x'+r+',0x'+g+',0x'+b+')');
+}
 class Age extends React.Component
 {
 	constructor(props){
 		super(props);
 		this.state = {
-			value:this.props,
+			value:this.props.value[0],
+			color:this.props.value[1],
 		};
 	}
 	render(){
 		return(
-			<div className="info age">
-				Age :  {this.props.value}
+			<div className="info age" style={{background:generateColorDiv(this.state.color)}}>
+				Age :  {this.state.value}
+				color: {generateColorDiv(this.state.color)}
 			</div>
 		);
 	}
@@ -122,47 +199,6 @@ class Bio extends React.Component
 
 class GenderBlob extends React.Component
 {
-	decimalToHex(number)
-	{
-	  if (number < 0)
-		number = 0xFFFFFF + number + 1;
-		var hex = number.toString(16).toUpperCase();
-		var len = hex.length;
-		while(len < 6)
-		{
-			hex = '0'+hex;
-			len++;
-		}
-	  return '#'+hex;
-	}
-generateColor(i)
-	{
-		// ff99cc pink
-		// cc66ff purple
-		// 33ccff blue
-		var baser, baseg, baseb, r, b, g;
-		if(i < 0.5)
-		{
-			baser = 0xff;
-			baseg = 0x99;
-			baseb = 0xcc;
-		
-			r = baser - parseInt((i) * 102);
-			g = baseg - parseInt((i) * 102);
-			b = baseb + parseInt((i) * 102);
-		}else{
-			baser = 0xcc;
-			baseg = 0x66;
-			baseb = 0xff;
-		
-			r = baser - parseInt((i-0.5) * (0xcc-0x33)); //153
-			g = baseg + parseInt((i-0.5) * 102);
-			b = baseb + parseInt((i-0.5) * 0);
-		}
-		var rgb = (r<<16) | (g <<8) | b;
-		// alert(this.decimalToHex(rgb));
-		return(this.decimalToHex(rgb));
-	}
 	constructor(props){
 		super(props);
 		this.state = {
@@ -173,8 +209,8 @@ generateColor(i)
 	render(){
 		return(
 			// <div className="info">
-				<div className="genderblob" style={{backgroundColor:this.generateColor(this.props.value)}}>
-					{this.generateColor(this.props.value)}
+				<div className="genderblob" style={{backgroundColor:generateColor(this.props.value)}}>
+					{generateColor(this.props.value)}
 				</div>
 			// </div> 
 		);
@@ -185,7 +221,7 @@ class List extends React.Component {
 	renderDiv(type,val){
 		switch(type){
 			case "Username":
-				return <Username value={val} />;
+				return <Username value={val}/>;
 			case "Age":
 				return <Age value={val} />;
 			case 'MainImage':
@@ -208,15 +244,15 @@ class List extends React.Component {
 		// ];
 		var dun = [
 			{
-				"user_name":"antonina.brown",
-				"age":38,
-				"gender":0.1,
+				"user_name":"teo.kelestura",
+				"age":24,
+				"gender":0.05,
 				"pref":0.81,
-				"images": {	pp1:require("./nanana.jpg"),
-							pp2:require("./roses.png"),
-							pp3:require("./avaj_uml.jpg"),
-							pp4:require("./apicture.png"),
-							pp5:require("./kawaii_neko.png")
+				"images": {	pp1:require("./pics/nanana.jpg"),
+							pp2:require("./pics/roses.png"),
+							pp3:require("./pics/avaj_uml.jpg"),
+							pp4:require("./pics/apicture.png"),
+							pp5:require("./pics/kawaii_neko.png")
 						},
 				"gps_lat":-60.043,
 				"gps_lon":-64.124,
@@ -229,7 +265,7 @@ class List extends React.Component {
 				// this.renderDiv("Username",dundun.user_name)
 				<div>
 					{this.renderDiv("Username",dundun.user_name)}
-					{this.renderDiv("Age",dundun.age)}
+					{this.renderDiv("Age",[dundun.age, dundun.gender])}
 					<div className="Central">
 						{this.renderDiv("MainImage",dundun.images)}
 						{/* {this.renderDiv("Images",dundun.images)} */}
