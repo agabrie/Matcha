@@ -19,28 +19,33 @@ function	generateColor(i)
 	// ff99cc pink
 	// cc66ff purple
 	// 33ccff blue
+	console.log(i);
 	var baser, baseg, baseb, r, b, g;
-	if(i < 0.5)
-	{
+	// if(i < 0.5)
+	// {
 		baser = 0xff;
 		baseg = 0x99;
 		baseb = 0xcc;
 	
 		r = baser - parseInt((i) * 102);
+		console.log(r)
 		g = baseg - parseInt((i) * 102);
 		b = baseb + parseInt((i) * 102);
-	}else{
-		baser = 0xcc;
-		baseg = 0x66;
-		baseb = 0xff;
+	// }else{
+	// 	baser = 0xcc;
+	// 	baseg = 0x66;
+	// 	baseb = 0xff;
 	
-		r = baser - parseInt((i-0.5) * (0xcc-0x33)); //153
-		g = baseg + parseInt((i-0.5) * 102);
-		b = baseb + parseInt((i-0.5) * 0);
-	}
+	// 	r = baser - parseInt((i-0.5) * (0xcc-0x33)); //153
+	// 	g = baseg + parseInt((i-0.5) * 102);
+	// 	b = baseb + parseInt((i-0.5) * 0);
+	// }
 	var rgb = (r<<16) | (g <<8) | b;
+	
+	var rgbhex = decimalToHex(rgb);
+	console.log(rgbhex);
 	// alert(this.decimalToHex(rgb));
-	return(decimalToHex(rgb));
+	return(rgbhex);
 }
 function	generateColorRGB(i)
 {
@@ -270,7 +275,11 @@ class List extends React.Component {
 						{this.renderDiv("MainImage",dundun.images)}
 						{/* {this.renderDiv("Images",dundun.images)} */}
 						{this.renderDiv("Gender",dundun.gender)}
-						{this.renderDiv("GenderBlob",dundun.gender)}
+						{this.renderDiv("GenderBlob",0)}
+						{this.renderDiv("GenderBlob",0.25)}
+						{this.renderDiv("GenderBlob",0.5)}
+						{this.renderDiv("GenderBlob",0.75)}
+						{this.renderDiv("GenderBlob",1)}
 						{this.renderDiv("Bio",dundun.likes)}
 						{this.renderDiv("Tags",dundun.tags.split(' '))}
 					</div>

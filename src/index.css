@@ -56,10 +56,11 @@ body {
 {
 	font-size: 100%;
 	width: fit-content;
-	height:5px;
-	padding: 5%;
-	border-radius:50%;
-	border:10px solid maroon;
+	height: 5px;
+	/* height:10px; */
+	padding: 1% 2% 2% 2%;
+	border-radius:40%;
+	/* border:10pxs solid maroon; */
 	/* float:left; */
 }
 .age
