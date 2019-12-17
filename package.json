@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/agabrie/Matcha/issues"
   },
-  "homepage": "https://github.com/agabrie/Matcha#readme"
+  "homepage": "https://github.com/agabrie/Matcha#readme",
+  "dependencies": {
+    "nodemon": "^2.0.2"
+  }
 }
