@@ -15,13 +15,9 @@ mongoose.connect(url, {
 
 mongoose.Promise = global.Promise;
 
-app.get('/', function(){
-    console.log('get request');
-});
-
 app.use(bodyParser.json());
 
-// app.use('/api', require('./routes/api'));
+app.use('/api', require('./routes/api'));
 
 app.use(function(err, req, res, next){
     res.status(422).send({error: err._message})

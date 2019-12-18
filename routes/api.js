@@ -4,8 +4,24 @@ const User =  require('../models/users');
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
-        console.log('get request')
         res.send({type: 'GET'});
+});
+
+//get a specific user
+router.get('/users/:id', function(req, res, next){
+    res.send({type: 'GET specific'});
+});
+
+//update user profile
+router.put('/users/:id', function(req, res, next){
+    res.send({type: 'PUT'});
+});
+
+//creating a user profile
+router.post('/users', function(req, res, next){
+    User.create(req.body).then(function(user){
+        res.send(user);
+    });
 });
 
 module.exports = router;
