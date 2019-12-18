@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const Image = require('images');
-const Interest = require('interests');
-const View = require('views');
+const Image = require('./images').schema;
+const Interest = require('./interests').schema;
+const View = require('./views').schema;
 const Schema = mongoose.Schema;
 
 //Schema for user profile information
@@ -9,12 +9,18 @@ const ProfileSchema = new Schema({
     gender: String,
     sexual_preference: [String],
     biography: String,
-    images: [Image],
+    images:[Image],
     interests: [Interest],
     views: [View],
     location: {
-        type: Point,
-        coordinates: [Number]
+        type: {
+            type: String,
+            default: "Point"
+        },
+        coordinates: {
+            type: [Number],
+            index: "2dsphere"
+        }
     },
     date_of_birth: Date
 });

@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const app = express();
 const dbusername = "kheynes";
 const dbpassword = "ASDasd123";
-const url = `mongodb+srv: ${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`
+const url = `mongodb+srv://${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`;
 mongoose.connect(url, {
     useFindAndModify: false,
     useNewUrlParser: true,
