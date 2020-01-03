@@ -4,7 +4,9 @@ const User =  require('../models/users');
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
-        res.send({type: 'GET'});
+	User.find({}).then(function(users){
+		res.send(users);
+	});
 });
 
 //get a specific user
