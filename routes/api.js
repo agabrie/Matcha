@@ -10,9 +10,17 @@ router.get('/users', function(req, res, next){
 });
 
 //get a specific user
-router.get('/users/:id', function(req, res, next){
-    res.send({type: 'GET specific'});
+router.get('/users/:display_name', function(req, res, next){
+    User.findOne({'display_name': req.params.display_name}, function(err, obj){
+        return obj}).then(function(user){
+        res.send(user);
+    });
 });
+// router.get('/users/:email', function(req, res, next){
+//     User.findOne({'email': req.params.email}, function(err, obj){return obj}).then(function(user){
+//         res.send(user);
+//     });
+// });
 
 //update user profile
 router.put('/users/:id', function(req, res, next){
