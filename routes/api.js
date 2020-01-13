@@ -25,9 +25,24 @@ router.get('/users/:login_name', function(req, res, next){
 });
 
 //update user profile
-router.put('/users/:id', function(req, res, next){
-    res.send({type: 'PUT'});
+router.put('/users/:display_name',function(req, res, next){
+	User.findOneAndUpdate({display_name : req.params.display_name},req.body)
+	.then((user)=>{
+		console.log(user);
+		User.findOne({_id:user._id})
+		.then((user)=>{
+			console.log(user);
+			res.send({
+				type:"PUT",
+				user:user
+			});
+		});	
+	})
+	.catch(next);
 });
+// router.put('/users/:id', function(req, res, next){
+//     res.send({type: 'PUT'});
+// });
 
 //creating a user profile
 router.post('/users', function(req, res, next){
