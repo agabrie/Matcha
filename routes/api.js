@@ -23,6 +23,21 @@ router.get('/users/:login_name', function(req, res, next){
 		}).catch(function(err){res.send({err: 'no user found'})});
 	});
 });
+router.get('/users/search/:query', (req, res, next)=>{
+	console.log(req.params);
+	console.log(req.query);
+	if(!req.params.query)
+		router.use();
+	User.find({$and:[{'profile':{$exists:true}},{$or:[{'profile.gender' :req.query.gender},{'email':req.query.email}]}]}, (err,obj)=>{
+		return obj;
+	})
+	.then((data)=>{
+		if(!data)
+			throw new Error;
+		res.send(data);
+	})
+	.catch(err=>{res.send(err)});
+});
 
 //update user profile
 router.put('/users/:display_name',function(req, res, next){
