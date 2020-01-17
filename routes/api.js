@@ -27,7 +27,30 @@ router.get('/users/search', (req, res, next)=>{
 	})
 	.catch(err=>{res.send(err)});
 });
+
+var find_sexual_preference=(sexual_preference)=>{
+	var sp;
+	switch(sexual_preference){
+		case 'Male':
+			sp=['Male'];
+			break;
+		case 'Female':
+			sp=['Female'];
+			break;
+		case 'Both':
+			sp=['Male','Female'];
+			break;
+	}
+	return sp;
+};
+
 router.get('/users/search/:query', (req, res, next)=>{
+	console.log(req.params);
+	console.log(req.query);
+	if(req.params.query=="search")
+	{
+		var sexual_preference = find_sexual_preference(req.query.sexual_preference);
+			// console.log(sexual_preference);
 	User.find({
 		$and:[
 			{
@@ -38,8 +61,43 @@ router.get('/users/search/:query', (req, res, next)=>{
 			{
 				$or:[
 					{
-						'profile.gender':req.query.gender
+						'profile.gender':sexual_preference[0]
 					},
+					{
+						'profile.gender':sexual_preference[1]
+					}
+				]
+			}
+		]
+	},
+	(err,obj)=>{
+		return obj;
+	})
+	.then((data)=>{
+		if(!data)
+			throw new Error;
+		res.send(data);
+	})
+	.catch(err=>{res.send(err)});
+	}else{
+		var sexual_preference = find_sexual_preference(req.query.sexual_preference);
+	User.find({
+		$and:[
+			{
+				'profile':{
+					$exists:true
+				}
+			},
+			{
+				$or:[
+					{$or:[
+						{
+							'profile.gender':sexual_preference[0]
+						},
+						{
+							'profile.gender':sexual_preference[1]
+						}
+					]},
 					{
 						'email':req.query.email
 					}
@@ -56,7 +114,11 @@ router.get('/users/search/:query', (req, res, next)=>{
 		res.send(data);
 	})
 	.catch(err=>{res.send(err)});
+}
 });
+
+
+
 router.get('/users/:login_name', function(req, res, next){
     User.findOne({
 		'display_name': req.params.login_name
@@ -92,9 +154,6 @@ router.put('/users/:display_name',function(req, res, next){
 	})
 	.catch(next);
 });
-// router.put('/users/:id', function(req, res, next){
-//     res.send({type: 'PUT'});
-// });
 
 //creating a user profile
 router.post('/users', function(req, res, next){
