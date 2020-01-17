@@ -11,6 +11,8 @@ router.get('/users', function(req, res, next){
 
 //get a specific user
 router.get('/users/:login_name', function(req, res, next){
+	// if(req.params.login_name === "search")
+	// 	req.use('/users/search/all');
     User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj}).then(function(user){
 		if(!user)
 			throw new Error;
@@ -23,12 +25,14 @@ router.get('/users/:login_name', function(req, res, next){
 		}).catch(function(err){res.send({err: 'no user found'})});
 	});
 });
-router.get('/users/search/:query', (req, res, next)=>{
-	console.log(req.params);
-	console.log(req.query);
-	if(!req.params.query)
-		router.use();
-	User.find({$and:[{'profile':{$exists:true}},{$or:[{'profile.gender' :req.query.gender},{'email':req.query.email}]}]}, (err,obj)=>{
+router.get('/users/search/all', (req, res, next)=>{
+	console.log('ni');
+	User.find({
+		'profile':{
+			$exists:true
+		}
+	},
+	(err,obj)=>{
 		return obj;
 	})
 	.then((data)=>{
@@ -37,6 +41,44 @@ router.get('/users/search/:query', (req, res, next)=>{
 		res.send(data);
 	})
 	.catch(err=>{res.send(err)});
+});
+router.get('/users/search/:query', (req, res, next)=>{
+	console.log(req.params);
+	console.log(req.query);
+	if(!req.params.query){
+		console.log('non');
+		req.use('/users/search/all');
+	}
+	else{
+		User.find({
+			$and:[
+				{
+					'profile':{
+						$exists:true
+					}
+				},
+				{
+					$or:[
+						{
+							'profile.gender':req.query.gender
+						},
+						{
+							'email':req.query.email
+						}
+					]
+				}
+			]
+		},
+		(err,obj)=>{
+			return obj;
+		})
+		.then((data)=>{
+			if(!data)
+				throw new Error;
+			res.send(data);
+		})
+		.catch(err=>{res.send(err)});
+	}
 });
 
 //update user profile
