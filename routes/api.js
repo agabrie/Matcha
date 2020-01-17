@@ -11,7 +11,7 @@ router.get('/users', function(req, res, next){
 
 //get a specific user
 router.get('/users/search', (req, res, next)=>{
-	console.log('ni');
+	// console.log('ni');
 	User.find({
 		'profile':{
 			$exists:true
