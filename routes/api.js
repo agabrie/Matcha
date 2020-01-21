@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
+const bcrypt = require('bcrypt');
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){

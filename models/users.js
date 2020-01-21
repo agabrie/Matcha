@@ -27,6 +27,14 @@ const UserSchema = new Schema({
     profile: Profile
 });
 
+UserSchema.methods.hashPassword = function(password) {
+    return bcrypt.hashSync(password, 12);
+};
+
+UserSchema.methods.comparePassword = function(password, hashPassword) {
+    return bcrypt.compareSync(password. hashPassword);
+};
+
 const User = mongoose.model('user', UserSchema);
 
 module.exports = User;

@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const cors = require('cors');
 
 const app = express();
 const dbusername = "kheynes";
@@ -12,6 +14,15 @@ mongoose.connect(url, {
     useUnifiedTopology: true,
     useCreateIndex: true
 });
+
+app.use(
+    session({
+        secret: "ThisIsSecret",
+        saveUninitialized: true,
+        resave: true,
+        cookie: {maxAge: 60000 * 30}
+    })
+);
 
 mongoose.Promise = global.Promise;
 
