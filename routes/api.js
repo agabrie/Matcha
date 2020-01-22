@@ -120,23 +120,21 @@ router.get('/users/search/:query', (req, res, next)=>{
 
 
 router.get('/users/:login_name', function(req, res, next){
-    User.findOne({
-		'display_name': req.params.login_name
-	}, function(err, obj){
-		return obj
-	}).then(function(user){
+	User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj})
+	.then(function(user){
 		if(!user)
 			throw new Error;
         res.send(user);
 	}).catch(function(){
-		User.findOne({'email': req.params.login_name}, function(err, obj){return obj}).then(function(user){
+		User.findOne({'email': req.params.login_name}, function(err, obj){return obj})
+		.then(function(user){
 			if(!user)
 				throw new Error;
         	res.send(user);
-		}).catch(function(err){res.send({err: 'no user found'})});
+		})
+		.catch(function(err){res.send({err: 'no user found'})});
 	});
 });
-
 
 //update user profile
 router.put('/users/:display_name',function(req, res, next){
