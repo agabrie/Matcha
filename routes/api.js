@@ -9,6 +9,12 @@ router.get('/users', function(req, res, next){
 	});
 });
 
+router.get('/users/query/', (req, res, next)=>{
+	console.log(req.body);
+	User.find({'profile':req.body}).then((data)=>{
+		res.send(data);
+	})
+});
 //get a specific user
 router.get('/users/search', (req, res, next)=>{
 	// console.log('ni');
