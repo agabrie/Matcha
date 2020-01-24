@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
+const Validata= require('../functions/user').validate;
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
@@ -34,28 +35,29 @@ router.get('/users/search', (req, res, next)=>{
 	.catch(err=>{res.send(err)});
 });
 
-var find_sexual_preference=(sexual_preference)=>{
-	var sp;
-	switch(sexual_preference){
-		case 'Male':
-			sp=['Male'];
-			break;
-		case 'Female':
-			sp=['Female'];
-			break;
-		case 'Both':
-			sp=['Male','Female'];
-			break;
-	}
-	return sp;
-};
+// var find_sexual_preference=(sexual_preference)=>{
+// 	var sp;
+// 	switch(sexual_preference){
+// 		case 'Male':
+// 			sp=['Male'];
+// 			break;
+// 		case 'Female':
+// 			sp=['Female'];
+// 			break;
+// 		case 'Both':
+// 			sp=['Male','Female'];
+// 			break;
+// 	}
+// 	return sp;
+// };
 
 router.get('/users/search/:query', (req, res, next)=>{
 	console.log(req.params);
 	console.log(req.query);
+	// console.log(Validata);
 	if(req.params.query=="search")
 	{
-		var sexual_preference = find_sexual_preference(req.query.sexual_preference);
+		var sexual_preference = Validata.profile.find_sexual_preference(req.query.sexual_preference);
 			// console.log(sexual_preference);
 	User.find({
 		$and:[
@@ -86,7 +88,7 @@ router.get('/users/search/:query', (req, res, next)=>{
 	})
 	.catch(err=>{res.send(err)});
 	}else{
-		var sexual_preference = find_sexual_preference(req.query.sexual_preference);
+		var sexual_preference = Validata.profile.find_sexual_preference(req.query.sexual_preference);
 	User.find({
 		$and:[
 			{

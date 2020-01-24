@@ -20,10 +20,28 @@ const UserData = function(data){
 		profile		: data.profile
     }
 }
+const find_sexual_preference = function(sexual_preference){
+	var sp;
+	switch(sexual_preference){
+		case 'Male':
+			sp=['Male'];
+			break;
+		case 'Female':
+			sp=['Female'];
+			break;
+		case 'Both':
+			sp=['Male','Female'];
+			break;
+	}
+	return sp;
+};
 
 module.exports = {
 	validate : {
 		user : UserData,
-		profile : ProfileData
+		profile : {
+			ProfileData,
+			find_sexual_preference
+		}
 	}
 }
