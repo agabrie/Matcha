@@ -32,9 +32,11 @@ router.put('/users/:id', function(req, res, next){
 
 //creating a user profile
 router.post('/users', function(req, res, next){
-    User.create(req.body).then(function(user){
+	var user = new User(req.body);
+	user.password = user.hashPassword(user.password);
+    user.save().then(function(user){
         res.send(user);
-    });
+    }).catch(err => res.send(err));
 });
 
 module.exports = router;

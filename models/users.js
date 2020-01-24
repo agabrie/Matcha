@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Profile = require('./profiles').schema;
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
 
 //Schema for registration of users
 const UserSchema = new Schema({
