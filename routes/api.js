@@ -10,6 +10,35 @@ router.get('/users', function(req, res, next){
 	});
 });
 
+//loging a user in
+router.post('/login', function(req, res, next){
+	User.findOne({
+		email: req.body.email
+	}).then(function(user){
+		if(!user){
+			res.send({error:true, message: "User does not exist!"});
+		}
+		if(!user.comparePassword(req.body.password, user.password)){
+			res.send({error:true, message:"Wrong password!"});
+		}
+		req.session.user = user;
+		req.session.isLoggedIn = true;
+		res.send({message: "You are signed in"});
+		res.send(user);
+	}).catch(function(error){
+		console.log(error)
+	});
+});
+
+//cheking if a user is logged in
+router.get('/login', function(req, res, next){
+	if(req.session.isLoggedIn) {
+		res.send(true);
+	}else {
+		res.send(false);
+	}
+});
+
 //get a specific user
 router.get('/users/:login_name', function(req, res, next){
     User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj}).then(function(user){
@@ -36,7 +65,8 @@ router.post('/users', function(req, res, next){
 	user.password = user.hashPassword(user.password);
     user.save().then(function(user){
         res.send(user);
-    }).catch(err => res.send(err));
+    }).catch(function(err){res.send(err)});
 });
+
 
 module.exports = router;

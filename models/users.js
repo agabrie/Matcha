@@ -33,7 +33,7 @@ UserSchema.methods.hashPassword = function(password) {
 };
 
 UserSchema.methods.comparePassword = function(password, hashPassword) {
-    return bcrypt.compareSync(password. hashPassword);
+    return bcrypt.compareSync(password, hashPassword);
 };
 
 const User = mongoose.model('user', UserSchema);
