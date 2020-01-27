@@ -9,7 +9,7 @@ class ProfileList extends React.Component {
             <div className="ProfileList" >
             {
                 this.props.users.map(user => {
-                return <Profile key={user.id} user={user}/>
+                return <Profile key={user} user={user}/>
             })
             }
             </div>
