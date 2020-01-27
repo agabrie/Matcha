@@ -8,8 +8,8 @@ class ProfileList extends React.Component {
         return (
             <div className="ProfileList" >
             {
-                this.props.profiles.map(profile => {
-                return <Profile key={profile.id} profile={profile}/>
+                this.props.users.map(user => {
+                return <Profile key={user.id} user={user}/>
             })
             }
             </div>
