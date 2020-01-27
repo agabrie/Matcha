@@ -15,7 +15,10 @@ class App extends Component {
             location: "here",
             biography: "I am a tiger",
             date_of_birth: "22 April 1989",
-            images: "http://azdan.com.sa/images/portfolio/980312.jpg",
+            images: ["http://azdan.com.sa/images/portfolio/980312.jpg", 
+                      "https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg",
+                      "https://upload.wikimedia.org/wikipedia/commons/0/06/Makari_the_Tiger.jpg"
+                    ],
             interests: "I eat people"
         },
         {id: 2,
@@ -23,7 +26,10 @@ class App extends Component {
             location: "here",
             biography: "I am the moon",
             date_of_birth: "22 April 1989",
-            images: "https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg",
+            images: ["http://azdan.com.sa/images/portfolio/980312.jpg", 
+                      "https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg",
+                      "https://upload.wikimedia.org/wikipedia/commons/0/06/Makari_the_Tiger.jpg"
+                    ],
             interests: "I only come out at night"
         },
         {id: 3,
@@ -31,7 +37,10 @@ class App extends Component {
             location: "here",
             biography: "Ka am a minion",
             date_of_birth: "22 April 1989",
-            images: "https://upload.wikimedia.org/wikipedia/commons/0/06/Makari_the_Tiger.jpg",
+            images: ["http://azdan.com.sa/images/portfolio/980312.jpg", 
+                      "https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg",
+                      "https://upload.wikimedia.org/wikipedia/commons/0/06/Makari_the_Tiger.jpg"
+                    ],
             interests: "Ka solo po kapee ka nokka"
         },
         ]

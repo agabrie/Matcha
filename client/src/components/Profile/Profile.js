@@ -9,8 +9,7 @@ class Profile extends React.Component {
         return (
   <div className="Profile">
   <div className="image-container">
-  <SlideView/>
-  
+  <SlideView images={this.props.profile.images}/>
   </div>
   <h2>{this.props.profile.name}</h2>
   <div className="Profile-information">

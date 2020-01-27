@@ -22,9 +22,11 @@ export default class SlideView extends React.Component{
                 slidesToScroll={1}
                 infinite={true}
                 dots={true}>
-                    <Image src="https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg"/>
-                    <Image src="https://upload.wikimedia.org/wikipedia/commons/0/06/Makari_the_Tiger.jpg"/>
-                    <Image src="https://upload.wikimedia.org/wikipedia/commons/3/38/Sib_Tiger.jpg"/>
+                     {
+                this.props.images.map(image => {
+                return <Image key={image.id} src={image}/>
+            })
+        }
                 </Slider>
             </Wrapper>
         )
