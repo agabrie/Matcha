@@ -16,6 +16,14 @@ mongoose.connect(url, {
 });
 
 app.use(
+    cors({
+        origin: ["http://localhost:3000"],
+        methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
+        credentials: true
+    })
+);
+
+app.use(
     session({
         secret: "ThisIsSecret",
         saveUninitialized: true,
