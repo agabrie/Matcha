@@ -19,7 +19,7 @@ router.post('/login', function(req, res, next){
 			res.send({error:true, message: "User does not exist!"});
 		}
 		if(!user.comparePassword(req.body.password, user.password)){
-			res.send({error:true, message:"Wrong password!"});
+			res.send({error:true, message: "Wrong password!"});
 		}
 		req.session.user = user;
 		req.session.isLoggedIn = true;

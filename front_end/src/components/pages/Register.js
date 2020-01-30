@@ -11,8 +11,9 @@ class Register extends Component{
             display_name:'',
             password:'',
             passwordcon:'',
-            userdata: null
-        }
+            userdata: null,
+            success: false
+        };
         this.changeHandler = this.changeHandler.bind(this);
         this.submitHandler = this.submitHandler.bind(this);
     }
@@ -23,17 +24,18 @@ class Register extends Component{
     }
     submitHandler(e) {
         e.preventDefault();
-        axios.post('http://localhost:4000/api/Users',this.state).then(result => {
-            if(result.data.errors) {
-                return this.setState(result.data);
+        axios.post('http://localhost:4000/api/Users',this.state).then(res => {
+            if(res.data.errors) {
+                return this.setState(res.data);
             }
-            return this.setState({userdata:result});
+            return this.setState({userdata:res, success:true}); 
         });
     }
     render() {
         return (
             <div>
-                <form onSubmit={this.submitHandler }>
+                {this.state.success && <p>You are successfully registered!</p>}
+                <form onSubmit={this.submitHandler}>
                     <input type="text" name="name" onChange={this.changeHandler} placeholder="Firstname"/><br/>
                     {this.state.errors && this.state.errors.name && <p>{this.state.errors.name.message}</p>}
                     <input type="text" name="surname" onChange={this.changeHandler} placeholder="Lastname"/><br/>
