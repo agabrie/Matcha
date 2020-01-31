@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 //Schema for storing users images
 const ImageSchema = new Schema({
     image: {
-        data: String,
+        data: Buffer,
         rank: Number
     } 
 });
