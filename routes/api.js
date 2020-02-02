@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
 const Validata= require('../functions/user').validate;
+var fs = require('fs');
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
@@ -146,12 +147,27 @@ router.get('/users/:login_name', function(req, res, next){
 
 //update user profile
 router.put('/users/:display_name',function(req, res, next){
-	User.findOneAndUpdate({display_name : req.params.display_name},req.body)
+	userData = req.body;
+	images = userData.profile.images;
+	imagesArr = []
+	for (var image of images){
+		// console.log(image.image.path);
+		data = fs.readFileSync(image.image.path);
+		image.image.data = data
+		image.image.rank = 0
+		imagesArr.push(image)
+		// console.log(image);
+	}
+	userData.images=imagesArr;
+	// console.log(userData.images)
+	userDatareths = userData
+	console.log(userDatareths.images)
+	User.findOneAndUpdate({display_name : req.params.display_name},userDatareths)
 	.then((user)=>{
-		console.log(user);
+		// console.log(user);
 		User.findOne({_id:user._id})
 		.then((user)=>{
-			console.log(user);
+			// console.log(user);
 			res.send({
 				type:"PUT",
 				user:user

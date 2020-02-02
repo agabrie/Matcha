@@ -7,7 +7,7 @@ class RenderInterests extends React.Component {
       return (
         <ul>
           {this.props.interests.map((interest) => {
-            return <li key={interest}>{interest}</li>
+            return <li key={interest.tag.name}>{interest.tag.name}</li>
           })}
         </ul>
       )
@@ -20,6 +20,7 @@ class Profile extends React.Component {
         return (
   <div className="Profile">
   <div className="image-container">
+    {console.log(this.props.user)}
   <SlideView images={this.props.user.profile.images}/>
   </div>
   <h2>{this.props.user.name}</h2>
