@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
+const Image =  require('../models/images');
 const Validata= require('../functions/user').validate;
 var fs = require('fs');
 
@@ -146,22 +147,93 @@ router.get('/users/:login_name', function(req, res, next){
 });
 
 //update user profile
+router.put('/users/updateImage/:display_name',async function(req, res, next){
+	var userData = await User.findOne({display_name:req.params.display_name}).catch(next);
+	// var newData = new User
+	// console.log(userData);
+	// newData = userData
+		// var imagesArr = []
+		// for(var image in userData.images){
+		// 	imagesArr.push(userData.profile.images[image]);
+		// }
+	// imagesData = req.body.images
+	// console.log("images => ",req.body.images)
+	for(var image in req.body.images){
+		var img = new Image
+		// console.log([image])
+		img.image.rank = req.body.images[image].rank;
+		img.image.contentType = 'image/jpeg';
+		img.image.data = fs.readFileSync(req.body.images[image].path)
+		// console.log(img);
+		userData.profile.images.push(img);
+		// imagesArr.push(img);
+		// newData.images.push(img);
+		// userData.images.push(img);
+	}
+	// userData.profile.images=imagesArr;
+	// console.log(userData.profile.images
+	userData.save().then(async ()=>{
+		await User.findOne({_id:userData._id}).then((data)=>{
+			console.log(data);
+			res.send(data);
+		});
+	});
+	
+	// console.log(imagesArr);
+	// newData.display_name = "Nayayayyayayayayyayayayyaya"
+	// newData.images = imagesArr;
+	// console.log({"new Data":newData},"\n",{"userData":userData});
+	// userData = await userData.save()
+	// console.log(userData)
+	// await userData.validate((err)=>{
+	// 	if(err)
+	// 		console.log(err)
+	// 	else
+	// 		res.send("success")
+	// });
+	// userData.save().then(async()=>{
+	// 	await User.findOne({_id:userData._id}).then(()=>{
+	// 		console.log(userData)
+	// 	})
+	// })
+	// console.log(userData)
+	// await userData.validate().then(data=>console.log(data));
+
+	// await userData.save().then(()=>{
+	// 	res.send(userData);
+	// 	console.log(userData);
+	// })
+	// console.log(userData.images);
+	// userData.images = 
+})
+
 router.put('/users/:display_name',function(req, res, next){
 	userData = req.body;
-	images = userData.profile.images;
-	imagesArr = []
-	for (var image of images){
-		// console.log(image.image.path);
-		data = fs.readFileSync(image.image.path);
-		image.image.data = data
-		image.image.rank = 0
-		imagesArr.push(image)
-		// console.log(image);
-	}
-	userData.images=imagesArr;
-	// console.log(userData.images)
+	// images = userData.profile.images;
+	// imagesArr = []
+	// for (var image of images){
+	// 	// console.log(image)
+	// 	var img = new Image
+	// 	img.image.data = fs.readFileSync(image.image.path)
+	// 	img.image.contentType = 'image/jpeg';
+	// 	img.save()
+	// 	// console.log(img)
+	// 	// console.log(image.image.path);
+
+	// 	// new_img.img.data = fs.readFileSync(req.file.path)
+    // // new_img.img.contentType = 'image/jpeg';
+	// 	/*
+	// 	data = fs.readFileSync(image.image.path);
+	// 	image.image.data = data
+	// 	*/
+	// 	img.image.rank = 0
+	// 	imagesArr.push(img)
+	// 	// console.log(image);
+	// }
+	// userData.images=imagesArr;
+	// // console.log(userData.images)
 	userDatareths = userData
-	console.log(userDatareths.images)
+	// console.log(userDatareths.images[0])
 	User.findOneAndUpdate({display_name : req.params.display_name},userDatareths)
 	.then((user)=>{
 		// console.log(user);
