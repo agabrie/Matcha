@@ -38,11 +38,16 @@ class UploadButton extends Component{
       imagePath:""
     }
   }
+  uploadImage =()=>{
+    console.log("nannananan");
+    fetch('http://localhost:4000/api/users', {method:'get'}).then(data=>{console.log(data)}).catch(err=>console.log(err));
+  }
   render() {
     // const { isLoading, users, error } = this.state;
     return (
       <React.Fragment>
-      <div className="App">
+      <div className="App" >
+      {/* onClick={this.uploadImage() */}
         <h1>Matcha Upload Image</h1>
         {/* <input type="text" onChange={this.setState({imagePath:})}/> */}
       </div>
