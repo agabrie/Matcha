@@ -31,15 +31,34 @@ import ProfileList from './components/ProfileList/ProfileList';
 //       })
 // return users;
 // }
-
+class UploadButton extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      imagePath:""
+    }
+  }
+  render() {
+    // const { isLoading, users, error } = this.state;
+    return (
+      <React.Fragment>
+      <div className="App">
+        <h1>Matcha Upload Image</h1>
+        {/* <input type="text" onChange={this.setState({imagePath:})}/> */}
+      </div>
+      </React.Fragment>
+    )
+  }
+}
 class App extends Component {
   constructor(props){
     super(props);
     
     this.state={
       isLoading: true,
-    users: [],
-    error: null
+      users: [],
+      error: null,
+      uploadScreen:false
     }
     // this.state = {
       // users : [
@@ -162,9 +181,11 @@ getUsers = ()=>{
     console.log(err)
   });
 }
-
+renderUpload=()=>{
+  this.setState({uploadScreen:true});
+}
   render() {
-    const { isLoading, users, error } = this.state;
+    const { isLoading, users, error, uploadScreen } = this.state;
     return (
       <React.Fragment>
       <div className="App">
@@ -181,7 +202,7 @@ getUsers = ()=>{
         {/* {this.state && this.state.users && <ProfileList users={this.state.users}/> ? console.log("success"):console.log("error")} */}
         {/* <ProfileList users={this.state.users}/> */}
         {!isLoading ? <ProfileList users={this.state.users}/> : <h3>Loading...</h3>}
-        
+        <UploadButton />
       </div>
       </React.Fragment>
     )
