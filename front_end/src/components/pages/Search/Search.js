@@ -3,30 +3,30 @@ import React, { Component } from 'react';
 // import './Search.css';
 import ProfileList from './ProfileList/ProfileList';
 
-class UploadButton extends Component{
-  constructor(props){
-    super(props);
-    this.state={
-      imagePath:""
-    }
-  }
-  uploadImage =()=>{
-    // console.log("nannananan");
-    fetch('http://localhost:4000/api/users', {method:'get'}).then(data=>{console.log(data)}).catch(err=>console.log(err));
-  }
-  render() {
-    // const { isLoading, users, error } = this.state;
-    return (
-      <React.Fragment>
-      <div className="App" >
-      {/* onClick={this.uploadImage() */}
-        <h1>Matcha Upload Image</h1>
-        {/* <input type="text" onChange={this.setState({imagePath:})}/> */}
-      </div>
-      </React.Fragment>
-    )
-  }
-}
+// class UploadButton extends Component{
+//   constructor(props){
+//     super(props);
+//     this.state={
+//       imagePath:""
+//     }
+//   }
+//   uploadImage =()=>{
+//     // console.log("nannananan");
+//     fetch('http://localhost:4000/api/users', {method:'get'}).then(data=>{console.log(data)}).catch(err=>console.log(err));
+//   }
+//   render() {
+//     // const { isLoading, users, error } = this.state;
+//     return (
+//       <React.Fragment>
+//       <div className="App" >
+//       {/* onClick={this.uploadImage() */}
+//         <h1>Matcha Upload Image</h1>
+//         {/* <input type="text" onChange={this.setState({imagePath:})}/> */}
+//       </div>
+//       </React.Fragment>
+//     )
+//   }
+// }
 class Search extends Component {
   constructor(props){
     super(props);
@@ -168,7 +168,7 @@ renderUpload=()=>{
       <div className="App">
         <h1>Matcha</h1>
         {!isLoading ? <ProfileList users={this.state.users}/> : <h3>Loading...</h3>}
-        <UploadButton />
+        {/* <UploadButton /> */}
       </div>
       </React.Fragment>
     )
