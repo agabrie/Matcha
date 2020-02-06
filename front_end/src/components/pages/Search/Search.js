@@ -1,36 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import ProfileList from './components/ProfileList/ProfileList';
+// import logo from './logo.svg';
+// import './Search.css';
+import ProfileList from './ProfileList/ProfileList';
 
-// const getUsers = async ()=>{
-//     var url = 'http://localhost:4000/api/users/search';
-// 	  var body = {
-//       "display_name": "kheynes20",
-//       "surname": "Heynes",
-//       "name": "Keziah",
-//       "email": "heyneskeziah@gmail.com",
-//       "password": "none"
-// 		}
-// 	  var headers = {
-//       'Content-Type': 'application/json'
-//     }
-
-//     const users = await fetch(url, {
-//       method:'get',
-//       // body:JSON.stringify(body),
-//       headers:headers,
-//       mode:"no-cors",
-//       })
-//       .then(blob=> blob.json())
-//       .then((data)=>{
-//         console.log(data);
-//       })
-//       .catch(err=>{
-//         console.log(err);
-//       })
-// return users;
-// }
 class UploadButton extends Component{
   constructor(props){
     super(props);
@@ -39,7 +11,7 @@ class UploadButton extends Component{
     }
   }
   uploadImage =()=>{
-    console.log("nannananan");
+    // console.log("nannananan");
     fetch('http://localhost:4000/api/users', {method:'get'}).then(data=>{console.log(data)}).catch(err=>console.log(err));
   }
   render() {
@@ -55,7 +27,7 @@ class UploadButton extends Component{
     )
   }
 }
-class App extends Component {
+class Search extends Component {
   constructor(props){
     super(props);
     
@@ -195,17 +167,6 @@ renderUpload=()=>{
       <React.Fragment>
       <div className="App">
         <h1>Matcha</h1>
-        {/* {
-          async()=>{
-            await this.getUsers().then((s)=>{
-              console.log(s,this.state)
-            })
-          }
-        } */}
-        {/* {this.getUsers()} */}
-        {/* {(!this.state.users)?this.getUsers():console.log(this.state.users)} */}
-        {/* {this.state && this.state.users && <ProfileList users={this.state.users}/> ? console.log("success"):console.log("error")} */}
-        {/* <ProfileList users={this.state.users}/> */}
         {!isLoading ? <ProfileList users={this.state.users}/> : <h3>Loading...</h3>}
         <UploadButton />
       </div>
@@ -214,4 +175,4 @@ renderUpload=()=>{
   }
 }
 
-export default App;
+export default Search;

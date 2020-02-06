@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const cors = require('cors');
 
 const app = express();
 const dbusername = "kheynes";
@@ -13,13 +15,25 @@ mongoose.connect(url, {
     useCreateIndex: true
 });
 
+app.use(
+    cors({
+        origin: ["http://localhost:3000","http://localhost:3001","http://localhost:8000"],
+        methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
+        credentials: true
+    })
+);
+
+app.use(
+    session({
+        secret: "ThisIsSecret",
+        saveUninitialized: true,
+        resave: true,
+        cookie: {maxAge: 60000 * 30}
+    })
+);
+
 mongoose.Promise = global.Promise;
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
 app.use(bodyParser.json());
 
 app.use('/api', require('./routes/api'));

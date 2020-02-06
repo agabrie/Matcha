@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Profile = require('./profiles').schema;
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
 
 //Schema for registration of users
 const UserSchema = new Schema({
@@ -26,6 +27,14 @@ const UserSchema = new Schema({
     },
     profile: Profile
 });
+
+UserSchema.methods.hashPassword = function(password) {
+    return bcrypt.hashSync(password, 12);
+};
+
+UserSchema.methods.comparePassword = function(password, hashPassword) {
+    return bcrypt.compareSync(password, hashPassword);
+};
 
 const User = mongoose.model('user', UserSchema);
 
