@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 import Header from './components/layout/Header';
 import Home from './components/pages/Home';
 import Search from './components/pages/Search/Search';
+import ImageUpload from './components/pages/Picture';
 import './App.css';
 
 class App extends Component {
@@ -14,6 +15,7 @@ class App extends Component {
             <Header />
             <Route exact path="/" component={Home} />
             <Route exact path="/search" component={Search} />
+            <Route exact path="/imageUpload" component={ImageUpload} />
           </div>
         </div>
       </Router>

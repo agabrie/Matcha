@@ -24,7 +24,7 @@ export default class SlideView extends React.Component{
     }
     render(){
         return (
-            // <Wrapper>
+            <Wrapper>
                 <Slider
                 speed={500}
                 slidesToShow={1}
@@ -37,7 +37,7 @@ export default class SlideView extends React.Component{
                     })
                 }
                 </Slider>
-            // </Wrapper>
+            </Wrapper>
         )
     }
 }

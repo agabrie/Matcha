@@ -193,8 +193,11 @@ router.put('/users/updateImage/:display_name',async function(req, res, next){
 		// console.log([image])
 		img.image.rank = req.body.images[image].rank;
 		img.image.contentType = 'image/jpeg';
-		img.image.data = fs.readFileSync(req.body.images[image].path)
-		// console.log(img);
+		if(req.body.images[image].src)
+			img.image.data = req.body.images[image].src;
+		else
+			img.image.data = fs.readFileSync(req.body.images[image].path)
+		console.log(img.image.data);
 		userData.profile.images.push(img);
 		// imagesArr.push(img);
 		// newData.images.push(img);

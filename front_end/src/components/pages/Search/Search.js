@@ -143,7 +143,8 @@ getUsers = ()=>{
   }
   fetch(url, {
       method: 'get',
-      headers: { 'Content-Type': 'application/json' },
+      headers:headers,
+      // headers: { 'Content-Type': 'application/json' },
   })
   .then(res => res.json())
   .then(json => {
@@ -162,12 +163,13 @@ renderUpload=()=>{
   this.setState({uploadScreen:true});
 }
   render() {
-    const { isLoading, users, error, uploadScreen } = this.state;
+    const { isLoading, users, error} = this.state;
     return (
       <React.Fragment>
       <div className="App">
         <h1>Matcha</h1>
-        {!isLoading ? <ProfileList users={this.state.users}/> : <h3>Loading...</h3>}
+        {!isLoading ? <ProfileList users={users}/> : <h3>Loading...</h3>}
+        {error?<label>error</label>:null}
         {/* <UploadButton /> */}
       </div>
       </React.Fragment>
