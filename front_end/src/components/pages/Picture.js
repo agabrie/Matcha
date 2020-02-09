@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-// import axios from 'axios';
+import axios from 'axios';
+// import FormData from 'form-data';
 
 class Picture extends Component{
     constructor(props){
@@ -36,31 +37,24 @@ class Picture extends Component{
           console.log('Error: ', error);
         }
     }
-    submit=()=>{
+    submit=async ()=>{
         // image upload endpoint
-        var url = `http://localhost:4000/api/users/updateImage/${this.state.username}`;
-        var headers = {
-            'Content-Type': 'application/json'
-        }
-        fetch(url, {
-            method: 'post',
-            headers:headers,
-            body:{images:[{rank:this.state.rank,src:this.state.image}]}
-        })
-        .then(res => res.json())
-        .then(json => {
-            // var usersArr = [];
-            // if(json._id)
-            // usersArr.push(json);
-            // else
-            // usersArr = json
-            // this.setState({users:usersArr, isLoading:false});
-            console.log(json);
-        })
-        .catch(err=>{
-            console.log(err)
+        var url = `http://localhost:4000/api/users/uploadImage/${this.state.username}`;
+        var form = new FormData();
+        var file = this.state.imageFile;
+        form.append('file', file,this.state.rank);
+        await axios.post(url, form, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((data)=>{
+          if (data.status){
+            console.log(data);
+            // res.redirect('/search');
+          }
+        }).catch((err)=>{
+          console.log(err)
         });
-        console.log(this.state);
     }
     render(){
       return (

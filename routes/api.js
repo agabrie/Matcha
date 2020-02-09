@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
 const Image =  require('../models/images');
+const Profile = require('../models/profiles');
 const Validata= require('../functions/user').validate;
 var fs = require('fs');
 const bcrypt = require('bcrypt');
@@ -157,8 +158,6 @@ router.get('/users/search/:query', (req, res, next)=>{
 }
 });
 
-
-
 router.get('/users/:login_name', function(req, res, next){
 	User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj})
 	.then(function(user){
@@ -177,108 +176,93 @@ router.get('/users/:login_name', function(req, res, next){
 });
 
 //update user profile
-router.put('/users/updateImage/:display_name',async function(req, res, next){
-	var userData = await User.findOne({display_name:req.params.display_name}).catch(next);
-	// var newData = new User
-	// console.log(userData);
-	// newData = userData
-		// var imagesArr = []
-		// for(var image in userData.images){
-		// 	imagesArr.push(userData.profile.images[image]);
-		// }
-	// imagesData = req.body.images
-	// console.log("images => ",req.body.images)
-	for(var image in req.body.images){
-		var img = new Image
-		// console.log([image])
-		img.image.rank = req.body.images[image].rank;
-		img.image.contentType = 'image/jpeg';
-		if(req.body.images[image].src)
-			img.image.data = req.body.images[image].src;
-		else
-			img.image.data = fs.readFileSync(req.body.images[image].path)
-		console.log(img.image.data);
-		userData.profile.images.push(img);
-		// imagesArr.push(img);
-		// newData.images.push(img);
-		// userData.images.push(img);
-	}
-	// userData.profile.images=imagesArr;
-	// console.log(userData.profile.images
-	userData.save().then(async ()=>{
-		await User.findOne({_id:userData._id}).then((data)=>{
-			console.log(data);
-			res.send(data);
-		});
-	});
-	
-	// console.log(imagesArr);
-	// newData.display_name = "Nayayayyayayayayyayayayyaya"
-	// newData.images = imagesArr;
-	// console.log({"new Data":newData},"\n",{"userData":userData});
-	// userData = await userData.save()
-	// console.log(userData)
-	// await userData.validate((err)=>{
-	// 	if(err)
-	// 		console.log(err)
-	// 	else
-	// 		res.send("success")
-	// });
-	// userData.save().then(async()=>{
-	// 	await User.findOne({_id:userData._id}).then(()=>{
-	// 		console.log(userData)
-	// 	})
-	// })
-	// console.log(userData)
-	// await userData.validate().then(data=>console.log(data));
-
-	// await userData.save().then(()=>{
-	// 	res.send(userData);
-	// 	console.log(userData);
-	// })
-	// console.log(userData.images);
+router.post('/users/uploadImage/:display_name',async function(req, res, next){
+	try{
+		if(!req.files) {
+			console.log("no file")
+			res.send({
+				status: false,
+				message: 'No file uploaded'
+			});
+		}else{
+			var newImage = req.files.file;
+			var imgPath = `./uploads/${req.params.display_name}-${newImage.name}.png`
+            
+            //Use the mv() method to place the file in upload directory (i.e. "uploads")
+			console.log(req.params.display_name);
+			user = new User;
+			await User.findOne({display_name:req.params.display_name})
+			.then(async (data)=>{
+				await newImage.mv(imgPath)
+				// .catch(()=>{
+				// 	res.send({
+				// 		status:false,
+				// 		message:"file could not be saved",
+				// 		err
+				// 	});
+				// });
+				user = data;
+				var img = new Image;
+				img.image.rank = newImage.name;
+				img.image.data = await fs.readFileSync(imgPath)
+				// .catch((err)=>{
+				// 	res.send({
+				// 		status:false, 
+				// 		message:"file not found",
+				// 		err
+				// 	});
+				// });
+				user.profile.images[img.image.rank] = img;
+				await user.validate()
+				.then(async()=>{
+					await user.save()
+					.then((data)=>{
+						console.log("success => ",data);
+						res.send({
+							status:true,
+							message:"image uploaded to db successfully",
+							data
+						});
+					}).catch((err)=>{
+						console.log("err => ",err);
+						res.send({
+							status:false,
+							message:"unsuccessful image upload to db",
+							err
+						});
+					})
+				});
+			}).catch((err)=>{
+				console.log("no such user");
+				res.send({
+					status:false,
+					message:"user does not exist in database",
+					err	
+				});
+			}
+			)
+		}
+	}catch (err) {
+        res.status(500).send(err);
+    }
 })
 
-router.put('/users/:display_name',function(req, res, next){
-	userData = req.body;
-	// images = userData.profile.images;
-	// imagesArr = []
-	// for (var image of images){
-	// 	// console.log(image)
-	// 	var img = new Image
-	// 	img.image.data = fs.readFileSync(image.image.path)
-	// 	img.image.contentType = 'image/jpeg';
-	// 	img.save()
-	// 	// console.log(img)
-	// 	// console.log(image.image.path);
-
-	// 	// new_img.img.data = fs.readFileSync(req.file.path)
-    // // new_img.img.contentType = 'image/jpeg';
-	// 	/*
-	// 	data = fs.readFileSync(image.image.path);
-	// 	image.image.data = data
-	// 	*/
-	// 	img.image.rank = 0
-	// 	imagesArr.push(img)
-	// 	// console.log(image);
-	// }
-	// userData.images=imagesArr;
-	// // console.log(userData.images)
-	userDatareths = userData
-	// console.log(userDatareths.images[0])
-	User.findOneAndUpdate({display_name : req.params.display_name},userDatareths)
-	.then((user)=>{
-		// console.log(user);
-		User.findOne({_id:user._id})
-		.then((user)=>{
-			// console.log(user);
-			res.send({
-				type:"PUT",
-				user:user
-			});
-		});	
+router.put('/users/:display_name',async function(req, res, next){
+	user = new User;
+	await User.findOne({display_name : req.params.display_name})
+	.then(async (data)=>{
+		user = data
+		// console.log(data);
+		var userData = new Profile;
+		if(user.profile)
+			userData = user.profile;
+		user.profile = Validata.profile.updateProfile(userData, req.body.profile);
+		await user.save().then((data)=>{
+			console.log(data);
+			res.send({message:"success",data:data})
+		}).catch(err=>res.send(err));
 	})
-	.catch(next);
+	.catch(err=>{res.send(err)});
 });
 
 //creating a user profile

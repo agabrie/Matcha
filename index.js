@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const cors = require('cors');
 
@@ -14,7 +15,13 @@ mongoose.connect(url, {
     useUnifiedTopology: true,
     useCreateIndex: true
 });
-
+app.use(express.static('uploads'));
+app.use(fileUpload({
+    createParentPath: true,
+    limits: { 
+        fileSize: 2 * 1024 * 1024 * 1024 //2MB max file(s) size
+    },
+}));
 app.use(
     cors({
         origin: ["http://localhost:3000","http://localhost:3001","http://localhost:8000"],
@@ -22,7 +29,6 @@ app.use(
         credentials: true
     })
 );
-
 app.use(
     session({
         secret: "ThisIsSecret",
