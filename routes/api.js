@@ -233,7 +233,7 @@ router.post('/users/uploadImage/:display_name',async function(req, res, next){
 					})
 				});
 			}).catch((err)=>{
-				console.log("no such user");
+				console.log("no such user=>",err);
 				res.send({
 					status:false,
 					message:"user does not exist in database",
