@@ -7,14 +7,14 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <Router>
-        <div className="App">
-          <div className="container">
-            <Header />
-            <Route exact path="/" component={Home} />
-          </div>
+    <Router>
+      <div className="App">
+        <div className="container">
+          <Header />
+          <Route exact path="/" component={Home} />
         </div>
-      </Router>
+      </div>
+    </Router>
     );
   }
 }

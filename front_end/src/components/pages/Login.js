@@ -24,6 +24,7 @@ class Login extends Component{
             if(res.data.error) {
                 return this.setState({error:res.data.message});
             }
+            return (window.location = '/mainpage');
         });
     }
     render() {
