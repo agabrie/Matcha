@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const User =  require('../models/users');
+
+const bcrypt = require('bcrypt');
 const Validata= require('../functions/user').validate;
 
 //get a list of  all the users from the db
@@ -10,12 +12,42 @@ router.get('/users', function(req, res, next){
 	});
 });
 
+//loging a user in
+router.post('/login', function(req, res, next){
+	User.findOne({
+		email: req.body.email
+	}).then(function(user){
+		if(!user){
+			res.send({error:true, message: "User does not exist!"});
+		}
+		if(!user.comparePassword(req.body.password, user.password)){
+			res.send({error:true, message: "Wrong password!"});
+		}
+		req.session.user = user;
+		req.session.isLoggedIn = true;
+		res.send({message: "You are signed in"});
+		res.send(user);
+	}).catch(function(error){
+		console.log(error)
+	});
+});
+
+//cheking if a user is logged in
+router.get('/login', function(req, res, next){
+	if(req.session.isLoggedIn) {
+		res.send(true);
+	}else {
+		res.send(false);
+	}
+});
+
 router.get('/users/query/', (req, res, next)=>{
 	console.log(req.body);
 	User.find({'profile':req.body}).then((data)=>{
 		res.send(data);
 	})
 });
+
 //get a specific user
 router.get('/users/search', (req, res, next)=>{
 	// console.log('ni');
@@ -163,9 +195,12 @@ router.put('/users/:display_name',function(req, res, next){
 
 //creating a user profile
 router.post('/users', function(req, res, next){
-    User.create(req.body).then(function(user){
+	var user = new User(req.body);
+	user.password = user.hashPassword(user.password);
+    user.save().then(function(user){
         res.send(user);
-    });
+    }).catch(function(err){res.send(err)});
 });
+
 
 module.exports = router;
