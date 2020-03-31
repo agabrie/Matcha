@@ -6,27 +6,27 @@ import loginLogo from './login_logo.jpg';
         super(props);
     }
 
-    changeHandler(e) {
-        this.setState({
-            [e.target.name] : e.target.value
-        });
-    }
-    submitHandler(e) {
-        e.preventDefault();
-        axios.post('http://localhost:4000/api/login', this.state).then(res => {
-            if(res.data.error) {
-                return this.setState({error:res.data.message});
-            }
-            return (window.location = '/mainpage');
-        });
-    }
+    // changeHandler(e) {
+    //     this.setState({
+    //         [e.target.name] : e.target.value
+    //     });
+    // }
+    // submitHandler(e) {
+    //     e.preventDefault();
+    //     axios.post('http://localhost:4000/api/login', this.state).then(res => {
+    //         if(res.data.error) {
+    //             return this.setState({error:res.data.message});
+    //         }
+    //         return (window.location = '/mainpage');
+    //     });
+    // }
     render() {
         return (
-            <div className="base-container">
+            <div className="base-container" ref={ this.props.containerRef }>
                 <div className="header">Register</div>
                 <div className="content">
 					<div className="image">
-						<img src={LoginLogo} />
+						<img src={loginLogo} />
 					</div>
 					<div className="form">
 						<div className="form-group">
