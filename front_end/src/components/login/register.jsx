@@ -26,7 +26,7 @@ import loginLogo from './login_logo.jpg';
                 <div className="header">Register</div>
                 <div className="content">
 					<div className="image">
-						<img src={loginLogo} />
+						<img src={ loginLogo } />
 					</div>
 					<div className="form">
 						<div className="form-group">
