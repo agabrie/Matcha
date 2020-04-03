@@ -37,8 +37,7 @@ import axios from 'axios';
 						<img src={ loginLogo } />
 					</div>
                     {this.state.error && <p>{this.state.error}</p>}
-					<div className="form" onSubmit={this.submitHandler}>
-                    {/* remove onSubmit here add it to the button as an onClick instead */}
+					<div className="form">
 						<div className="form-group">
 							<label htmlFor="email">Email</label>
 							<input type="text" name="email" onChange={this.changeHandler} placeholder="name@example.com" />
@@ -50,8 +49,7 @@ import axios from 'axios';
 					</div>
                 </div>
 				<div className="footer">
-					<button type="submit" className="btn">Login</button>
-                    {/* add onClick event that runs the submit handler */}
+					<button type="submit" className="btn" onClick={this.submitHandler}>Login</button>
 				</div>
             </div>
         );
