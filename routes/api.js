@@ -16,7 +16,9 @@ router.get('/users', function(req, res, next){
 router.post('/login', function(req, res, next){
 	User.findOne({
 		email: req.body.email
-	}).then(function(user){
+	},
+	{profile:0} //added this significantly decrease login time switch to 1 if other profile data is required
+	).then(function(user){
 		if(!user){
 			res.send({error:true, message: "User does not exist!"});
 		}
