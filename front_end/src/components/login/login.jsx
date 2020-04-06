@@ -47,10 +47,10 @@ import axios from 'axios';
 							<input type="password" name="password"onChange={this.changeHandler} placeholder="password" />
 						</div>
 					</div>
+                    <div className="button">
+						<button type="button" className="btn" onClick={this.submitHandler}>Login</button>
+					</div>
                 </div>
-				<div className="footer">
-					<button type="submit" className="btn" onClick={this.submitHandler}>Login</button>
-				</div>
             </div>
         );
     }
