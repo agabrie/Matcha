@@ -3,6 +3,7 @@ const router = express.Router();
 const User =  require('../models/users');
 const Image =  require('../models/images');
 const Profile = require('../models/profiles');
+const Interest = require('../models/interests');
 const Validata= require('../functions/user').validate;
 const {generateUsers} = require('../functions/user_generator');
 var fs = require('fs');
@@ -110,11 +111,11 @@ router.post('/users/search',(req,res,next)=>{
 				"generated.age":{$floor : {$divide : [{$subtract:[new Date,"$profile.date_of_birth"]},YEAR_IN_MS]}},
 				"generated.age_difference" : {$abs :{$ceil : {$divide : [{$subtract:["$profile.date_of_birth",age.current]},YEAR_IN_MS]}}},
 				'profile.images': {
-						$filter: {
+					$filter: {
 						input: "$profile.images",
 						as: "item",
 						cond: { $eq: [ "$$item.rank", 0 ] }
-						}
+					}
 				}
 			}
 		},
@@ -153,6 +154,10 @@ router.get('/users/:login_name', function(req, res, next){
 		})
 		.catch(function(err){res.send({err: 'no user found'})});
 	});
+});
+
+router.post('/users/addTag/:display_name',async (req,res,next)=>{
+	Interest.findOne({'name':req.body.tag})
 });
 
 /********************* agabrie ***********************/
