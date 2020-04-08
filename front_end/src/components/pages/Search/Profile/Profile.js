@@ -1,6 +1,7 @@
 import React from 'react';
 import './Profile.css';
 import SlideView from '../SlideView/SlideView';
+const YEAR_IN_MS = 365.25*24*60*60*1000
 
 class RenderInterests extends React.Component {
     render() {
@@ -20,7 +21,6 @@ class Profile extends React.Component {
         return (
   <div className="Profile">
   <div className="image-container">
-    {console.log(this.props.user)}
   <SlideView images={this.props.user.profile.images}/>
   </div>
   <h2>{this.props.user.name}</h2>
@@ -30,9 +30,10 @@ class Profile extends React.Component {
     </div>
     <div className="Profile-reviews">
       <h3>{this.props.user.profile.biography}</h3>
-      <h3 className="rating">Age:  {Math.floor((Date.now() - Date.parse(this.props.user.profile.date_of_birth))/ 31556952000 )}</h3>
-      <p>Interests: <RenderInterests interests={this.props.user.profile.interests}/></p>
-      
+      <h3 className="rating">Age:  {Math.floor((Date.now() - Date.parse(this.props.user.profile.date_of_birth))/YEAR_IN_MS)}</h3>
+      {this.props.user.profile.interests &&
+      <div>Interests: <RenderInterests interests={this.props.user.profile.interests}/></div>
+    }
     </div>
   </div>
 </div>

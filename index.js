@@ -6,9 +6,10 @@ const session = require('express-session');
 const cors = require('cors');
 
 const app = express();
-const dbusername = "kheynes";
-const dbpassword = "ASDasd123";
-const url = `mongodb+srv://${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`;
+// const dbusername = "kheynes";
+// const dbpassword = "ASDasd123";
+// const url = `mongodb+srv://${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`;
+const url = 'mongodb://127.0.0.1:27017/matcha';
 mongoose.connect(url, {
     useFindAndModify: false,
     useNewUrlParser: true,

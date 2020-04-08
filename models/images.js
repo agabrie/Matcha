@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 //Schema for storing users images
 const ImageSchema = new Schema({
-    image: {
+    //Image :{                      redundant
         data: Buffer,
         contentType: String,
         rank: Number
-    } 
+    // }
 });
 
 const Image = mongoose.model('image', ImageSchema);

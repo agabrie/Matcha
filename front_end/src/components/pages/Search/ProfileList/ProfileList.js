@@ -5,7 +5,6 @@ import Profile from '../Profile/Profile';
 
 class ProfileList extends React.Component {
     render() {
-        console.log(this.props)
         return (
             <div className="ProfileList" >
             {

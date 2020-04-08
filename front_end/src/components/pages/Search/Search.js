@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 // import logo from './logo.svg';
 // import './Search.css';
 import ProfileList from './ProfileList/ProfileList';
@@ -141,24 +142,32 @@ getUsers = ()=>{
   var headers = {
     'Content-Type': 'application/json'
   }
-  fetch(url, {
-      method: 'get',
-      headers:headers,
-      // headers: { 'Content-Type': 'application/json' },
-  })
-  .then(res => res.json())
-  .then(json => {
-    var usersArr = [];
-    if(json._id)
-      usersArr.push(json);
+  // dummy search criteria
+  let data = {
+    "sexual_preference": ["Male"],
+    "age":{"current":30,"min":18,"max":30},
+    "gender":"Female",
+    "sort":{
+    	"age_difference":1,
+    	"number_of_preferences":1
+    }
+  }
+
+  axios.post(url,data/* replace with state variables */)
+  .then(result => {
+    result = result.data
+    var userArr = [];
+    if(result._id)
+      userArr.push(result);
     else
-      usersArr = json
-    this.setState({users:usersArr, isLoading:false});
+      userArr = result
+    this.setState({users:userArr, isLoading:false});
   })
   .catch(err=>{
     console.log(err)
   });
 }
+
 renderUpload=()=>{
   this.setState({uploadScreen:true});
 }

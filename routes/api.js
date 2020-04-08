@@ -4,9 +4,10 @@ const User =  require('../models/users');
 const Image =  require('../models/images');
 const Profile = require('../models/profiles');
 const Validata= require('../functions/user').validate;
+const {generateUsers} = require('../functions/user_generator');
 var fs = require('fs');
 const bcrypt = require('bcrypt');
-
+const YEAR_IN_MS = 365.25*24*60*60*1000
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
 	User.find({}).then(function(users){
@@ -14,12 +15,14 @@ router.get('/users', function(req, res, next){
 	});
 });
 
+/********************* agabrie ***********************/
 router.get('/users/query/', (req, res, next)=>{
 	console.log(req.body);
 	User.find({'profile':req.body}).then((data)=>{
 		res.send(data);
 	})
 });
+
 //loging a user in
 router.post('/login', function(req, res, next){
 	User.findOne({
@@ -50,7 +53,7 @@ router.get('/login', function(req, res, next){
 });
 
 //get a specific user
-router.get('/users/search', (req, res, next)=>{
+router.get('/users/profiles', (req, res, next)=>{
 	// console.log('ni');
 	User.find({
 		'profile':{
@@ -68,95 +71,72 @@ router.get('/users/search', (req, res, next)=>{
 	.catch(err=>{res.send(err)});
 });
 
-// var find_sexual_preference=(sexual_preference)=>{
-// 	var sp;
-// 	switch(sexual_preference){
-// 		case 'Male':
-// 			sp=['Male'];
-// 			break;
-// 		case 'Female':
-// 			sp=['Female'];
-// 			break;
-// 		case 'Both':
-// 			sp=['Male','Female'];
-// 			break;
-// 	}
-// 	return sp;
-// };
+/********************* agabrie ***********************/
+router.get('/generate',(req,res,next)=>{
+	let data = generateUsers(50).then((newdata)=>{
+		res.send({message:'done',data:newdata});
+	})
+})
 
-router.get('/users/search/:query', (req, res, next)=>{
-	console.log(req.params);
-	console.log(req.query);
-	// console.log(Validata);
-	if(req.params.query=="search")
-	{
-		var sexual_preference = Validata.profile.find_sexual_preference(req.query.sexual_preference);
-			// console.log(sexual_preference);
-	User.find({
-		$and:[
-			{
-				'profile':{
-					$exists:true
-				}
-			},
-			{
-				$or:[
-					{
-						'profile.gender':sexual_preference[0]
-					},
-					{
-						'profile.gender':sexual_preference[1]
-					}
-				]
-			}
-		]
-	},
-	(err,obj)=>{
-		return obj;
-	})
-	.then((data)=>{
-		if(!data)
-			throw new Error;
-		res.send(data);
-	})
-	.catch(err=>{res.send(err)});
-	}else{
-		var sexual_preference = Validata.profile.find_sexual_preference(req.query.sexual_preference);
-	User.find({
-		$and:[
-			{
-				'profile':{
-					$exists:true
-				}
-			},
-			{
-				$or:[
-					{$or:[
-						{
-							'profile.gender':sexual_preference[0]
-						},
-						{
-							'profile.gender':sexual_preference[1]
+/********************* agabrie ***********************/
+router.post('/users/search',(req,res,next)=>{
+	// console.log(req.body);
+	filter = req.body
+	let sexual_preference = filter.sexual_preference
+	let age_range = {current:18,min:18,max:68}
+	let gender = filter.gender
+	let sortparams = filter.sort;
+	if(filter.age)
+		age_range = filter.age
+	let age = {
+		current : new Date(Date.now() - (age_range.current *  YEAR_IN_MS)),
+		min : new Date(Date.now() - (age_range.min *  YEAR_IN_MS)),
+		max : new Date(Date.now() - (age_range.max *  YEAR_IN_MS))
+	}
+	User.aggregate([
+		{
+			$project:{
+				'_id':1,
+				'name':1,
+				"name": 1,
+				"surname": 1,
+				"display_name": 1,
+				"profile.sexual_preference": 1,
+				"profile.gender": 1,
+				"profile.date_of_birth": 1,
+				"profile.biography": 1,
+				"profile.interests":1,
+				"generated.number_of_preferences": { $size: "$profile.sexual_preference" },
+				"generated.age":{$floor : {$divide : [{$subtract:[new Date,"$profile.date_of_birth"]},YEAR_IN_MS]}},
+				"generated.age_difference" : {$abs :{$ceil : {$divide : [{$subtract:["$profile.date_of_birth",age.current]},YEAR_IN_MS]}}},
+				'profile.images': {
+						$filter: {
+						input: "$profile.images",
+						as: "item",
+						cond: { $eq: [ "$$item.rank", 0 ] }
 						}
-					]},
-					{
-						'email':req.query.email
-					}
-				]
+				}
 			}
-		]
-	},
-	(err,obj)=>{
-		return obj;
+		},
+		{
+			$match:{
+				$and:[
+					{'profile.gender':{$in:sexual_preference}},
+					{'profile.date_of_birth':{
+						$gte:age.max,
+						$lte:age.min
+					}},
+					{'profile.images.0':{$exists:true}},
+					{'profile.sexual_preference':gender}
+				]
+			},
+		},
+		{$sort:sortparams}
+		
+	]).then(data=>{
+		res.send(data)
 	})
-	.then((data)=>{
-		if(!data)
-			throw new Error;
-		res.send(data);
-	})
-	.catch(err=>{res.send(err)});
-}
-});
+})
 
 router.get('/users/:login_name', function(req, res, next){
 	User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj})
@@ -175,6 +155,7 @@ router.get('/users/:login_name', function(req, res, next){
 	});
 });
 
+/********************* agabrie ***********************/
 //update user profile
 router.post('/users/uploadImage/:display_name',async function(req, res, next){
 	try{
@@ -203,8 +184,8 @@ router.post('/users/uploadImage/:display_name',async function(req, res, next){
 				// });
 				user = data;
 				var img = new Image;
-				img.image.rank = newImage.name;
-				img.image.data = await fs.readFileSync(imgPath)
+				img.rank = newImage.name;
+				img.data = await fs.readFileSync(imgPath)
 				// .catch((err)=>{
 				// 	res.send({
 				// 		status:false, 
@@ -212,7 +193,9 @@ router.post('/users/uploadImage/:display_name',async function(req, res, next){
 				// 		err
 				// 	});
 				// });
-				user.profile.images[img.image.rank] = img;
+				if(!user.profile)
+				 user.profile = new Profile
+				user.profile.images[img.rank] = img;
 				await user.validate()
 				.then(async()=>{
 					await user.save()
@@ -247,6 +230,7 @@ router.post('/users/uploadImage/:display_name',async function(req, res, next){
     }
 })
 
+/********************* agabrie ***********************/
 router.put('/users/:display_name',async function(req, res, next){
 	user = new User;
 	await User.findOne({display_name : req.params.display_name})

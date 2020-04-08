@@ -11,17 +11,7 @@ const Image = styled.img`
   float: left;
   margin-right: 10px;
 `;
-
 export default class SlideView extends React.Component{
-    arrayBufferToBase64 = (buffer)=> { 
-        var binary = '';
-        var bytes = new Uint8Array(buffer);
-        for(let i = 0; i < bytes.byteLength; i++){
-            binary += String.fromCharCode(bytes[i]);
-        }
-        var data = window.btoa(binary);
-        return data;
-    }
     render(){
         return (
             <Wrapper>
@@ -33,7 +23,7 @@ export default class SlideView extends React.Component{
                 dots={true}>
                 {
                     this.props.images.map(image => {
-                        return <Image key={this.arrayBufferToBase64(image.image.data.data)} src={`data:image/jpeg;base64,${this.arrayBufferToBase64(image.image.data.data)}`}/>
+                        return <Image key={image.rank} src={`data:image/jpeg;base64,${image.data}`}/>
                     })
                 }
                 </Slider>

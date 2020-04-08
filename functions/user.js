@@ -33,6 +33,7 @@ const find_sexual_preference = function(sexual_preference){
 			sp=['Male','Female'];
 			break;
 	}
+	console.log(sp)
 	return sp;
 };
 const updateProfile = (profile,data)=>{
