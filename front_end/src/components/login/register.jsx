@@ -39,7 +39,7 @@ import axios from 'axios';
                 <div className="content">
                 	<div className="header">Register</div>
 					<div className="image">
-						<img src={ loginLogo } />
+						<img src={ loginLogo } alt=''/>
 					</div>
 					{this.state.success && <p>You are successfully registered!</p>}
 					<div className="form">

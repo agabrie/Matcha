@@ -34,7 +34,7 @@ import axios from 'axios';
                 <div className="header">Login</div>
                 <div className="content">
 					<div className="image">
-						<img src={ loginLogo } />
+						<img src={ loginLogo } alt='' />
 					</div>
                     {this.state.error && <p>{this.state.error}</p>}
 					<div className="form">
