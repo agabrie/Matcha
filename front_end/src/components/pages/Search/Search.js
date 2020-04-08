@@ -139,9 +139,7 @@ class Search extends Component {
   
 getUsers = ()=>{
   var url = 'http://localhost:4000/api/users/search';
-  var headers = {
-    'Content-Type': 'application/json'
-  }
+  
   // dummy search criteria
   let data = {
     "sexual_preference": ["Male"],

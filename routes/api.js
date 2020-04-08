@@ -36,8 +36,8 @@ router.post('/login', function(req, res, next){
 		}
 		req.session.user = user;
 		req.session.isLoggedIn = true;
-		res.send({message: "You are signed in"});
-		res.send(user);
+		res.send({user:user,message: "You are signed in"});
+		// res.send(user);
 	}).catch(function(error){
 		console.log(error)
 	});
