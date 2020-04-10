@@ -6,7 +6,7 @@ const ImageSchema = new Schema({
     //Image :{                      redundant
         data: Buffer,
         contentType: String,
-        rank: Number
+        // rank: Number
     // }
 });
 

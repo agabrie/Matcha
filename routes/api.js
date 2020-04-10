@@ -139,7 +139,13 @@ router.post('/users/search',(req,res,next)=>{
 				localField: "profile.interests",
 				foreignField: "_id",
 				as: "profile.interests"
-			}
+			},
+			$lookup: {
+				from: Image.collection.name,
+				localField: "profile.images._id",
+				foreignField: "_id",
+				as: "profile.images"
+			},
 		},
 		{$sort:sortparams}
 		
@@ -173,9 +179,7 @@ router.get('/interests/',(req, res, next)=>{
 		res.send({err:err,message:"no tags in db"});
 	})
 });
-router.put('/users/addTag/:display_name',async (req,res,next)=>{
-	let interestData = req.body
-	console.log(interestData);
+makeTag = async (interestData)=>{
 	let tag = await Interest.findOne({'name':interestData.tag},(err, obj)=>{return obj})
 	.then(async (interest)=>{
 		if(!interest){
@@ -206,7 +210,19 @@ router.put('/users/addTag/:display_name',async (req,res,next)=>{
 				data:interest
 			});
 	})
-	console.log(tag)
+	return tag;
+}
+
+router.post('/interests/addTag',async (req,res,next)=>{
+	let interestData = req.body
+	let tag = await makeTag(interestData);
+	res.send(tag);
+})
+
+router.put('/users/addTag/:display_name',async (req,res,next)=>{
+	let interestData = req.body
+	let tag = await makeTag(interestData)
+	// console.log(tag)
 	let userTag = await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
 	.then(async (user)=>{
 		if(!user)
@@ -246,75 +262,146 @@ router.put('/users/addTag/:display_name',async (req,res,next)=>{
 	res.send({data:userTag});
 });
 
+addImage=async (file)=>{
+	let img = new Image;
+
+	let buf = Buffer.from(file.data,'binary')
+	img.data = buf
+
+	return await img.save()
+			.then((data)=>{
+				return({
+					status:true,
+					message:"image uploaded to user successfully",
+					data
+				});
+			}).catch((err)=>{
+				console.log("err => ",err);
+				return({
+					status:false,
+					message:"unsuccessful image upload to user",
+					err
+				});
+			})
+	// console.log(img)
+}
 /********************* agabrie ***********************/
 //update user profile
 router.post('/users/uploadImage/:display_name',async function(req, res, next){
+	console.log(req)
 	try{
+		// console.log("herere")
 		if(!req.files) {
 			console.log("no file")
-			res.send({
-				status: false,
-				message: 'No file uploaded'
-			});
-		}else{
-			var newImage = req.files.file;
-			var imgPath = `./uploads/${req.params.display_name}-${newImage.name}.png`
-            
-            //Use the mv() method to place the file in upload directory (i.e. "uploads")
-			console.log(req.params.display_name);
-			user = new User;
-			await User.findOne({display_name:req.params.display_name})
-			.then(async (data)=>{
-				await newImage.mv(imgPath)
-				// .catch(()=>{
-				// 	res.send({
-				// 		status:false,
-				// 		message:"file could not be saved",
-				// 		err
-				// 	});
-				// });
-				user = data;
-				var img = new Image;
-				img.rank = newImage.name;
-				img.data = await fs.readFileSync(imgPath)
-				// .catch((err)=>{
-				// 	res.send({
-				// 		status:false, 
-				// 		message:"file not found",
-				// 		err
-				// 	});
-				// });
+			// res.send({
+			// 	status: false,
+			// 	message: 'No file uploaded'
+			// });
+		}
+		else{
+			var inputImage = req.files.file;
+			let rank = req.body.rank; 
+			// console.log(newImage)
+			// var imgPath = `./uploads/pic.png`
+			let image = await addImage(inputImage);
+			// console.log(image,req.body);
+			let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
+			.then(async(user)=>{
+				// console.log(user);
 				if(!user.profile)
-				 user.profile = new Profile
-				user.profile.images[img.rank] = img;
-				await user.validate()
-				.then(async()=>{
-					await user.save()
-					.then((data)=>{
-						console.log("success => ",data);
-						res.send({
-							status:true,
-							message:"image uploaded to db successfully",
-							data
-						});
-					}).catch((err)=>{
-						console.log("err => ",err);
-						res.send({
-							status:false,
-							message:"unsuccessful image upload to db",
-							err
-						});
-					})
-				});
+					user.profile = new Profile;
+				let imageCount = user.profile.images.length;
+				if(rank >= imageCount)
+					user.profile.images.push({_id:image.data,rank:imageCount})
+				if(user.profile.images.length > 0){
+					user.profile.images.push({_id:user.profile.images[imageCount-1]._id,rank:imageCount})
+					for(let i = rank+1;i < imageCount;i++)
+						user.profile.images[i] = ({_id:user.profile.images[i-1]._id,rank:i})
+					user.profile.images[rank] = ({_id:image.data,rank:rank})
+				}else{
+					user.profile.images[rank] = ({_id:image.data,rank:0})
+				}
+				console.log(user.profile.images);
+				return await user.save()
+				.then((data)=>{
+					return({
+						status:true,
+						message:"image uploaded to user successfully",
+						data
+					});
+				}).catch((err)=>{
+					console.log("err => ",err);
+					return({
+						status:false,
+						message:"unsuccessful image upload to user",
+						err
+					});
+				})
 			}).catch((err)=>{
-				console.log("no such user=>",err);
-				res.send({
+				return({
 					status:false,
-					message:"user does not exist in database",
-					err	
+					message:"user does not exist in db",
+					err
 				});
-			}
-			)
+			})
+			// console.log(user)
+			res.send({user:"data"})
+            
+        //     //Use the mv() method to place the file in upload directory (i.e. "uploads")
+		// 	console.log(req.params.display_name);
+		// 	user = new User;
+		// 	await User.findOne({display_name:req.params.display_name})
+		// 	.then(async (data)=>{
+		// 		await newImage.mv(imgPath)
+		// 		// .catch(()=>{
+		// 		// 	res.send({
+		// 		// 		status:false,
+		// 		// 		message:"file could not be saved",
+		// 		// 		err
+		// 		// 	});
+		// 		// });
+		// 		user = data;
+		// 		var img = new Image;
+		// 		// img.rank = newImage.name;
+		// 		img.data = await fs.readFileSync(imgPath)
+		// 		// .catch((err)=>{
+		// 		// 	res.send({
+		// 		// 		status:false, 
+		// 		// 		message:"file not found",
+		// 		// 		err
+		// 		// 	});
+		// 		// });
+		// 		if(!user.profile)
+		// 		 user.profile = new Profile
+		// 		user.profile.images[newImage.rank] = {img,rank:newImage.rank};
+		// 		await user.validate()
+		// 		.then(async()=>{
+		// 			await user.save()
+		// 			.then((data)=>{
+		// 				console.log("success => ",data);
+		// 				res.send({
+		// 					status:true,
+		// 					message:"image uploaded to db successfully",
+		// 					data
+		// 				});
+		// 			}).catch((err)=>{
+		// 				console.log("err => ",err);
+		// 				res.send({
+		// 					status:false,
+		// 					message:"unsuccessful image upload to db",
+		// 					err
+		// 				});
+		// 			})
+		// 		});
+		// 	}).catch((err)=>{
+		// 		console.log("no such user=>",err);
+		// 		res.send({
+		// 			status:false,
+		// 			message:"user does not exist in database",
+		// 			err	
+		// 		});
+		// 	}
+		// 	)
 		}
 	}catch (err) {
         res.status(500).send(err);
