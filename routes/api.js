@@ -104,6 +104,7 @@ router.post('/users/search',(req,res,next)=>{
 				"display_name": 1,
 				"profile.sexual_preference": 1,
 				"profile.gender": 1,
+				"profile.interests":1,
 				"profile.date_of_birth": 1,
 				"profile.biography": 1,
 				"profile.interests":1,
@@ -131,6 +132,14 @@ router.post('/users/search',(req,res,next)=>{
 					{'profile.sexual_preference':gender}
 				]
 			},
+		},
+		{
+			$lookup: {
+				from: Interest.collection.name,
+				localField: "profile.interests",
+				foreignField: "_id",
+				as: "profile.interests"
+			}
 		},
 		{$sort:sortparams}
 		
@@ -175,12 +184,12 @@ router.put('/users/addTag/:display_name',async (req,res,next)=>{
 			return await interest.save()
 			.then((data)=>{
 				console.log("success => ",data);
-				res.send({
+				return({
 					status:true,
 					message:"interest uploaded to db successfully",
 					data
 				});
-				return data._id;
+				// return data;
 			}).catch((err)=>{
 				console.log("err => ",err);
 				res.send({
@@ -191,14 +200,20 @@ router.put('/users/addTag/:display_name',async (req,res,next)=>{
 			})
 		}
 		else
-			return interest._id;
+			return({
+				status:true,
+				message:"interest uploaded to db successfully",
+				data:interest
+			});
 	})
+	console.log(tag)
 	let userTag = await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
 	.then(async (user)=>{
 		if(!user)
 			throw new Error;
-		if(!user.profile.interests.includes(tag)){
-			user.profile.interests.push(tag);
+		// console.log(user.profile.interests.includes(tag._id),tag,user.profile.interests)
+		if(!user.profile.interests.includes(tag.data._id)){
+			user.profile.interests.push(tag.data);
 			return await user.save()
 			.then((data)=>{
 				return({
