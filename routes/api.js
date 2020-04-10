@@ -155,9 +155,80 @@ router.get('/users/:login_name', function(req, res, next){
 		.catch(function(err){res.send({err: 'no user found'})});
 	});
 });
-
-router.post('/users/addTag/:display_name',async (req,res,next)=>{
-	Interest.findOne({'name':req.body.tag})
+router.get('/interests/',(req, res, next)=>{
+	Interest.find({}).then((data)=>{
+		if(!data)
+			throw new Error;
+		res.send(data);
+	}).catch((err)=>{
+		res.send({err:err,message:"no tags in db"});
+	})
+});
+router.put('/users/addTag/:display_name',async (req,res,next)=>{
+	let interestData = req.body
+	console.log(interestData);
+	let tag = await Interest.findOne({'name':interestData.tag},(err, obj)=>{return obj})
+	.then(async (interest)=>{
+		if(!interest){
+			let interest = new Interest;
+			interest.name = req.body.tag;
+			return await interest.save()
+			.then((data)=>{
+				console.log("success => ",data);
+				res.send({
+					status:true,
+					message:"interest uploaded to db successfully",
+					data
+				});
+				return data._id;
+			}).catch((err)=>{
+				console.log("err => ",err);
+				res.send({
+					status:false,
+					message:"unsuccessful interest upload to db",
+					err
+				});
+			})
+		}
+		else
+			return interest._id;
+	})
+	let userTag = await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
+	.then(async (user)=>{
+		if(!user)
+			throw new Error;
+		if(!user.profile.interests.includes(tag)){
+			user.profile.interests.push(tag);
+			return await user.save()
+			.then((data)=>{
+				return({
+					status:true,
+					message:"interest uploaded to user successfully",
+					data:data.profile.interests
+				});
+			}).catch((err)=>{
+				console.log("err => ",err);
+				return({
+					status:false,
+					message:"unsuccessful interest upload to user",
+					err
+				});
+			})
+		}
+		else
+			return({
+				status:true,
+				message:"tag already linked to user",
+				data:user.profile.interests
+			});
+		})
+		.catch((err)=>{return({
+			status:true,
+			message:"no such user exists",
+			err
+		});
+	})
+	res.send({data:userTag});
 });
 
 /********************* agabrie ***********************/

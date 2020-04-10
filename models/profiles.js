@@ -10,7 +10,7 @@ const ProfileSchema = new Schema({
     sexual_preference: [String],
     biography: String,
     images:[Image],
-    interests: [Interest],
+    interests: [{ type: Schema.Types.ObjectId, ref: 'Interest' }],
     views: [View],
     location: {
         type: {

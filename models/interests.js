@@ -3,10 +3,10 @@ const Schema = mongoose.Schema;
 
 //Schema for the interest tags
 const InterestSchema = new Schema({
-    tag: {
+    // tag: {
         name: String,
         active: Boolean
-    }
+    // }
 });
 
 const Interest = mongoose.model('interest', InterestSchema);
