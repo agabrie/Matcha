@@ -6,17 +6,17 @@ const session = require('express-session');
 const cors = require('cors');
 
 const app = express();
-// const dbusername = "kheynes";
-// const dbpassword = "ASDasd123";
-// const url = `mongodb+srv://${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`;
-const url = 'mongodb://127.0.0.1:27017/matcha';
+const dbusername = "kheynes";
+const dbpassword = "ASDasd123";
+const url = `mongodb+srv://${dbusername}:${dbpassword}@users-fcrwt.mongodb.net/test?retryWrites=true&w=majority`;
+// const url = 'mongodb://127.0.0.1:27017/matcha';
 mongoose.connect(url, {
     useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
 });
-app.use(express.static('uploads'));
+// app.use(express.static('uploads'));
 app.use(fileUpload({
     createParentPath: true,
     limits: { 
@@ -25,7 +25,7 @@ app.use(fileUpload({
 }));
 app.use(
     cors({
-        origin: ["http://localhost:3000","http://localhost:3001","http://localhost:8000","http://localhost:9000"],
+        origin: ["http://localhost:3000","http://localhost:3001","http://localhost:8000"],
         methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
         credentials: true
     })
