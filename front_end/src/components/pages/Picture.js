@@ -42,7 +42,8 @@ class Picture extends Component{
         var url = `http://localhost:4000/api/users/uploadImage/${this.state.username}`;
         var form = new FormData();
         var file = this.state.imageFile;
-        form.append('file', file,this.state.rank);
+        form.append('file', file,'image');
+        form.append('rank',this.state.rank)
         await axios.post(url, form, {
           headers: {
             'Content-Type': 'multipart/form-data'

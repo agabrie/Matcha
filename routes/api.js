@@ -111,13 +111,15 @@ router.post('/users/search',(req,res,next)=>{
 				"generated.number_of_preferences": { $size: "$profile.sexual_preference" },
 				"generated.age":{$floor : {$divide : [{$subtract:[new Date,"$profile.date_of_birth"]},YEAR_IN_MS]}},
 				"generated.age_difference" : {$abs :{$ceil : {$divide : [{$subtract:["$profile.date_of_birth",age.current]},YEAR_IN_MS]}}},
-				'profile.images': {
-					$filter: {
-						input: "$profile.images",
-						as: "item",
-						cond: { $eq: [ "$$item.rank", 0 ] }
-					}
-				}
+				// 'profile.images': {
+				// 	$filter: {
+				// 		input: "$profile.images",
+				// 		as: "item",
+				// 		cond: { $eq: [ "$$item.rank", 0 ] }
+				// 	}
+				// }
+				"profile.images":{$arrayElemAt:['$profile.images',0]}
+				// "profile.images":1
 			}
 		},
 		{
@@ -128,7 +130,7 @@ router.post('/users/search',(req,res,next)=>{
 						$gte:age.max,
 						$lte:age.min
 					}},
-					{'profile.images.0':{$exists:true}},
+					{'profile.images':{$exists:true}},
 					{'profile.sexual_preference':gender}
 				]
 			},
@@ -140,13 +142,23 @@ router.post('/users/search',(req,res,next)=>{
 				foreignField: "_id",
 				as: "profile.interests"
 			},
+			// $lookup: {
+			// 	from: Image.collection.name,
+			// 	localField: "profile.images._id",
+			// 	foreignField: "_id",
+			// 	as: "profile.images"
+			// },
+		},
+		// {$unwind:"$profile.images"},
+		{
 			$lookup: {
 				from: Image.collection.name,
-				localField: "profile.images._id",
+				localField: "profile.images",
 				foreignField: "_id",
 				as: "profile.images"
 			},
 		},
+		// {$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$profile.images", 0 ] }, "$profile.images" ] } }},
 		{$sort:sortparams}
 		
 	]).then(data=>{
@@ -184,7 +196,7 @@ makeTag = async (interestData)=>{
 	.then(async (interest)=>{
 		if(!interest){
 			let interest = new Interest;
-			interest.name = req.body.tag;
+			interest.name = interestData.tag;
 			return await interest.save()
 			.then((data)=>{
 				console.log("success => ",data);
@@ -220,6 +232,7 @@ router.post('/interests/addTag',async (req,res,next)=>{
 })
 
 router.put('/users/addTag/:display_name',async (req,res,next)=>{
+	// console.log(req.body)
 	let interestData = req.body
 	let tag = await makeTag(interestData)
 	// console.log(tag)
@@ -267,36 +280,76 @@ addImage=async (file)=>{
 
 	let buf = Buffer.from(file.data,'binary')
 	img.data = buf
-
-	return await img.save()
+	// console.log('yup')
+	let image = await Image.findOne({'data':img.data},(err, obj)=>{return obj})
+	.then(async (image)=>{
+		// console.log(image)
+		if(!image){
+			let image = new Image;
+			image.data = img.data;
+			return await image.save()
 			.then((data)=>{
+				console.log("success => ",data);
 				return({
 					status:true,
-					message:"image uploaded to user successfully",
+					message:"image uploaded to db successfully",
 					data
 				});
+				// return data;
 			}).catch((err)=>{
 				console.log("err => ",err);
-				return({
+				res.send({
 					status:false,
-					message:"unsuccessful image upload to user",
+					message:"unsuccessful image upload to db",
 					err
 				});
 			})
+		}
+		else
+			return({
+				status:true,
+				message:"image uploaded to db successfully",
+				data:image
+			});
+	})
+	// console.log(image)
+	return image;
+
+
+
+
+
+	
+
+	// return await img.save()
+	// 		.then((data)=>{
+	// 			return({
+	// 				status:true,
+	// 				message:"image uploaded to user successfully",
+	// 				data
+	// 			});
+	// 		}).catch((err)=>{
+	// 			console.log("err => ",err);
+	// 			return({
+	// 				status:false,
+	// 				message:"unsuccessful image upload to user",
+	// 				err
+	// 			});
+	// 		})
 	// console.log(img)
 }
 /********************* agabrie ***********************/
 //update user profile
 router.post('/users/uploadImage/:display_name',async function(req, res, next){
-	console.log(req)
+	// console.log(req)
 	try{
 		// console.log("herere")
 		if(!req.files) {
 			console.log("no file")
-			// res.send({
-			// 	status: false,
-			// 	message: 'No file uploaded'
-			// });
+			res.send({
+				status: false,
+				message: 'No file uploaded'
+			});
 		}
 		else{
 			var inputImage = req.files.file;
@@ -304,24 +357,20 @@ router.post('/users/uploadImage/:display_name',async function(req, res, next){
 			// console.log(newImage)
 			// var imgPath = `./uploads/pic.png`
 			let image = await addImage(inputImage);
-			// console.log(image,req.body);
+			// console.log(image.data);
 			let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
 			.then(async(user)=>{
-				// console.log(user);
 				if(!user.profile)
 					user.profile = new Profile;
-				let imageCount = user.profile.images.length;
-				if(rank >= imageCount)
-					user.profile.images.push({_id:image.data,rank:imageCount})
-				if(user.profile.images.length > 0){
-					user.profile.images.push({_id:user.profile.images[imageCount-1]._id,rank:imageCount})
-					for(let i = rank+1;i < imageCount;i++)
-						user.profile.images[i] = ({_id:user.profile.images[i-1]._id,rank:i})
-					user.profile.images[rank] = ({_id:image.data,rank:rank})
-				}else{
-					user.profile.images[rank] = ({_id:image.data,rank:0})
+				var images = user.profile.images
+				if(images.includes(image.data._id)){
+					for (var i = images.length - 1; i >= 0; --i) {
+						if(String(images[i])==String(image.data._id)) {
+							images.splice(i, 1);
+						}
+					}
 				}
-				console.log(user.profile.images);
+				user.profile.images.splice(rank,0,image.data);
 				return await user.save()
 				.then((data)=>{
 					return({

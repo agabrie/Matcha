@@ -23,7 +23,7 @@ export default class SlideView extends React.Component{
                 dots={true}>
                 {
                     this.props.images.map(image => {
-                        return <Image key={image.rank} src={`data:image/jpeg;base64,${image.data}`}/>
+                        return <Image key={image._id} src={`data:image/jpeg;base64,${image.data}`}/>
                     })
                 }
                 </Slider>

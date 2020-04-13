@@ -159,6 +159,7 @@ getUsers = ()=>{
       userArr.push(result);
     else
       userArr = result
+    console.log(userArr);
     this.setState({users:userArr, isLoading:false});
   })
   .catch(err=>{

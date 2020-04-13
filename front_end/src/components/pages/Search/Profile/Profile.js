@@ -6,11 +6,13 @@ const YEAR_IN_MS = 365.25*24*60*60*1000
 class RenderInterests extends React.Component {
     render() {
       return (
-        <ul>
+        // <ul>
+        <div>
           {this.props.interests.map((interest) => {
-            return <li key={interest.tag.name}>{interest.tag.name}</li>
+            return <div key={interest._id}>{interest.name}</div>
           })}
-        </ul>
+        </div>
+        // </ul>
       )
     }
 }
