@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.scss';
 import { Login, Register } from './components/login/index';
-import { Header } from './components/header/index';
 
 class App extends React.Component{
 	constructor(props) {
@@ -29,7 +28,6 @@ class App extends React.Component{
 		const current = isLogginActive ? "Register" : "Login";
 		return (
 			<div className="App">
-				<Header/>
 				<div className="login">
 					<div className="container">
 						{ isLogginActive && <Login containerRef={ (ref) => this.current = ref } /> }
