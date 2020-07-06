@@ -1,20 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const User =  require('../models/users');
+// const User =  require('../models/users');
 
-const bcrypt = require('bcrypt');
-const Validata= require('../functions/user').validate;
+// const bcrypt = require('bcrypt');
+// const Validata= require('../functions/user').validate;
 
 //get a list of  all the users from the db
 router.get('/users', function(req, res, next){
+	/*
 	User.find({}).then(function(users){
 		res.send(users);
 	});
+	*/
 });
 
 //loging a user in
 router.post('/login', function(req, res, next){
-	User.findOne({
+	/*User.findOne({
 		email: req.body.email
 	}).then(function(user){
 		if(!user){
@@ -29,27 +31,31 @@ router.post('/login', function(req, res, next){
 		res.send(user);
 	}).catch(function(error){
 		console.log(error)
-	});
+	});*/
 });
 
 //cheking if a user is logged in
 router.get('/login', function(req, res, next){
+	/*
 	if(req.session.isLoggedIn) {
 		res.send(true);
 	}else {
 		res.send(false);
-	}
+	}*/
 });
 
 router.get('/users/query/', (req, res, next)=>{
+	/*
 	console.log(req.body);
 	User.find({'profile':req.body}).then((data)=>{
 		res.send(data);
 	})
+	*/
 });
 
 //get a specific user
 router.get('/users/search', (req, res, next)=>{
+	/*
 	// console.log('ni');
 	User.find({
 		'profile':{
@@ -65,6 +71,7 @@ router.get('/users/search', (req, res, next)=>{
 		res.send(data);
 	})
 	.catch(err=>{res.send(err)});
+	*/
 });
 
 // var find_sexual_preference=(sexual_preference)=>{
@@ -84,6 +91,7 @@ router.get('/users/search', (req, res, next)=>{
 // };
 
 router.get('/users/search/:query', (req, res, next)=>{
+	/*
 	console.log(req.params);
 	console.log(req.query);
 	// console.log(Validata);
@@ -154,12 +162,13 @@ router.get('/users/search/:query', (req, res, next)=>{
 		res.send(data);
 	})
 	.catch(err=>{res.send(err)});
-}
+}*/
 });
 
 
 
 router.get('/users/:login_name', function(req, res, next){
+	/*
 	User.findOne({'display_name': req.params.login_name}, function(err, obj){return obj})
 	.then(function(user){
 		if(!user)
@@ -174,10 +183,12 @@ router.get('/users/:login_name', function(req, res, next){
 		})
 		.catch(function(err){res.send({err: 'no user found'})});
 	});
+	*/
 });
 
 //update user profile
 router.put('/users/:display_name',function(req, res, next){
+	/*
 	User.findOneAndUpdate({display_name : req.params.display_name},req.body)
 	.then((user)=>{
 		console.log(user);
@@ -191,15 +202,18 @@ router.put('/users/:display_name',function(req, res, next){
 		});	
 	})
 	.catch(next);
+	*/
 });
 
 //creating a user profile
 router.post('/users', function(req, res, next){
+	/*
 	var user = new User(req.body);
 	user.password = user.hashPassword(user.password);
     user.save().then(function(user){
         res.send(user);
     }).catch(function(err){res.send(err)});
+	*/
 });
 
 
