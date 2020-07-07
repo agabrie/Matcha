@@ -1,5 +1,15 @@
 const {client} = require('../dbConnection');
-
+const dropAuthTable = async()=>{
+	const query = "DROP TABLE AUTH;"
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "auth table dropped successfully" };
+		})
+		.catch(err => {
+			return { error: err };
+		});
+	return result;
+};
 const dropUsersTable = async()=>{
 	const query = "DROP TABLE USERS;"
 	let result = await client.query(query)
@@ -62,12 +72,12 @@ const dropInterestsTable = async()=>{
 const dropAllTables = async () =>{
 	let output = {};
 	// try{
-		output.interests = await drop.Interests();
 		output.views = await drop.Views();
 		output.images = await drop.Images();
+		output.interests = await drop.Interests();
+		output.auth = await drop.Auth();
 		output.profiles = await drop.Profiles();
 		output.users = await drop.Users();
-
 		return output;
 	// }
 	// catch{
@@ -80,6 +90,7 @@ const drop = {
 	Images:dropImagesTable,
 	Views:dropViewsTable,
 	Interests:dropInterestsTable,
+	Auth:dropAuthTable,
 	All:dropAllTables
 }
 module.exports = {drop};

@@ -1,5 +1,31 @@
 const {client} = require('../dbConnection');
-
+const createAuthTable = async () => {
+	// const query = createTable(User);
+	const query =
+	`CREATE TABLE IF NOT EXISTS
+	Auth
+	(
+			id SERIAL NOT NULL PRIMARY KEY,
+			verified BOOLEAN NOT NULL DEFAULT 'FALSE',
+			notifications BOOLEAN NOT NULL DEFAULT 'TRUE',
+			token VARCHAR (100) NOT NULL,
+			loggedIn BOOLEAN NOT NULL DEFAULT 'FALSE',
+			userId INT REFERENCES Users(id) UNIQUE
+	);`;
+	// console.log(User);
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "authentication table created successfully" };
+			// console.log(result.rows)
+			// res.send(result.rows);
+		})
+		.catch(err => {
+			return { error: err };
+			// console.log({"sql error":err});
+			// res.send({error:err})
+		});
+	return result;
+};
 const createUsersTable = async () => {
 	// const query = createTable(User);
 	const query =
@@ -35,8 +61,8 @@ const createProfilesTable = async () => {
 	Profiles
 	(
         id SERIAL NOT NULL PRIMARY KEY,
-        gender INTEGER NOT NULL DEFAULT '0',
-        sexual_preference INTEGER NOT NULL DEFAULT '2',
+        gender VARCHAR(7) NOT NULL DEFAULT 'FEMALE',
+        sexual_preference VARCHAR(7) NOT NULL DEFAULT 'MALE',
         biography VARCHAR(150) NOT NULL DEFAULT 'I AM A HUMAN',
         location POINT NOT NULL DEFAULT '(0,0)',
         date_of_birth DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -141,21 +167,25 @@ const createAllTables = async () =>{
 	// try{
 		output.users = await create.Users();
 		output.profiles = await create.Profiles();
-		output.views = await create.Views();
-		output.images = await create.Images();
+		output.auth = await create.Auth();
 		output.interests = await create.Interests();
+		output.images = await create.Images();
+		output.views = await create.Views();
 		return output;
 	// }
 	// catch{
 
 	// }
 };
-const create= {
+
+const create = {
 	Users:createUsersTable,
 	Profiles:createProfilesTable,
 	Images:createImagesTable,
 	Interests:createInterestsTable,
 	Views:createViewsTable,
+	Auth:createAuthTable,
 	All:createAllTables
 }
+
 module.exports = {create};

@@ -1,7 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const {Setup} = require('../setup/functions');
-// const {client} = require('../dbConnection');
+const {client} = require('../dbConnection');
+const {generateUsers} = require('../functions/user_generator');
+
+
+router.get('/generate/:counter',(req,res,next)=>{
+	console.log("generate users");
+	let counter = req.params.counter;
+	if(counter <= 0)
+		counter = 5;
+	let data = generateUsers(counter).then((newdata)=>{
+		res.send({message:'done',data:newdata});
+	})
+})
+router.get('/generate/',(req,res,next)=>{
+	console.log("generate users");
+	let counter = 50;
+	let data = generateUsers(counter).then((newdata)=>{
+		res.send({message:'done',data:newdata});
+	})
+})
 
 router.get('/users/clear', async (req, res, next) => {
 	console.log("clear users");

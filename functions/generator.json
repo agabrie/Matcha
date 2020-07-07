@@ -1,0 +1,39 @@
+{
+	"names" : [
+		[
+			"Johnathan",
+			"Ali",
+			"Peter",
+			"Samuel",
+			"Eric"
+		],
+		[
+			"Sarah",
+			"McKenzie",
+			"Jessica",
+			"Cassidy",
+			"Naomi"
+		]
+	],
+	"surnames" : [
+		"Daniels",
+		"Michaels",
+		"Hendricks",
+		"Wang",
+		"Smith",
+		"Williams",
+		"Jones",
+		"Johnson",
+		"Rodriguez",
+		"Parker"
+	],
+	"genders" : [
+		"Male",
+		"Female"
+	],
+	"sexual_preferences" : [
+		"Male",
+		"Female",
+		"Both"
+	]
+}

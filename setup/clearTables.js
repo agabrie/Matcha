@@ -1,5 +1,17 @@
 const {client} = require('../dbConnection');
 
+const clearAuthTable = async()=>{
+	const query = "DELETE FROM AUTH;"
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "auth table cleared successfully" };
+		})
+		.catch(err => {
+			return { error: err };
+		});
+	return result;
+};
+
 const clearUsersTable = async()=>{
 	const query = "DELETE FROM USERS;"
 	let result = await client.query(query)
@@ -11,6 +23,7 @@ const clearUsersTable = async()=>{
 		});
 	return result;
 };
+
 const clearProfilesTable = async()=>{
 	const query = "DELETE FROM PROFILES;"
 	let result = await client.query(query)
@@ -58,9 +71,10 @@ const clearInterestsTable = async()=>{
 const clearAllTables = async () =>{
 	let output = {};
 	// try{
-		output.interests = await clear.Interests();
 		output.views = await clear.Views();
 		output.images = await clear.Images();
+		output.interests = await clear.Interests();
+		output.auth = await clear.Auth();
 		output.profiles = await clear.Profiles();
 		output.users = await clear.Users();
 		return output;
@@ -70,11 +84,12 @@ const clearAllTables = async () =>{
 	// }
 };
 const clear = {
-	Users:clearUsersTable,
-	Profiles:clearProfilesTable,
-	Images:clearImagesTable,
 	Views:clearViewsTable,
+	Images:clearImagesTable,
 	Interests:clearInterestsTable,
+	Auth:clearAuthTable,
+	Profiles:clearProfilesTable,
+	Users:clearUsersTable,
 	All:clearAllTables
 }
 
