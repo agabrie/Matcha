@@ -2,11 +2,11 @@ const { Client } = require('pg');
 require('dotenv').config();
 
 
-let pghost = process.env.Host;
-let pgdb = process.env.Database;
-let pguser = process.env.User;
-let pgport = process.env.Port;
-let pgpassword = process.env.Password;
+let pghost = process.env.DBHost;
+let pgdb = process.env.DBDatabase;
+let pguser = process.env.DBUser;
+let pgport = process.env.DBPort;
+let pgpassword = process.env.DBPassword;
 let pgurl = `postgres://${pguser}:${pgpassword}@${pghost}:${pgport}/${pgdb}`;
 const client = new Client({
 	connectionString: pgurl,

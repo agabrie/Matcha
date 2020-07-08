@@ -5,12 +5,12 @@ const createAuthTable = async () => {
 	`CREATE TABLE IF NOT EXISTS
 	Auth
 	(
-			id SERIAL NOT NULL PRIMARY KEY,
-			verified BOOLEAN NOT NULL DEFAULT 'FALSE',
-			notifications BOOLEAN NOT NULL DEFAULT 'TRUE',
-			token VARCHAR (100) NOT NULL,
-			loggedIn BOOLEAN NOT NULL DEFAULT 'FALSE',
-			userId INT REFERENCES Users(id) UNIQUE
+		id SERIAL NOT NULL PRIMARY KEY,
+		verified BOOLEAN NOT NULL DEFAULT 'FALSE',
+		notifications BOOLEAN NOT NULL DEFAULT 'TRUE',
+		token VARCHAR (100) NOT NULL,
+		loggedIn BOOLEAN NOT NULL DEFAULT 'FALSE',
+		userId INT REFERENCES Users(id) UNIQUE
 	);`;
 	// console.log(User);
 	let result = await client.query(query)

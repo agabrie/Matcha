@@ -1,5 +1,7 @@
 const axios = require("axios");
 const { names, surnames, genders, sexual_preferences } = require("./generator.json")
+require('dotenv').config();
+const env = process.env;
 
 getItem = (arr) => {
 	var item = arr[getRandom(arr.length)];
@@ -77,7 +79,10 @@ postUsers = async (users) => {
 	var responses = [];
 	for (element in users) {
 		let user = users[element];
-		let userResult = await axios.post('http://localhost:4000/api/Users', user)
+		// console.log(element);
+		let url = `${env.url}api/Users`;
+		// console.log(url);
+		let userResult = await axios.post(url, user)
 			.then((result) => {
 				console.log(result.data);
 				if (!result.data || result.data.error) {
@@ -104,7 +109,9 @@ postProfiles = async (users) => {
 	var responses = [];
 	for (element in users) {
 		let user = users[element];
-		let userResult = await axios.post(`http://localhost:4000/api/profiles/${user.display_name}`, user.profile)
+		// console.log(element);
+		let url = `${env.url}api/profiles/${user.display_name}`;
+		let userResult = await axios.post(url, user.profile)
 
 			.then((result) => {
 				console.log(result.data);
@@ -148,11 +155,15 @@ const generateUsers = async (num) => {
 	}
 	let postedUsers = null;
 	let postedProfiles = null;
-
+	console.log("######### generating users #########");
+	// console.log(users);
+	console.log("######### posting users #########");
 	postedUsers = await postUsers(users);
+	console.log("######### posting profiles #########");
 	postedProfiles = await postProfiles(postedUsers.users);
-	
-	return { users: postedUsers.responses, profiles: postedProfiles.responses };
+	result = { users: postedUsers.responses, profiles: postedProfiles.responses}
+	// console.log(result);
+	return result;
 }
 
 module.exports = { generateUsers }

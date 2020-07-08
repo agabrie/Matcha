@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 
 const encode_password = (password)=>{
 	let hashPassword = bcrypt.hashSync(password, 12);
-	console.log({hash:hashPassword,length:hashPassword.length});
+	// console.log({hash:hashPassword,length:hashPassword.length});
 	return hashPassword;
 }
 
@@ -11,7 +11,7 @@ const compare_password = (password, hashPassword)=>{
 
 }
 const validate = (password,user)=>{
-	console.log("user => ",user);
+	// console.log("user => ",user);
 		if(!user){
 			return({error:true, message: "User does not exist!"});
 		}

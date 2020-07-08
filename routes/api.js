@@ -3,10 +3,11 @@ const router = express.Router();
 // const create = require('../setup/createTables');
 const { insertRecord } = require('../functions/InsertRecord');
 // const User = require('../models/User');
-const {Profiles} = require('../functions/Profile');
-const {Users} = require('../functions/User');
+const {Profiles} = require('../functions/Tables/Profile');
+const {Auth} = require('../functions/Tables/Auth');
+const {Users} = require('../functions/Tables/User');
 const {client} = require('../dbConnection');
-// const {sendMail} = require('../functions/sendMail');
+const {sendMail} = require('../functions/sendMail');
 /*get all user data with profiles*/
 router.get('/users/:login/all',async function(req,res,next){
 	console.log("fetch user data");
@@ -92,8 +93,11 @@ router.get('/users/:login',async function(req,res,next){
 ** requires {name, surname, email, display_name, password}
 */
 router.post('/users', async function (req, res, next) {
-	let result = await Users.insert.Single(req.body);
-	res.send(result);
+	// console.log("insert user => ",req.body.display_name);
+	let user = await Users.insert.Single(req.body);
+	// console.log("user id => ",user.id);
+	let auth = await Auth.insert.Single(user.display_name,req.body);
+	res.send({result:{user,auth}});
 });
 
 /*
@@ -161,14 +165,40 @@ router.post('/profiles/:login', async function (req, res, next) {
 	res.send(results);
 });
 
-// router.get('/mail/:address',async function(req,res,next){
-// 	console.log("sending mail to :",req.params.address);
-// 	let message = {
-// 		to:req.params.address,
-// 		subject:"Matcha Email",
-// 		text:"a mail for you"
-// 	}
-// 	let results = await sendMail(message);
-// 	res.send(results);
-// })
+router.get('/auth/', async function (req, res, next) {
+	console.log("auth get");
+	
+	let results = await Auth.get.All();
+	res.send(results);
+});
+router.get('/auth/:login', async function (req, res, next) {
+	console.log("auth get single");
+	
+	let results = await Auth.get.Single(req.params.login);
+	res.send(results);
+});
+router.put('/auth/:login', async function (req, res, next) {
+	console.log("auth update");
+	
+	let results = await Auth.update.Single(req.params.login,req.body);
+	res.send(results);
+});
+router.post('/auth/:login', async function (req, res, next) {
+	console.log("auth insert");
+	
+	let results = await Auth.insert.Single(req.params.login,req.body);
+	res.send(results);
+});
+
+router.get('/verifyEmail/:login/:token',async function(req,res,next){
+	console.log("sending mail to :",req.params);
+	
+	// let message = {
+	// 	to:req.params.address,
+	// 	subject:"Matcha Email",
+	// 	text:"a mail for you"
+	// }
+	// let results = await sendMail(message);
+	console.log(req.params);
+})
 module.exports = router;

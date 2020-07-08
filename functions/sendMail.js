@@ -1,42 +1,51 @@
-/*
+
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const sendMail = async (message) => {
 	const mail = process.env;
 	// let testAccount = await nodemailer.createTestAccount();
-	// console.log(mail);
+	// console.log(mail.MailService,mail.MailUser,mail.MailPass);
 	// create reusable transporter object using the default SMTP transport
-	
 	let transporter = nodemailer.createTransport({
-		host: mail.Mailhost,
-		port: mail.Mailport,
+		service:mail.MailService,
+		// host: mail.Mailhost,
+		// port: mail.Mailport,
 		auth: {
-			user: mail.Mailuser,
-			pass: mail.Mailpass
+			user: mail.MailUser,
+			pass: mail.MailPass
 		},
 		tls: {
-			rejectUnauthorized: true
+			rejectUnauthorized: false
 		}
 	});
 	
-	let MAIL_SERVER_URL = '127.0.0.0';
-let transporter = nodemailer.createTransport({
-    host: MAIL_SERVER_URL,
-    connectionTimeout: 60000
-});
+	/*let transporter = nodemailer.createTransport({
+		service:'gmail',
+		// host: mail.Mailhost,
+		// port: mail.Mailport,
+		auth: {
+			user: "maktcha.wethinkcode@gmail.com",
+			pass: "Maktcha123"
+		},
+		tls: {
+			rejectUnauthorized: false
+		}
+	});
+	*/
 	var mailOptions = {
-		from: mail.Mailfrom,
+		from: mail.MailFrom,
+		replyTo: mail.MailFrom,
 		to: message.to,
 		subject: message.subject,
-		text: formatEmail(message.text)
+		html: formatEmail(message.text)
 	};
-
+	// console.log("sendMail => ",mailOptions);
 	// mailOptions.text = message;
 	let result =
 		await transporter.sendMail(mailOptions);
 
-	, async function(error, info){
+	/*, async function(error, info){
 		if (error) {
 		  console.log(error);
 		  result = 
@@ -46,11 +55,12 @@ let transporter = nodemailer.createTransport({
 		  result = ({success:true,info:info.response})
 		}
 	  }
-	
-	console.log(result);
+	*/
+	// console.log(result);
 	return result;
 }
-*/
+
+/*
 const sendmail = require('sendmail')();
 const sendMail = async (message) => {
 sendmail({
@@ -63,17 +73,20 @@ sendmail({
     console.dir(reply);
 	});
 };
+*/
 const formatEmail = (message) => {
 	let format =
 		`<!DOCTYPE html>
 		<head>
-			<h1> Matcha </h1>
-		<head>
+			${message.header}
+		</head>
 		<body>
-			${message}
-			<button>OK</button>
+			${message.body}
 		</body>
-	<html>`;
+		<foot>
+			${message.foot}
+		</foot>
+	</html>`;
 	return format;
 }
 module.exports = { sendMail }

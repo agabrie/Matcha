@@ -1,8 +1,8 @@
-const {client} = require('../dbConnection');
-const {InsertRecord} = require('./InsertRecord');
-const {UpdateRecord} = require('./UpdateRecord');
+const {client} = require('../../dbConnection');
+const {InsertRecord} = require('../InsertRecord');
+const {UpdateRecord} = require('../UpdateRecord');
 
-const {Password} = require('./Password');
+const {Password} = require('../Password');
 
 const getAllUsersData = async ()=>{
 	const query = `SELECT * FROM USERS;`;
@@ -26,7 +26,7 @@ const getUserFromLogin = async (detail)=>{
 		query += `display_name = '${detail}' OR email = '${detail}';`;
 	else
 		query += `id = '${detail}'`;
-	console.log(query);
+	// console.log(query);
 	
 	let result = await client.query(query)
 		.then(result => {
@@ -45,14 +45,14 @@ const getUserFromLogin = async (detail)=>{
 const insertUser = async(data)=>{
 	const values = validateData(data);
 	const query = InsertRecord("Users",values,null);
-	console.log(query);
+	// console.log(query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
 		throw query.errors;
 	}
 	let results = await client.query(query.string, query.values)
 		.then(result => {
-			console.log(result.rows)
+			// console.log(result.rows)
 			return result.rows[0];
 		})
 		.catch(err => {
@@ -74,7 +74,7 @@ const updateUser = async (login,data)=>{
 		// console.log(query);
 		let results = await client.query(query.string, query.values)
 		.then(result => {
-			console.log(result.rows)
+			// console.log(result.rows)
 			return result.rows[0];
 		})
 		.catch(err => {
@@ -87,7 +87,7 @@ const updateUser = async (login,data)=>{
 }
 
 const validateData =(data)=>{
-	console.log(data);
+	// console.log(data);
 	try{
 		if(!(data.name && data.surname && data.email && data.display_name && data.password))
 			throw "some user fields incorrectly filled in or missing!";
@@ -101,7 +101,7 @@ const validateData =(data)=>{
 		return validData;
 	}
 	catch(err){
-		console.log(err);
+		// console.log(err);
 		return ({error:err});
 	}
 	// console.log("validated : ",validData);
@@ -109,7 +109,7 @@ const validateData =(data)=>{
 }
 
 const validateUpdateData = (data)=>{
-	console.log(data);
+	// console.log(data);
 	let validData = {}
 	if(data.name)
 		validData.name = data.name;

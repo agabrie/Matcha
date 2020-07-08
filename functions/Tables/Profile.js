@@ -1,6 +1,6 @@
-const {client} = require('../dbConnection');
-const {InsertRecord} = require('./InsertRecord');
-const {UpdateRecord} = require('./UpdateRecord');
+const {client} = require('../../dbConnection');
+const {InsertRecord} = require('../InsertRecord');
+const {UpdateRecord} = require('../UpdateRecord');
 const {Users} = require('./User');
 
 const getProfileFromLogin = async (login)=>{
@@ -89,7 +89,7 @@ const insertProfile = async(login,data)=>{
 
 const updateProfile = async(login,data)=>{
 	const values = validateData(data);
-	let user = await Users.get.Single(login)
+	let user = await Profile.get.Single(login)
 	.then((res)=>{
 		return res.result
 	})
