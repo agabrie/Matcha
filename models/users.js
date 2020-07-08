@@ -28,11 +28,11 @@ const UserSchema = new Schema({
     profile: Profile
 });
 
-UserSchema.methods.hashPassword = function(password) {
+UserSchema.methods.hashPassword = function (password) {
     return bcrypt.hashSync(password, 12);
 };
 
-UserSchema.methods.comparePassword = function(password, hashPassword) {
+UserSchema.methods.comparePassword = function (password, hashPassword) {
     return bcrypt.compareSync(password, hashPassword);
 };
 

@@ -1,14 +1,14 @@
-const {client} = require('../../dbConnection');
-const {InsertRecord} = require('../InsertRecord');
-const {UpdateRecord} = require('../UpdateRecord');
+const { client } = require('../../dbConnection');
+const { InsertRecord } = require('../InsertRecord');
+const { UpdateRecord } = require('../UpdateRecord');
 
-const {Password} = require('../Password');
+const { Password } = require('../Password');
 
-const getAllUsersData = async ()=>{
+const getAllUsersData = async () => {
 	const query = `SELECT * FROM USERS;`;
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows};
+			return { result: result.rows };
 			// console.log(result.rows)
 			// res.send(result.rows);
 		})
@@ -20,17 +20,17 @@ const getAllUsersData = async ()=>{
 	return result;
 }
 
-const getUserFromLogin = async (detail)=>{
+const getUserFromLogin = async (detail) => {
 	let query = `SELECT * FROM USERS WHERE `;
-	if(isNaN(detail))
+	if (isNaN(detail))
 		query += `display_name = '${detail}' OR email = '${detail}';`;
 	else
 		query += `id = '${detail}'`;
 	// console.log(query);
-	
+
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows[0]};
+			return { result: result.rows[0] };
 			// console.log(result.rows)
 			// res.send(result.rows);
 		})
@@ -42,9 +42,9 @@ const getUserFromLogin = async (detail)=>{
 	return result;
 }
 
-const insertUser = async(data)=>{
+const insertUser = async (data) => {
 	const values = validateData(data);
-	const query = InsertRecord("Users",values,null);
+	const query = InsertRecord("Users", values, null);
 	// console.log(query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
@@ -56,104 +56,104 @@ const insertUser = async(data)=>{
 			return result.rows[0];
 		})
 		.catch(err => {
-			console.log({ "sql error": err ,data});
-			return({error:err.detail});
+			console.log({ "sql error": err, data });
+			return ({ error: err.detail });
 		});
 	return results;
 };
 
-const updateUser = async (login,data)=>{
+const updateUser = async (login, data) => {
 	const values = validateUpdateData(data);
 	let user = await Users.get.Single(login)
-	.then((res)=>{
-		return res.result
-	})
-	.then(async (user)=>{
-		// console.log("update => ",user);
-		let query = await UpdateRecord("Users",values,{id:user.id});
-		// console.log(query);
-		let results = await client.query(query.string, query.values)
-		.then(result => {
-			// console.log(result.rows)
-			return result.rows[0];
+		.then((res) => {
+			return res.result
 		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return({error:err.detail});
-		});
-		return results;
-	})
+		.then(async (user) => {
+			// console.log("update => ",user);
+			let query = await UpdateRecord("Users", values, { id: user.id });
+			// console.log(query);
+			let results = await client.query(query.string, query.values)
+				.then(result => {
+					// console.log(result.rows)
+					return result.rows[0];
+				})
+				.catch(err => {
+					console.log({ "sql error": err });
+					return ({ error: err.detail });
+				});
+			return results;
+		})
 	return user;
 }
 
-const validateData =(data)=>{
+const validateData = (data) => {
 	// console.log(data);
-	try{
-		if(!(data.name && data.surname && data.email && data.display_name && data.password))
+	try {
+		if (!(data.name && data.surname && data.email && data.display_name && data.password))
 			throw "some user fields incorrectly filled in or missing!";
 		let validData = {
-			name:data.name,
-			surname:data.surname,
-			email:data.email,
-			display_name:data.display_name,
-			password:Password.encode_password(data.password)
+			name: data.name,
+			surname: data.surname,
+			email: data.email,
+			display_name: data.display_name,
+			password: Password.encode_password(data.password)
 		}
 		return validData;
 	}
-	catch(err){
+	catch (err) {
 		// console.log(err);
-		return ({error:err});
+		return ({ error: err });
 	}
 	// console.log("validated : ",validData);
 	// return validData;
 }
 
-const validateUpdateData = (data)=>{
+const validateUpdateData = (data) => {
 	// console.log(data);
 	let validData = {}
-	if(data.name)
+	if (data.name)
 		validData.name = data.name;
-	if(data.surname)
+	if (data.surname)
 		validData.surname = data.surname;
-	if(data.display_name)
+	if (data.display_name)
 		validData.display_name = data.display_name;
-	if(data.password)
+	if (data.password)
 		validData.password = Password.encode_password(data.password);
-	return(validData);
+	return (validData);
 }
 
-const validatePassword = async (login,password)=>{
+const validatePassword = async (login, password) => {
 	let result = await Users.get.Single(login)
-	.then((res)=>{console.log(results);return res.result})
-	.then((user)=>{
-		return Password.validate(password, user);
-	})
-	.catch((error)=>{
-		console.log(error)
-		return(error);
-	});
+		.then((res) => { console.log(results); return res.result })
+		.then((user) => {
+			return Password.validate(password, user);
+		})
+		.catch((error) => {
+			console.log(error)
+			return (error);
+		});
 	return result;
 };
 
 let get = {
-	Single:getUserFromLogin,
-	All:getAllUsersData
+	Single: getUserFromLogin,
+	All: getAllUsersData
 }
 
 let validate = {
-	Password:validatePassword
+	Password: validatePassword
 }
 
 let insert = {
-	Single:insertUser
+	Single: insertUser
 }
 
 let update = {
-	name:{},
-	surname:{},
-	display_name:{},
-	password:{},
-	Single:updateUser
+	name: {},
+	surname: {},
+	display_name: {},
+	password: {},
+	Single: updateUser
 }
 let Users = {
 	get,
@@ -162,4 +162,4 @@ let Users = {
 	update
 }
 
-module.exports = {Users}
+module.exports = { Users }

@@ -1,11 +1,11 @@
 
-const {create} = require('./createTables');
-const {drop} = require('./dropTables');
-const {clear} = require('./clearTables');
+const { create } = require('./createTables');
+const { drop } = require('./dropTables');
+const { clear } = require('./clearTables');
 // const {client} = require('../dbConnection');
 
 module.exports = {
-	Setup:{
+	Setup: {
 		create,
 		drop,
 		clear

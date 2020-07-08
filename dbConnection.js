@@ -11,18 +11,18 @@ let pgurl = `postgres://${pguser}:${pgpassword}@${pghost}:${pgport}/${pgdb}`;
 const client = new Client({
 	connectionString: pgurl,
 	// ssl: {
-	// 	rejectUnauthorized: false
+	// 	rejectUnauthorized: true
 	// }
 });
-const connect = ()=>{
+const connect = () => {
 	client.connect();
 }
-const end = ()=>{
+const end = () => {
 	client.end;
 }
 
 module.exports = {
-	client:client,
+	client: client,
 	// connect:connect,
 	// end:end
 }

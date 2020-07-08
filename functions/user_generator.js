@@ -165,7 +165,7 @@ const generateUsers = async (num) => {
 	postedUsers = await postUsers(users);
 	console.log("######### posting profiles #########");
 	postedProfiles = await postProfiles(postedUsers.users);
-	result = { users: postedUsers.responses, profiles: postedProfiles.responses}
+	result = { users: postedUsers.responses, profiles: postedProfiles.responses }
 	// console.log(result);
 	return result;
 }

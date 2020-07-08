@@ -1,5 +1,5 @@
 {
-	"names" : [
+	"names": [
 		[
 			"Johnathan",
 			"Ali",
@@ -26,7 +26,7 @@
 			"Emily"
 		]
 	],
-	"surnames" : [
+	"surnames": [
 		"Daniels",
 		"Michaels",
 		"Hendricks",
@@ -39,11 +39,11 @@
 		"Parker",
 		"Lee"
 	],
-	"genders" : [
+	"genders": [
 		"Male",
 		"Female"
 	],
-	"sexual_preferences" : [
+	"sexual_preferences": [
 		"Male",
 		"Female",
 		"Both"

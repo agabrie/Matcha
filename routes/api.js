@@ -3,13 +3,13 @@ const router = express.Router();
 // const create = require('../setup/createTables');
 const { insertRecord } = require('../functions/InsertRecord');
 // const User = require('../models/User');
-const {Profiles} = require('../functions/Tables/Profile');
-const {Auth} = require('../functions/Tables/Auth');
-const {Users} = require('../functions/Tables/User');
-const {client} = require('../dbConnection');
-const {sendMail} = require('../functions/sendMail');
+const { Profiles } = require('../functions/Tables/Profile');
+const { Auth } = require('../functions/Tables/Auth');
+const { Users } = require('../functions/Tables/User');
+const { client } = require('../dbConnection');
+const { sendMail } = require('../functions/sendMail');
 /*get all user data with profiles*/
-router.get('/users/:login/all',async function(req,res,next){
+router.get('/users/:login/all', async function (req, res, next) {
 	console.log("fetch user data");
 
 	// let data = await Users.get.Single(req.params.login);
@@ -24,14 +24,14 @@ router.get('/users/:login/all',async function(req,res,next){
 		})
 		.catch(err => {
 			console.log({ "sql error": err });
-			return({error:err.detail});
+			return ({ error: err.detail });
 		});
 	res.send(results);
 });
-router.get('/search/',async (req,res,next)=>{
+router.get('/search/', async (req, res, next) => {
 	console.log("search");
 	let age = 20;
-	let conditions = req.body.preferences; 
+	let conditions = req.body.preferences;
 	let numConditions = 0;
 	if (conditions)
 		numConditions = Object.keys(conditions).length;
@@ -51,7 +51,7 @@ router.get('/search/',async (req,res,next)=>{
 		}
 	}
 	// if(preferences != 0){
-		// filter_on_preferences = `WHERE PROFILES.GENDER = ${preferences}`;
+	// filter_on_preferences = `WHERE PROFILES.GENDER = ${preferences}`;
 	// }
 	let sort_by = '';
 	let query = `
@@ -60,27 +60,27 @@ router.get('/search/',async (req,res,next)=>{
 		WHERE EXTRACT(YEAR from AGE(date_of_birth)) BETWEEN ${conditions.age.min} AND ${conditions.age.max}
 		ORDER BY age_diff ASC, age ASC;
 		`;
-		// ${logic}
-		// ${sort_by}
-		console.log(query);
-		let results = await client.query(query)
+	// ${logic}
+	// ${sort_by}
+	console.log(query);
+	let results = await client.query(query)
 		.then(result => {
 			console.log(result.rows)
 			return result.rows;
 		})
 		.catch(err => {
 			console.log({ "sql error": err });
-			return({error:err.detail});
+			return ({ error: err.detail });
 		});
 	res.send(results);
 });
 /* get All users */
-router.get('/users',async function(req,res,next){
+router.get('/users', async function (req, res, next) {
 	let result = await Users.get.All();
 	res.send(result);
 });
 /* get user based on display_name, email or id */
-router.get('/users/:login',async function(req,res,next){
+router.get('/users/:login', async function (req, res, next) {
 	console.log("fetch users");
 
 	let data = await Users.get.Single(req.params.login);
@@ -94,12 +94,12 @@ router.get('/users/:login',async function(req,res,next){
 */
 router.post('/users', async function (req, res, next) {
 	// console.log("insert user => ",req.body.display_name);
-	let auth,user;
+	let auth, user;
 
 	user = await Users.insert.Single(req.body);
 	// console.log("user id => ",user.id);
-		auth = await Auth.insert.Single(user.display_name,req.body);
-	res.send({result:{user,auth}});
+	auth = await Auth.insert.Single(user.display_name, req.body);
+	res.send({ result: { user, auth } });
 });
 
 /*
@@ -107,7 +107,7 @@ router.post('/users', async function (req, res, next) {
 ** requires at least one of {name, surname, display_name, password}
 */
 router.put('/users/:login', async function (req, res, next) {
-	let result = await Users.update.Single(req.params.login,req.body);
+	let result = await Users.update.Single(req.params.login, req.body);
 	res.send(result);
 });
 
@@ -115,10 +115,10 @@ router.put('/users/:login', async function (req, res, next) {
 ** logs in the user based on display_name, email or id
 **	requires {password}
 */
-router.post('/login/:login', async function(req, res, next){
-	let results = await Users.validate.Password(req.params.login,req.body.password);
-	console.log("success",results);
-	if(results.user){
+router.post('/login/:login', async function (req, res, next) {
+	let results = await Users.validate.Password(req.params.login, req.body.password);
+	console.log("success", results);
+	if (results.user) {
 		results.user.password = null;
 		req.session.user = results.user;
 		req.session.isLoggedIn = true;
@@ -128,10 +128,10 @@ router.post('/login/:login', async function(req, res, next){
 /*
 ** returns the current user logged in
 */
-router.get('/login',async (req,res,next)=>{
-	if(req.session.isLoggedIn) {
+router.get('/login', async (req, res, next) => {
+	if (req.session.isLoggedIn) {
 		res.send(req.session.user);
-	}else {
+	} else {
 		res.send(false);
 	}
 })
@@ -144,57 +144,57 @@ router.get('/login',async (req,res,next)=>{
 // });
 router.get('/profiles/', async function (req, res, next) {
 	console.log("profiles get");
-	
+
 	let results = await Profiles.get.All();
 	res.send(results);
 });
 router.get('/profiles/:login', async function (req, res, next) {
 	console.log("profile get single");
-	
+
 	let results = await Profiles.get.Single(req.params.login);
 	res.send(results);
 });
 router.put('/profiles/:login', async function (req, res, next) {
 	console.log("profile update");
-	
-	let results = await Profiles.update.Single(req.params.login,req.body);
+
+	let results = await Profiles.update.Single(req.params.login, req.body);
 	res.send(results);
 });
 router.post('/profiles/:login', async function (req, res, next) {
 	console.log("profile insert");
-	
-	let results = await Profiles.insert.Single(req.params.login,req.body);
+
+	let results = await Profiles.insert.Single(req.params.login, req.body);
 	res.send(results);
 });
 
 router.get('/auth/', async function (req, res, next) {
 	console.log("auth get");
-	
+
 	let results = await Auth.get.All();
 	res.send(results);
 });
 router.get('/auth/:login', async function (req, res, next) {
 	console.log("auth get single");
-	
+
 	let results = await Auth.get.Single(req.params.login);
 	res.send(results);
 });
 router.put('/auth/:login', async function (req, res, next) {
 	console.log("auth update");
-	
-	let results = await Auth.update.Single(req.params.login,req.body);
+
+	let results = await Auth.update.Single(req.params.login, req.body);
 	res.send(results);
 });
 router.post('/auth/:login', async function (req, res, next) {
 	console.log("auth insert");
-	
-	let results = await Auth.insert.Single(req.params.login,req.body);
+
+	let results = await Auth.insert.Single(req.params.login, req.body);
 	res.send(results);
 });
 
-router.get('/verifyEmail/:login/:token',async function(req,res,next){
-	console.log("sending mail to :",req.params);
-	
+router.get('/verifyEmail/:login/:token', async function (req, res, next) {
+	console.log("sending mail to :", req.params);
+
 	// let message = {
 	// 	to:req.params.address,
 	// 	subject:"Matcha Email",

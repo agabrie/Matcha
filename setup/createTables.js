@@ -1,8 +1,8 @@
-const {client} = require('../dbConnection');
+const { client } = require('../dbConnection');
 const createAuthTable = async () => {
 	// const query = createTable(User);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Auth
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
@@ -29,7 +29,7 @@ const createAuthTable = async () => {
 const createUsersTable = async () => {
 	// const query = createTable(User);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Users
 	(
 			id SERIAL NOT NULL PRIMARY KEY,
@@ -57,7 +57,7 @@ const createUsersTable = async () => {
 const createProfilesTable = async () => {
 	// const query = createTable(Profile);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Profiles
 	(
         id SERIAL NOT NULL PRIMARY KEY,
@@ -86,7 +86,7 @@ const createProfilesTable = async () => {
 const createImagesTable = async () => {
 	// const query = createTable(Profile);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Images
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
@@ -113,7 +113,7 @@ const createImagesTable = async () => {
 const createViewsTable = async () => {
 	// const query = createTable(Profile);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Views
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
@@ -139,7 +139,7 @@ const createViewsTable = async () => {
 const createInterestsTable = async () => {
 	// const query = createTable(Profile);
 	const query =
-	`CREATE TABLE IF NOT EXISTS
+		`CREATE TABLE IF NOT EXISTS
 	Interests
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
@@ -162,16 +162,16 @@ const createInterestsTable = async () => {
 	return result;
 };
 
-const createAllTables = async () =>{
+const createAllTables = async () => {
 	let output = {};
 	// try{
-		output.users = await create.Users();
-		output.profiles = await create.Profiles();
-		output.auth = await create.Auth();
-		output.interests = await create.Interests();
-		output.images = await create.Images();
-		output.views = await create.Views();
-		return output;
+	output.users = await create.Users();
+	output.profiles = await create.Profiles();
+	output.auth = await create.Auth();
+	output.interests = await create.Interests();
+	output.images = await create.Images();
+	output.views = await create.Views();
+	return output;
 	// }
 	// catch{
 
@@ -179,13 +179,13 @@ const createAllTables = async () =>{
 };
 
 const create = {
-	Users:createUsersTable,
-	Profiles:createProfilesTable,
-	Images:createImagesTable,
-	Interests:createInterestsTable,
-	Views:createViewsTable,
-	Auth:createAuthTable,
-	All:createAllTables
+	Users: createUsersTable,
+	Profiles: createProfilesTable,
+	Images: createImagesTable,
+	Interests: createInterestsTable,
+	Views: createViewsTable,
+	Auth: createAuthTable,
+	All: createAllTables
 }
 
-module.exports = {create};
+module.exports = { create };

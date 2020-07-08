@@ -1,26 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const {Setup} = require('../setup/functions');
-const {client} = require('../dbConnection');
-const {generateUsers} = require('../functions/user_generator');
+const { Setup } = require('../setup/functions');
+const { client } = require('../dbConnection');
+const { generateUsers } = require('../functions/user_generator');
 
 
-router.get('/generate/:counter',(req,res,next)=>{
+router.get('/generate/:counter', (req, res, next) => {
 	console.log("generate users");
 	let counter = req.params.counter;
-	if(counter <= 0)
+	if (counter <= 0)
 		counter = 5;
-	let data = generateUsers(counter).then((newdata)=>{
-		console.log({message:'done',data:newdata});
-		res.send({message:'done',data:newdata});
+	let data = generateUsers(counter).then((newdata) => {
+		console.log({ message: 'done', data: newdata });
+		res.send({ message: 'done', data: newdata });
 	})
 })
-router.get('/generate/',(req,res,next)=>{
+router.get('/generate/', (req, res, next) => {
 	console.log("generate users");
 	let counter = 50;
-	let data = generateUsers(counter).then((newdata)=>{
-		console.log({message:'done',data:newdata});
-		res.send({message:'done',data:newdata});
+	let data = generateUsers(counter).then((newdata) => {
+		console.log({ message: 'done', data: newdata });
+		res.send({ message: 'done', data: newdata });
 	})
 })
 
@@ -55,15 +55,15 @@ router.get('/all', async (req, res, next) => {
 router.get('/all/drop', async (req, res, next) => {
 	console.log("drop all tables");
 	let data = await Setup.drop.All();
-	console.log("drop",data);
-	res.send({"dropped:":data});
+	console.log("drop", data);
+	res.send({ "dropped:": data });
 });
 
 router.get('/all/clear', async (req, res, next) => {
 	console.log("clear all tables");
 	let data = await Setup.clear.All();
-	console.log("drop",data);
-	res.send({"cleared:":data});
+	console.log("drop", data);
+	res.send({ "cleared:": data });
 });
 
 module.exports = router;

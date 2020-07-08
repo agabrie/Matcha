@@ -34,7 +34,7 @@ const InsertRecord = (tableName, fields, conditions) => {
 		}
 	}
 	let query = `INSERT INTO ${tableName} (${columns}) VALUES (${vals}) ${logic} RETURNING *;`;
-	let data = objToArray({...fields,...conditions});
+	let data = objToArray({ ...fields, ...conditions });
 	if (data.error) {
 		return { string: query, values: fields, errors: data.error };
 	}
