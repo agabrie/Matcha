@@ -171,4 +171,9 @@ router.post('/profiles/:login', async function (req, res, next) {
 // 	let results = await sendMail(message);
 // 	res.send(results);
 // })
+
+router.get('/', (req, res) => {
+	res.send('server running');
+})
+
 module.exports = router;
