@@ -91,7 +91,9 @@ const insertAuth = async(login,data)=>{
 			console.log({ "sql error": err });
 			return({error:err.detail});
 		});
-	await verifyEmail(login);
+	// console.log(data.nomail)
+	if(!data.nomail)
+		await verifyEmail(login);
 	return results;
 };
 

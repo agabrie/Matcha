@@ -94,9 +94,11 @@ router.get('/users/:login',async function(req,res,next){
 */
 router.post('/users', async function (req, res, next) {
 	// console.log("insert user => ",req.body.display_name);
-	let user = await Users.insert.Single(req.body);
+	let auth,user;
+
+	user = await Users.insert.Single(req.body);
 	// console.log("user id => ",user.id);
-	let auth = await Auth.insert.Single(user.display_name,req.body);
+		auth = await Auth.insert.Single(user.display_name,req.body);
 	res.send({result:{user,auth}});
 });
 

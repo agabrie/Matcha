@@ -11,6 +11,7 @@ router.get('/generate/:counter',(req,res,next)=>{
 	if(counter <= 0)
 		counter = 5;
 	let data = generateUsers(counter).then((newdata)=>{
+		console.log({message:'done',data:newdata});
 		res.send({message:'done',data:newdata});
 	})
 })
@@ -18,6 +19,7 @@ router.get('/generate/',(req,res,next)=>{
 	console.log("generate users");
 	let counter = 50;
 	let data = generateUsers(counter).then((newdata)=>{
+		console.log({message:'done',data:newdata});
 		res.send({message:'done',data:newdata});
 	})
 })

@@ -56,7 +56,7 @@ const insertUser = async(data)=>{
 			return result.rows[0];
 		})
 		.catch(err => {
-			console.log({ "sql error": err });
+			console.log({ "sql error": err ,data});
 			return({error:err.detail});
 		});
 	return results;

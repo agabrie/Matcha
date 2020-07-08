@@ -1,15 +1,15 @@
-const {client} = require('../../dbConnection');
-const {InsertRecord} = require('../InsertRecord');
-const {UpdateRecord} = require('../UpdateRecord');
-const {Users} = require('./User');
+const { client } = require('../../dbConnection');
+const { InsertRecord } = require('../InsertRecord');
+const { UpdateRecord } = require('../UpdateRecord');
+const { Users } = require('./User');
 
-const getProfileFromLogin = async (login)=>{
+const getProfileFromLogin = async (login) => {
 	let user = await Users.get.Single(login)
-	.then((res)=>{
-		return res.result
-	})
+		.then((res) => {
+			return res.result
+		})
 	const query =
-	`SELECT
+		`SELECT
 		Users.display_name,
 		Users.email,
 		Profiles.*
@@ -19,7 +19,7 @@ const getProfileFromLogin = async (login)=>{
 	`;
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows[0]};
+			return { result: result.rows[0] };
 			// console.log(result.rows)
 			// res.send(result.rows);
 		})
@@ -31,9 +31,9 @@ const getProfileFromLogin = async (login)=>{
 	return result;
 };
 
-const getAllProfilesData = async ()=>{
-	const query = 
-	`SELECT
+const getAllProfilesData = async () => {
+	const query =
+		`SELECT
 		Users.display_name,
 		Users.email,
 		Profiles.*
@@ -42,7 +42,7 @@ const getAllProfilesData = async ()=>{
 	`;
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows};
+			return { result: result.rows };
 			// console.log(result.rows)
 			// res.send(result.rows);
 		})
@@ -54,68 +54,68 @@ const getAllProfilesData = async ()=>{
 	return result;
 }
 
-const insertProfile = async(login,data)=>{
+const insertProfile = async (login, data) => {
 	let user = await Users.get.Single(login)
-	.then((res)=>{
-		if(res.result.id)
-			return res.result
-		else
-			throw {error:"no id"}
-	})
-	.catch((err)=>{return {error:err};})
-	if(user.error)
-		return {error:user.error};
+		.then((res) => {
+			if (res.result.id)
+				return res.result
+			else
+				throw { error: "no id" }
+		})
+		.catch((err) => { return { error: err }; })
+	if (user.error)
+		return { error: user.error };
 	const values = validateData(data);
-	console.log("values => ",values)
-	const query = InsertRecord("Profiles",{...values,...{userId:user.id}},null);
-	console.log(query);
+	// console.log("values => ",values)
+	const query = InsertRecord("Profiles", { ...values, ...{ userId: user.id } }, null);
+	// console.log(query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
 		throw query.errors;
 	}
 	let results = await client.query(query.string, query.values)
 		.then(async result => {
-			console.log(result.rows)
+			// console.log(result.rows)
 			// return result.rows[0];
 			let results = await Profiles.get.Single(login);
 			return results;
 		})
 		.catch(err => {
 			console.log({ "sql error": err });
-			return({error:err.detail});
+			return ({ error: err.detail });
 		});
 	return results;
 };
 
-const updateProfile = async(login,data)=>{
+const updateProfile = async (login, data) => {
 	const values = validateData(data);
 	let user = await Profile.get.Single(login)
-	.then((res)=>{
-		return res.result
-	})
-	.then(async (user)=>{
-		// console.log("update => ",user);
-		let query = await UpdateRecord("Profiles",values,{id:user.id});
-		// console.log(query);
-		let results = await client.query(query.string, query.values)
-		.then(async result => {
-			console.log(result.rows)
-			// return result.rows[0];
-			let results = await Profiles.get.Single(login);
+		.then((res) => {
+			return res.result
+		})
+		.then(async (user) => {
+			// console.log("update => ",user);
+			let query = await UpdateRecord("Profiles", values, { id: user.id });
+			// console.log(query);
+			let results = await client.query(query.string, query.values)
+				.then(async result => {
+					console.log(result.rows)
+					// return result.rows[0];
+					let results = await Profiles.get.Single(login);
+					return results;
+				})
+				.catch(err => {
+					console.log({ "sql error": err });
+					return ({ error: err.detail });
+				});
 			return results;
 		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return({error:err.detail});
-		});
-		return results;
-	})
 	return user;
 }
-const validateData = (data)=>{
-	console.log(data);
+const validateData = (data) => {
+	// console.log(data);
 	let valid = {}
-	if(data.gender){
+	if (data.gender) {
 		/*
 		if(data.gender == "Male")
 			valid.gender = 1;
@@ -124,7 +124,7 @@ const validateData = (data)=>{
 		*/
 		valid.gender = data.gender;
 	}
-	if(data.sexual_preference){
+	if (data.sexual_preference) {
 		/*
 		if(data.sexual_preference == "Both")
 			valid.sexual_preference = 0;
@@ -136,19 +136,19 @@ const validateData = (data)=>{
 		*/
 		valid.sexual_preference = data.sexual_preference;
 	}
-	if(data.biography)
+	if (data.biography)
 		valid.biography = data.biography;
-	if(data.location)
-		valid.location=data.location;
-	if(data.date_of_birth)
-		valid.date_of_birth= data.date_of_birth;
-	if(data.userId)
+	if (data.location)
+		valid.location = data.location;
+	if (data.date_of_birth)
+		valid.date_of_birth = data.date_of_birth;
+	if (data.userId)
 		valid.userId = data.userId;
 	return valid;
 }
 let get = {
-	Single:getProfileFromLogin,
-	All:getAllProfilesData
+	Single: getProfileFromLogin,
+	All: getAllProfilesData
 }
 
 let validate = {
@@ -156,7 +156,7 @@ let validate = {
 }
 
 let insert = {
-	Single:insertProfile
+	Single: insertProfile
 }
 
 let update = {
@@ -164,7 +164,7 @@ let update = {
 	// surname:{},
 	// display_name:{},
 	// password:{},
-	Single:updateProfile
+	Single: updateProfile
 }
 let Profiles = {
 	get,
@@ -173,4 +173,4 @@ let Profiles = {
 	update
 }
 
-module.exports = {Profiles}
+module.exports = { Profiles }

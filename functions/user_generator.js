@@ -80,11 +80,11 @@ postUsers = async (users) => {
 	for (element in users) {
 		let user = users[element];
 		// console.log(element);
-		let url = `${env.url}api/Users`;
+		let url = `${env.url}/api/Users`;
 		// console.log(url);
 		let userResult = await axios.post(url, user)
 			.then((result) => {
-				console.log(result.data);
+				// console.log(result.data);
 				if (!result.data || result.data.error) {
 					throw ({ error: result.data.error });
 				}
@@ -97,6 +97,7 @@ postUsers = async (users) => {
 		if (userResult.userdata) {
 			responses.push(userResult.userdata);
 			user.success = true;
+			console.log(user.display_name)
 		}
 		else {
 			user.success = false;
@@ -110,11 +111,11 @@ postProfiles = async (users) => {
 	for (element in users) {
 		let user = users[element];
 		// console.log(element);
-		let url = `${env.url}api/profiles/${user.display_name}`;
+		let url = `${env.url}/api/profiles/${user.display_name}`;
 		let userResult = await axios.post(url, user.profile)
 
 			.then((result) => {
-				console.log(result.data);
+				// console.log(result.data);
 				if (!result.data || result.data.error) {
 					throw ({ error: result.data.error });
 				}
@@ -127,6 +128,7 @@ postProfiles = async (users) => {
 		if (userResult.userdata) {
 			responses.push(userResult.userdata);
 			user.success = true;
+			console.log(user.display_name)
 		}
 		else {
 			user.success = false;
@@ -136,7 +138,7 @@ postProfiles = async (users) => {
 }
 const generateUsers = async (num) => {
 	var users = []
-	console.log("generating users...");
+	console.log("######### generating users #########");
 	for (var i = 0; i < num; i++) {
 		let user = {};
 		let gender = getRandom(2);
@@ -151,11 +153,13 @@ const generateUsers = async (num) => {
 			date_of_birth: generateAge()
 		}
 		user.profile.biography = `I like ${user.profile.sexual_preference}s`
+		user.nomail = true;
 		users.push(user)
+		console.log(user.display_name)
 	}
 	let postedUsers = null;
 	let postedProfiles = null;
-	console.log("######### generating users #########");
+	// console.log("######### generating users #########");
 	// console.log(users);
 	console.log("######### posting users #########");
 	postedUsers = await postUsers(users);
