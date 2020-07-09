@@ -98,7 +98,9 @@ const insertAuth = async (login, data) => {
 };
 
 const updateAuth = async (login, data) => {
+	console.log(login, data);
 	const values = validateData(data);
+	console.log(values);
 	let user = await Auth.get.Single(login)
 		.then((res) => {
 			return res.result
@@ -124,10 +126,10 @@ const updateAuth = async (login, data) => {
 }
 const verifyEmail = async (loginDetails) => {
 	const frontend = {
-		// host:process.env.ClientHost,
-		// port:process.env.ClientPort
-		host: process.env.host,
-		port: process.env.port
+		host:process.env.ClientHost,
+		port:process.env.ClientPort
+		// host: process.env.host,
+		// port: process.env.port
 	}
 	// console.log(frontend);
 	let user = await Auth.get.Single(loginDetails)
@@ -135,7 +137,7 @@ const verifyEmail = async (loginDetails) => {
 			return res.result
 		})
 	// console.log(user);
-	let url = `http://${frontend.host}:${frontend.port}/api/verifyEmail/${user.email}/${encodeURIComponent(user.token)}`
+	let url = `http://${frontend.host}:${frontend.port}/api/verify?mail=${user.email}&token=${encodeURIComponent(user.token)}`
 	let message = {
 		to: user.email,
 		subject: "Matcha Verification",
@@ -163,8 +165,11 @@ const validateData = (data) => {
 		valid.loggedin = data.loggedin;
 	if (data.id)
 		valid.userId = data.id;
-	valid.token = Password.encode_password(data.display_name);
-	// console.log("valid => ",valid);
+		console.log("valid => ",valid);
+	
+	if (data.display_name)	{
+		valid.token = Password.encode_password(data.display_name);
+	}
 	return valid;
 }
 

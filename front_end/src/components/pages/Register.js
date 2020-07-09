@@ -24,7 +24,7 @@ class Register extends Component{
     }
     submitHandler(e) {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/Users',this.state).then(res => {
+        axios.post('http://localhost:8001/api/Users',this.state).then(res => {
             if(res.data.errors) {
                 return this.setState(res.data);
             }

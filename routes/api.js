@@ -8,6 +8,7 @@ const { Auth } = require('../functions/Tables/Auth');
 const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
+const {Views} = require('../functions/Tables/Views')
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -108,7 +109,7 @@ router.get('/users/:login', async function (req, res, next) {
 router.post('/users', async function (req, res, next) {
 	// console.log("insert user => ",req.body.display_name);
 	let auth, user;
-
+	console.log("hello");
 	user = await Users.insert.Single(req.body);
 	// console.log("user id => ",user.id);
 	auth = await Auth.insert.Single(user.display_name, req.body);
@@ -128,14 +129,14 @@ router.put('/users/:login', async function (req, res, next) {
 ** logs in the user based on display_name, email or id
 **	requires {password}
 */
-router.post('/login/:login', async function (req, res, next) {
-	let results = await Users.validate.Password(req.params.login, req.body.password);
-	console.log("success", results);
+router.post('/login', async function (req, res, next) {
+	// console.log('result');
+	// console.log(req.body);
+	let results = await Users.validate.Password(req.body.display_name, req.body.password);
 	if (results.user) {
 		results.user.password = null;
-		req.session.user = results.user;
-		req.session.isLoggedIn = true;
 	}
+	console.log("success", results);
 	res.send(results);
 });
 
@@ -214,16 +215,26 @@ router.post('/auth/:login', async function (req, res, next) {
 });
 
 /* test endpoint for sending user emails */
-router.get('/verifyEmail/:login/:token', async function (req, res, next) {
-	console.log("sending mail to :", req.params);
-
+router.post('/verify', async function (req, res, next) {
+	// console.log("sending mail to :", req.body);
+	let result = await Auth.get.Single(req.body.mail).then ((res) => {
+		return res.result;
+	}) 
+	// console.log(result.token);
+	// console.log(req.body.token);
+	if (result.token === req.body.token){
+		result = await Auth.update.Single(result.display_name, {verified: true}).then ((res) => {
+		return res.result;
+		});
+	}
+	res.send(result)
 	// let message = {
 	// 	to:req.params.address,
 	// 	subject:"Matcha Email",
 	// 	text:"a mail for you"
 	// }
 	// let results = await sendMail(message);
-	console.log(req.params);
+	// console.log(req.params);
 })
 
 /*in progress : adds image to Images table*/
@@ -310,5 +321,13 @@ router.post('/uploadImage/:display_name',async function(req, res, next){
         res.status(500).send(err);
     }
 })
+
+router.post('/views/:login', async function (req, res, next) {
+	console.log("Views insert");
+
+	let results = await Views.insert.Single(req.params.login, req.body);
+	res.send(results);
+});
+
 
 module.exports = router;
