@@ -108,7 +108,7 @@ router.get('/users/:login', async function (req, res, next) {
 router.post('/users', async function (req, res, next) {
 	// console.log("insert user => ",req.body.display_name);
 	let auth, user;
-
+	console.log("hello");
 	user = await Users.insert.Single(req.body);
 	// console.log("user id => ",user.id);
 	auth = await Auth.insert.Single(user.display_name, req.body);
@@ -128,14 +128,14 @@ router.put('/users/:login', async function (req, res, next) {
 ** logs in the user based on display_name, email or id
 **	requires {password}
 */
-router.post('/login/:login', async function (req, res, next) {
-	let results = await Users.validate.Password(req.params.login, req.body.password);
-	console.log("success", results);
+router.post('/login', async function (req, res, next) {
+	// console.log('result');
+	// console.log(req.body);
+	let results = await Users.validate.Password(req.body.display_name, req.body.password);
 	if (results.user) {
 		results.user.password = null;
-		req.session.user = results.user;
-		req.session.isLoggedIn = true;
 	}
+	console.log("success", results);
 	res.send(results);
 });
 

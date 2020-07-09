@@ -39,6 +39,7 @@ const getUserFromLogin = async (detail) => {
 			// console.log({"sql error":err});
 			// res.send({error:err})
 		});
+		console.log(result);
 	return result;
 }
 
@@ -124,14 +125,16 @@ const validateUpdateData = (data) => {
 
 const validatePassword = async (login, password) => {
 	let result = await Users.get.Single(login)
-		.then((res) => { console.log(results); return res.result })
+		.then((res) => { console.log(res); return res.result })
 		.then((user) => {
+			console.log(user);
 			return Password.validate(password, user);
 		})
 		.catch((error) => {
 			console.log(error)
 			return (error);
 		});
+		console.log(result);
 	return result;
 };
 
