@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const sendMail = async (message) => {
 	const mail = process.env;
+	// console.log(mail);
 	let transporter = nodemailer.createTransport({
 		service: mail.MailService,
 		auth: {
@@ -11,7 +12,7 @@ const sendMail = async (message) => {
 			pass: mail.MailPass
 		},
 		tls: {
-			rejectUnauthorized: true
+			rejectUnauthorized: false
 		}
 	});
 	var mailOptions = {
@@ -23,7 +24,7 @@ const sendMail = async (message) => {
 	};
 	let result =
 		await transporter.sendMail(mailOptions);
-
+	// console.log(result);
 	return result;
 }
 

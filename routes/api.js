@@ -8,12 +8,11 @@ const { Auth } = require('../functions/Tables/Auth');
 const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
-/*get all user data with profiles*/
+
+/* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
 	console.log("fetch user data");
 
-	// let data = await Users.get.Single(req.params.login);
-	// console.log(data);
 	let query = `SELECT * FROM USERS
 		INNER JOIN PROFILES ON USERS.ID = USERID
 		`;
@@ -28,7 +27,22 @@ router.get('/users/:login/all', async function (req, res, next) {
 		});
 	res.send(results);
 });
-/* */
+
+/*
+** do a filter and sort based on the following parameters
+**	preferences:{
+**		sexual_preference,
+**		age:{
+**			current,
+**			min,
+**			max
+**		},
+**		gender:Female
+**	},
+**	sort:{
+**		age_diff:1,
+**	}
+*/
 router.get('/search/', async (req, res, next) => {
 	console.log("search");
 	let age = 20;
@@ -82,7 +96,6 @@ router.get('/users', async function (req, res, next) {
 /* get user based on display_name, email or id */
 router.get('/users/:login', async function (req, res, next) {
 	console.log("fetch users");
-
 	let data = await Users.get.Single(req.params.login);
 	console.log(data);
 	res.send(data);
@@ -125,6 +138,7 @@ router.post('/login/:login', async function (req, res, next) {
 	}
 	res.send(results);
 });
+
 /*
 ** returns the current user logged in
 */
@@ -136,55 +150,62 @@ router.get('/login', async (req, res, next) => {
 	}
 })
 
-// router.post('/test/',async function(req,res,body){
-// 	console.log("test");
-// 	let result = await Users.insertUser(client,req.body);
-// 	res.send(result);
-// 	// Users.generateInsertRecordData(req.body);
-// });
+/* gets all profiles */
 router.get('/profiles/', async function (req, res, next) {
 	console.log("profiles get");
 
 	let results = await Profiles.get.All();
 	res.send(results);
 });
+
+/* gets a single profile based on display_name, id,email */
 router.get('/profiles/:login', async function (req, res, next) {
 	console.log("profile get single");
 
 	let results = await Profiles.get.Single(req.params.login);
 	res.send(results);
 });
+
+/*updates a single profile*/
 router.put('/profiles/:login', async function (req, res, next) {
 	console.log("profile update");
 
 	let results = await Profiles.update.Single(req.params.login, req.body);
 	res.send(results);
 });
+
+/* inserts a single profile linked to a user based on display_name, id or email*/
 router.post('/profiles/:login', async function (req, res, next) {
 	console.log("profile insert");
 
 	let results = await Profiles.insert.Single(req.params.login, req.body);
 	res.send(results);
 });
-
+/* gets all auth info with their usernames */
 router.get('/auth/', async function (req, res, next) {
 	console.log("auth get");
 
 	let results = await Auth.get.All();
 	res.send(results);
 });
+
+/* gets a single user's auth info */
 router.get('/auth/:login', async function (req, res, next) {
 	console.log("auth get single");
 
 	let results = await Auth.get.Single(req.params.login);
 	res.send(results);
 });
+
+/* updates a users auth info */
 router.put('/auth/:login', async function (req, res, next) {
 	console.log("auth update");
 
 	let results = await Auth.update.Single(req.params.login, req.body);
 	res.send(results);
 });
+
+/* inserts a new auth record linked to a user based on display_name, id or email */
 router.post('/auth/:login', async function (req, res, next) {
 	console.log("auth insert");
 
@@ -192,6 +213,7 @@ router.post('/auth/:login', async function (req, res, next) {
 	res.send(results);
 });
 
+/* test endpoint for sending user emails */
 router.get('/verifyEmail/:login/:token', async function (req, res, next) {
 	console.log("sending mail to :", req.params);
 
@@ -204,6 +226,7 @@ router.get('/verifyEmail/:login/:token', async function (req, res, next) {
 	console.log(req.params);
 })
 
+/*in progress : adds image to Images table*/
 addImage=async (file)=>{
 
 	let buf = Buffer.from(file.data,'binary')
@@ -212,6 +235,7 @@ addImage=async (file)=>{
 	return image;
 }
 
+/* in progress receives an image to uploaded */
 router.post('/uploadImage/:display_name',async function(req, res, next){
 	console.log("pic upload")
 	console.log(req.files)

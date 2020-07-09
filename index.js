@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
-
+require('dotenv').config()
 const { client } = require('./dbConnection');
 client.connect();
 
@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: ["http://localhost:3000"],
+        origin: [process.env.ClientPort],
         methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
         credentials: true
     })
