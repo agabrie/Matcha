@@ -8,6 +8,7 @@ const { Auth } = require('../functions/Tables/Auth');
 const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
+const {Views} = require('../functions/Tables/Views')
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -303,5 +304,13 @@ router.post('/uploadImage/:display_name',async function(req, res, next){
         res.status(500).send(err);
     }
 })
+
+router.post('/views/:login', async function (req, res, next) {
+	console.log("Views insert");
+
+	let results = await Views.insert.Single(req.params.login, req.body);
+	res.send(results);
+});
+
 
 module.exports = router;

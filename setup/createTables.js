@@ -118,10 +118,10 @@ const createViewsTable = async () => {
 	Views
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
+		userId INT REFERENCES Users(id),
 		viewed INT references users(id),
 		liked BOOLEAN NOT NULL DEFAULT 'FALSE',
-		userId INT REFERENCES Users(id),
-        profileId INT REFERENCES Profiles(id)
+        likedback BOOLEAN NOT NULL DEFAULT 'FALSE'
 	);`;
 	// console.log(User);
 	let result = await client.query(query)

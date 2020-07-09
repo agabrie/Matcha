@@ -5,13 +5,13 @@ const sendMail = async (message) => {
     const mail = process.env;
     // console.log(mail);
     let transporter = nodemailer.createTransport({
-        service: mail.MailService,
+        service: "gmail",
         auth: {
             user: mail.MailUser,
             pass: mail.MailPass
         },
         tls: {
-            rejectUnauthorized: false
+            rejectUnauthorized: true
         }
     });
     var mailOptions = {
