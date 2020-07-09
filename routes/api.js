@@ -77,6 +77,7 @@ router.get('/search/',async (req,res,next)=>{
 router.get('/users',async function(req,res,next){
 	let result = await Users.get.All();
 	res.send(result);
+	console.log("works");
 });
 /* get user based on display_name, email or id */
 router.get('/users/:login',async function(req,res,next){

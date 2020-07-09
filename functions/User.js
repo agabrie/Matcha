@@ -6,17 +6,18 @@ const {Password} = require('./Password');
 
 const getAllUsersData = async ()=>{
 	const query = `SELECT * FROM USERS;`;
+	console.log("begining");
 	let result = await client.query(query)
-		.then(result => {
-			return { result: result.rows};
-			// console.log(result.rows)
-			// res.send(result.rows);
-		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
-		});
+	.then(result => {
+		return { result: result.rows};
+		// console.log(result.rows)
+		// res.send(result.rows);
+	})
+	.catch(err => {
+		return { error: err };
+		// console.log({"sql error":err});
+		// res.send({error:err})
+	});
 	return result;
 }
 
