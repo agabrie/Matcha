@@ -77,9 +77,11 @@ import axios from 'axios';
   */
  class ImageUpload extends Component{
 	 constructor(props){
+		 super(props);
 		 this.state = {
+			 rank:0,
 			 file:null,
-			 visibility:true,
+			 visibility:false,
 			 name:"",
 			 description:"",
 			 url:null,
@@ -107,19 +109,34 @@ import axios from 'axios';
 		onChangeHandler = event =>{
 			this.resetState();
 			var file = event.target.files[0]
-			if(file != null){
+			let reader = new FileReader()
+        	reader.readAsDataURL(file)
+        	reader.onload = () => {
 				this.setState({
-					file:file,
-					name:file.name
+					file: reader.result,
+					imageFile:file,
+					visibility:true
 				})
-			}
+        	};
+			// if(file != null){
+			// 	this.setState({
+			// 		file:file,
+			// 		name:file.name,
+			// 		visibility:true
+			// 	})
+			// }
 		};
-		submit=()=>{
-			let visibility = this.handleVisibility;
-			this.resetState();
+		submit = async()=>{
+			// let visibility = this.handleVisibility;
+			// this.resetState();
 			var file = this.state.file;
 			var name = this.state.name;
+			var rank = this.state.rank;
 			console.log({name,file});
+			let url=`http://localhost:8000/api/uploadImage/${this.state.name}`
+			console.log(url)
+			let result = await axios.post(url,{image:file,rank:rank});
+			console.log(result)
 		};
 		render(){
 			return(
@@ -131,6 +148,17 @@ import axios from 'axios';
 							type="file"
 							onChange={this.onChangeHandler}
 						/>
+						
+						
+						{this.state.visibility &&
+						// console.log(this.state.file) &&
+						<div>
+							<img src={this.state.file} width="600px" height="400px" alt=""/>
+							<button onClick={this.submit}>SAVE</button>
+						</div>
+						}
+						<input type="text" defaultValue={this.state.name} onChange={event=>{this.setState({name:event.target.value})}}/>
+						<input type="NUMBER" min="1" max="5" step="1" defaultValue={this.state.rank} onChange={event=>{this.setState({rank:event.target.value})}} size="5"/>
 					</div>
 				</div>
 			);

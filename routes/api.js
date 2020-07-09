@@ -227,20 +227,37 @@ router.get('/verifyEmail/:login/:token', async function (req, res, next) {
 })
 
 /*in progress : adds image to Images table*/
-addImage=async (file)=>{
-
-	let buf = Buffer.from(file.data,'binary')
-	console.log(buf);
-	let image = null;
-	return image;
+addImage=async (login,file)=>{
+	console.log("add image")
+	// let buf = Buffer.from(file.image,'binary')
+	// console.log(file);
+	// let image = null;
+	let user = await Users.get.Single(login)
+		.then((res) => {
+			return res.result
+	})
+	console.log("user => ",user);
+	let query = `INSERT into IMAGES (data,rank,userId) values ('${file.image}','${file.rank}','${user.id}') RETURNING *;`
+	let results = await client.query(query)
+		.then(result => {
+			console.log("success",result.rows)
+			return result.rows;
+		})
+		.catch(err => {
+			console.log({ "sql error": err });
+			return ({ error: err.detail });
+		});
+	res.send(results);
+	// return image;
 }
 
 /* in progress receives an image to uploaded */
 router.post('/uploadImage/:display_name',async function(req, res, next){
 	console.log("pic upload")
-	console.log(req.files)
+	console.log("body=>",req.body)
+	// console.log(req.files)
 	try{
-		if(!req.files) {
+		if(!req.body) {
 			console.log("no file")
 			res.send({
 				status: false,
@@ -248,10 +265,10 @@ router.post('/uploadImage/:display_name',async function(req, res, next){
 			});
 		}
 		else{
-			var inputImage = req.files.file;
+			var inputImage = req.body.image;
 			let rank = req.body.rank;
-			console.log(req.files.file);
-			let image = await addImage(inputImage);
+			console.log(inputImage,rank);
+			let image = await addImage({image:inputImage,rank});
 			// let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
 			// .then(async(user)=>{
 			// 	if(!user.profile)
