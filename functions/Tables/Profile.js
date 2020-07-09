@@ -125,15 +125,6 @@ const validateData = (data) => {
 		valid.gender = data.gender;
 	}
 	if (data.sexual_preference) {
-		/*
-		if(data.sexual_preference == "Both")
-			valid.sexual_preference = 0;
-		else if(data.sexual_preference == "Male"){
-			valid.sexual_preference = 1;
-		}
-		else
-			valid.sexual_preference = 2;
-		*/
 		valid.sexual_preference = data.sexual_preference;
 	}
 	if (data.biography)
@@ -142,6 +133,8 @@ const validateData = (data) => {
 		valid.location = data.location;
 	if (data.date_of_birth)
 		valid.date_of_birth = data.date_of_birth;
+	if (data.fame)
+		valid.fame = data.fame;
 	if (data.userId)
 		valid.userId = data.userId;
 	return valid;

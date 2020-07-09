@@ -10,9 +10,9 @@ let pgpassword = process.env.DBPassword;
 let pgurl = `postgres://${pguser}:${pgpassword}@${pghost}:${pgport}/${pgdb}`;
 const client = new Client({
 	connectionString: pgurl,
-	// ssl: {
-	// 	rejectUnauthorized: true
-	// }
+	ssl: {
+		rejectUnauthorized: false
+	}
 });
 const connect = () => {
 	client.connect();

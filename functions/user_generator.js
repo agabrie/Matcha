@@ -150,7 +150,8 @@ const generateUsers = async (num) => {
 		user.profile = {
 			gender: getGender(gender),
 			sexual_preference: getItem(sexual_preferences),
-			date_of_birth: generateAge()
+			date_of_birth: generateAge(),
+			fame:(getRandom(80)+101)
 		}
 		user.profile.biography = `I like ${user.profile.sexual_preference}s`
 		user.nomail = true;

@@ -11,10 +11,9 @@ const sendMail = async (message) => {
 			pass: mail.MailPass
 		},
 		tls: {
-			rejectUnauthorized: false
+			rejectUnauthorized: true
 		}
 	});
-
 	var mailOptions = {
 		from: mail.MailFrom,
 		replyTo: mail.MailFrom,
@@ -27,7 +26,6 @@ const sendMail = async (message) => {
 
 	return result;
 }
-
 
 const formatEmail = (message) => {
 	let format =

@@ -28,6 +28,7 @@ router.get('/users/:login/all', async function (req, res, next) {
 		});
 	res.send(results);
 });
+/* */
 router.get('/search/', async (req, res, next) => {
 	console.log("search");
 	let age = 20;
@@ -50,9 +51,6 @@ router.get('/search/', async (req, res, next) => {
 			i++;
 		}
 	}
-	// if(preferences != 0){
-	// filter_on_preferences = `WHERE PROFILES.GENDER = ${preferences}`;
-	// }
 	let sort_by = '';
 	let query = `
 		SELECT *,EXTRACT(YEAR from AGE(date_of_birth)) as "age", ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${conditions.age.current}) as "age_diff" FROM USERS
@@ -74,11 +72,13 @@ router.get('/search/', async (req, res, next) => {
 		});
 	res.send(results);
 });
+
 /* get All users */
 router.get('/users', async function (req, res, next) {
 	let result = await Users.get.All();
 	res.send(result);
 });
+
 /* get user based on display_name, email or id */
 router.get('/users/:login', async function (req, res, next) {
 	console.log("fetch users");
@@ -203,4 +203,71 @@ router.get('/verifyEmail/:login/:token', async function (req, res, next) {
 	// let results = await sendMail(message);
 	console.log(req.params);
 })
+
+addImage=async (file)=>{
+
+	let buf = Buffer.from(file.data,'binary')
+	console.log(buf);
+	let image = null;
+	return image;
+}
+
+router.post('/uploadImage/:display_name',async function(req, res, next){
+	console.log("pic upload")
+	console.log(req.files)
+	try{
+		if(!req.files) {
+			console.log("no file")
+			res.send({
+				status: false,
+				message: 'No file uploaded'
+			});
+		}
+		else{
+			var inputImage = req.files.file;
+			let rank = req.body.rank;
+			console.log(req.files.file);
+			let image = await addImage(inputImage);
+			// let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
+			// .then(async(user)=>{
+			// 	if(!user.profile)
+			// 		user.profile = new Profile;
+			// 	var images = user.profile.images
+			// 	if(images.includes(image.data._id)){
+			// 		for (var i = images.length - 1; i >= 0; --i) {
+			// 			if(String(images[i])==String(image.data._id)) {
+			// 				images.splice(i, 1);
+			// 			}
+			// 		}
+			// 	}
+			// 	user.profile.images.splice(rank,0,image.data);
+			// 	return await user.save()
+			// 	.then((data)=>{
+			// 		return({
+			// 			status:true,
+			// 			message:"image uploaded to user successfully",
+			// 			data
+			// 		});
+			// 	}).catch((err)=>{
+			// 		console.log("err => ",err);
+			// 		return({
+			// 			status:false,
+			// 			message:"unsuccessful image upload to user",
+			// 			err
+			// 		});
+			// 	})
+			// }).catch((err)=>{
+			// 	return({
+			// 		status:false,
+			// 		message:"user does not exist in db",
+			// 		err
+			// 	});
+			// })
+			res.send(user)
+		}
+	}catch (err) {
+        res.status(500).send(err);
+    }
+})
+
 module.exports = router;

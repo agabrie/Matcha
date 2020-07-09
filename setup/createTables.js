@@ -64,7 +64,8 @@ const createProfilesTable = async () => {
         gender VARCHAR(7) NOT NULL DEFAULT 'FEMALE',
         sexual_preference VARCHAR(7) NOT NULL DEFAULT 'MALE',
         biography VARCHAR(150) NOT NULL DEFAULT 'I AM A HUMAN',
-        location POINT NOT NULL DEFAULT '(0,0)',
+		location POINT NOT NULL DEFAULT '(0,0)',
+		fame INT NOT NULL DEFAULT '100',
         date_of_birth DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
         userId INT REFERENCES Users(id) UNIQUE
 	);`;
@@ -117,9 +118,10 @@ const createViewsTable = async () => {
 	Views
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
+		viewed INT references users(id),
+		liked BOOLEAN NOT NULL DEFAULT 'FALSE',
 		userId INT REFERENCES Users(id),
         profileId INT REFERENCES Profiles(id)
-		
 	);`;
 	// console.log(User);
 	let result = await client.query(query)
