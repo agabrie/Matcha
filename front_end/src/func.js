@@ -18,5 +18,15 @@ const  login = async (user) => {
 	}
 };
 
-export {login};
-export default login
+const sendToken = async (user)=> {
+	let result = await axios.post('http://localhost:8001/api/verify', user).then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res ;
+	})
+	return result.error ? false : true;
+}
+
+export {login, sendToken};
+export default {login, sendToken}

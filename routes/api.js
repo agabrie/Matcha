@@ -214,16 +214,26 @@ router.post('/auth/:login', async function (req, res, next) {
 });
 
 /* test endpoint for sending user emails */
-router.get('/verifyEmail/:login/:token', async function (req, res, next) {
-	console.log("sending mail to :", req.params);
-
+router.post('/verify', async function (req, res, next) {
+	// console.log("sending mail to :", req.body);
+	let result = await Auth.get.Single(req.body.mail).then ((res) => {
+		return res.result;
+	}) 
+	// console.log(result.token);
+	// console.log(req.body.token);
+	if (result.token === req.body.token){
+		result = await Auth.update.Single(result.display_name, {verified: true}).then ((res) => {
+		return res.result;
+		});
+	}
+	res.send(result)
 	// let message = {
 	// 	to:req.params.address,
 	// 	subject:"Matcha Email",
 	// 	text:"a mail for you"
 	// }
 	// let results = await sendMail(message);
-	console.log(req.params);
+	// console.log(req.params);
 })
 
 /*in progress : adds image to Images table*/

@@ -4,6 +4,7 @@ import Header from './components/layout/Header';
 import Home from './components/pages/Home';
 import ImageUpload from './components/pages/Picture';
 import './App.css';
+import Verify from './components/pages/Verify';
 
 class App extends Component {
   render() {
@@ -14,6 +15,7 @@ class App extends Component {
           <Header />
           <Route exact path="/" component={Home} />
           <Route exact path="/imageUpload" component={ImageUpload} />
+		  <Route  path="/verify" component={Verify} />
         </div>
       </div>
     </Router>
