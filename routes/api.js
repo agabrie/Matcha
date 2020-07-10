@@ -286,4 +286,12 @@ router.get('/search/', async (req, res, next) => {
 		});
 	res.send(results);
 });
+router.post('/like/:login', async function (req, res, next) {
+	console.log("like profile");
+
+	let results = await Views.update.Single(req.params.login, req.body);
+	res.send(results);
+});
+
+
 module.exports = router;
