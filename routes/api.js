@@ -35,13 +35,14 @@ router.get('/users/:login/all', async function (req, res, next) {
 
 /* get All users */
 router.get('/users', async function (req, res, next) {
+	console.log("get all users")
 	let result = await Users.get.All();
 	res.send(result);
 });
 
 /* get user based on display_name, email or id */
 router.get('/users/:login', async function (req, res, next) {
-	console.log("fetch users");
+	console.log("get user : ",req.params.login);
 	let data = await Users.get.Single(req.params.login);
 	console.log(data);
 	res.send(data);
@@ -52,17 +53,13 @@ router.get('/users/:login', async function (req, res, next) {
 ** requires {name, surname, email, display_name, password}
 */
 router.post('/users', async function (req, res, next) {
-	// console.log("insert user => ",req.body.display_name);
-	// let auth, user;
-	// console.log("hello");
+	console.log("register user")
 	let result = await Users.insert.Single(req.body)
 		.then(async (user) => {
-			// console.log(user);
 			if (user.error)
 				throw user.error
 			let auth = await Auth.insert.Single(user.display_name, req.body)
 				.then((auth) => {
-					// console.log(auth);
 					if (auth.error)
 						throw auth.error
 					return auth
@@ -88,8 +85,7 @@ router.put('/users/:login', async function (req, res, next) {
 **	requires {password}
 */
 router.post('/login', async function (req, res, next) {
-	// console.log('result');
-	// console.log(req.body);
+	console.log("login user")
 	let results = await Users.validate.Password(req.body.display_name, req.body.password);
 	if (results.user) {
 		results.user.password = null;
@@ -174,18 +170,17 @@ router.post('/auth/:login', async function (req, res, next) {
 
 /* test endpoint for sending user emails */
 router.post('/verify', async function (req, res, next) {
-	// console.log("sending mail to :", req.body);
-	let result = await Auth.get.Single(req.body.mail).then((res) => {
-		return res.result;
-	})
+	console.log("verifying user")
+	let user = await Auth.get.Single(req.body.mail)
 	// console.log(result.token);
 	// console.log(req.body.token);
-	if (result.token === req.body.token) {
-		result = await Auth.update.Single(result.display_name, { verified: true }).then((res) => {
-			return res.result;
-		});
+	if (user.token === req.body.token) {
+		let result = await Auth.update.Single(user.display_name, { verified: true })
+		res.send(result)
 	}
-	res.send(result)
+	else{
+		res.send({error:"verification token does not match"});
+	}
 	// let message = {
 	// 	to:req.params.address,
 	// 	subject:"Matcha Email",
@@ -198,7 +193,7 @@ router.post('/verify', async function (req, res, next) {
 /* in progress receives an image to uploaded */
 router.get('/images/:login', async function (req, res, next) {
 	console.log("pics get")
-	let images = await Images.get.Single(req.params.login).then(res => {/*console.log(res);*/return res.result });
+	let images = await Images.get.Single(req.params.login);
 	// console.log("images => ",images)
 	res.send(images)
 })

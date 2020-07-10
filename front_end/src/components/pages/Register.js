@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {register} from '../../func'
+
 
 class Register extends Component{
     constructor(props) {
@@ -22,14 +24,21 @@ class Register extends Component{
             [e.target.name] : e.target.value
         });
     }
-    submitHandler(e) {
+    async submitHandler(e) {
         e.preventDefault();
-        
+        let result = await register(this.state);
+        if(result.error){
+            this.setState({error:result.error})
+        }else{
+           return (window.location = '/');
+        }
+        console.log(result);
     }
     render() {
         return (
             <div>
                 {this.state.success && <p>You are successfully registered!</p>}
+        {this.state.error && <p>{this.state.error}</p>}
                 <form onSubmit={this.submitHandler}>
                     <input type="text" name="name" onChange={this.changeHandler} placeholder="Firstname"/><br/>
                     {this.state.errors && this.state.errors.name && <p>{this.state.errors.name.message}</p>}

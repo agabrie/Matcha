@@ -138,7 +138,7 @@ const verifyEmail = async (loginDetails) => {
 				return ({ error: error.detail });
 			return ({ error: error });
 		});
-	let url = `http://${frontend.host}:${frontend.port}/api/verify?mail=${user.email}&token=${encodeURIComponent(user.token)}`
+	let url = `http://${frontend.host}:${frontend.port}/verify?mail=${user.email}&token=${encodeURIComponent(user.token)}`
 	let message = {
 		to: user.email,
 		subject: "Matcha Verification",

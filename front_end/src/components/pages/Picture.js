@@ -87,7 +87,7 @@ class Pictures extends Component {
 		.then(res => {
 			return res.data
 		})
-		
+		console.log("results : ",results)
 		let image = []
 		results.forEach(elem => {
 			image[elem.rank] = { data: elem.data, type: elem.type }
