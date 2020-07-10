@@ -23,6 +23,7 @@ class Login extends Component {
         e.preventDefault();
         let result = await login(this.state);
             if (result.error) {
+                console.log(result.error)
                 this.setState({ error: result.error })
             } else {
                 return (window.location = '/imageUpload');

@@ -115,8 +115,12 @@ const validateUpdateData = (data) => {
 
 const validatePassword = async (login, password) => {
 	let result = await Users.get.Single(login)
-	.then((user) => {
-		return Password.validate(password, user);
+	.then(async (user) => {
+		let results = await Password.validate(password, user)
+		if(results.error)
+			throw "password is incorrect";
+		else
+			return results
 	})
 	.catch(error => {
 		console.log(error);
