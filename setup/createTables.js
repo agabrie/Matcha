@@ -92,6 +92,7 @@ const createImagesTable = async () => {
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
 		data BYTEA NOT NULL,
+		type VARCHAR (30) NOT NULL DEFAULT 'data:image/png;base64,',
 		rank INT NOT NULL DEFAULT '0',
 		userId INT REFERENCES Users(id),
 		profileId INT REFERENCES Profiles(id)

@@ -6,8 +6,6 @@ const { Password } = require('../Password');
 const { sendMail } = require('../sendMail');
 require('dotenv').config();
 
-
-
 const getAuthFromLogin = async (login) => {
 	let user = await Users.get.Single(login)
 		.then((res) => {

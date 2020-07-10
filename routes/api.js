@@ -9,6 +9,8 @@ const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
 const {Views} = require('../functions/Tables/Views')
+const {Images} = require('../functions/Tables/Images')
+
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -238,34 +240,41 @@ router.post('/verify', async function (req, res, next) {
 })
 
 /*in progress : adds image to Images table*/
-addImage=async (login,file)=>{
-	console.log("add image")
-	// let buf = Buffer.from(file.image,'binary')
-	// console.log(file);
-	// let image = null;
-	let user = await Users.get.Single(login)
-		.then((res) => {
-			return res.result
-	})
-	console.log("user => ",user);
-	let query = `INSERT into IMAGES (data,rank,userId) values ('${file.image}','${file.rank}','${user.id}') RETURNING *;`
-	let results = await client.query(query)
-		.then(result => {
-			console.log("success",result.rows)
-			return result.rows;
-		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return ({ error: err.detail });
-		});
-	res.send(results);
-	// return image;
-}
+// addImage=async (login,file)=>{
+// 	console.log("add image")
+// 	// let buf = Buffer.from(file.image,'binary')
+// 	console.log(login,file);
+// 	// let image = null;
+// 	let user = await Users.get.Single(login)
+// 		.then((res) => {
+// 			return res.result
+// 	})
+// 	console.log("user => ",user);
+// 	let query = `INSERT into IMAGES (data,rank,userId) values ('${file.image}','${file.rank}','${user.id}') RETURNING *;`
+// 	let results = await client.query(query)
+// 		.then(result => {
+// 			console.log("success",result.rows)
+// 			return result.rows;
+// 		})
+// 		.catch(err => {
+// 			console.log({ "sql error": err });
+// 			return ({ error: err.detail });
+// 		});
+// 	res.send(results);
+// 	// return image;
+// }
 
 /* in progress receives an image to uploaded */
-router.post('/uploadImage/:display_name',async function(req, res, next){
+router.get('/images/:login',async function(req,res,next){
+	console.log("pics get")
+	let images = await Images.get.Single(req.params.login).then(res=>{/*console.log(res);*/return res.result});
+	// console.log("images => ",images)
+	res.send(images)
+})
+
+router.post('/images/:login',async function(req, res, next){
 	console.log("pic upload")
-	console.log("body=>",req.body)
+	// console.log("body=>",req.body)
 	// console.log(req.files)
 	try{
 		if(!req.body) {
@@ -276,46 +285,9 @@ router.post('/uploadImage/:display_name',async function(req, res, next){
 			});
 		}
 		else{
-			var inputImage = req.body.image;
-			let rank = req.body.rank;
-			console.log(inputImage,rank);
-			let image = await addImage({image:inputImage,rank});
-			// let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
-			// .then(async(user)=>{
-			// 	if(!user.profile)
-			// 		user.profile = new Profile;
-			// 	var images = user.profile.images
-			// 	if(images.includes(image.data._id)){
-			// 		for (var i = images.length - 1; i >= 0; --i) {
-			// 			if(String(images[i])==String(image.data._id)) {
-			// 				images.splice(i, 1);
-			// 			}
-			// 		}
-			// 	}
-			// 	user.profile.images.splice(rank,0,image.data);
-			// 	return await user.save()
-			// 	.then((data)=>{
-			// 		return({
-			// 			status:true,
-			// 			message:"image uploaded to user successfully",
-			// 			data
-			// 		});
-			// 	}).catch((err)=>{
-			// 		console.log("err => ",err);
-			// 		return({
-			// 			status:false,
-			// 			message:"unsuccessful image upload to user",
-			// 			err
-			// 		});
-			// 	})
-			// }).catch((err)=>{
-			// 	return({
-			// 		status:false,
-			// 		message:"user does not exist in db",
-			// 		err
-			// 	});
-			// })
-			res.send(user)
+			let image = await Images.insert.Single(req.params.login,req.body);
+			// console.log("successfully uploaded : ",image);
+			res.send(image)
 		}
 	}catch (err) {
         res.status(500).send(err);
@@ -326,6 +298,7 @@ router.post('/views/:login', async function (req, res, next) {
 	console.log("Views insert");
 
 	let results = await Views.insert.Single(req.params.login, req.body);
+	// console.log("",results)
 	res.send(results);
 });
 
