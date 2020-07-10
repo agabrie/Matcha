@@ -9,7 +9,7 @@ const ProfileSchema = new Schema({
     gender: String,
     sexual_preference: [String],
     biography: String,
-    images:[Image],
+    images: [Image],
     interests: [Interest],
     views: [View],
     location: {

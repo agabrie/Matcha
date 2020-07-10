@@ -6,7 +6,7 @@ const ImageSchema = new Schema({
     image: {
         data: String,
         rank: Number
-    } 
+    }
 });
 
 const Image = mongoose.model('image', ImageSchema);

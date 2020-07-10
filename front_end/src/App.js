@@ -4,7 +4,9 @@ import Header from './components/layout/Header';
 import Home from './components/pages/Home';
 import ProfileCarousel from './components/ProfileCarousel/ProfileCarousel';
 import ProfileView from './components/ProfileView/ProfileView';
+import ImageUpload from './components/pages/Picture';
 import './App.css';
+import Verify from './components/pages/Verify';
 
 class App extends Component {
   render() {
@@ -16,6 +18,8 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/ProfileCarousel" component={ProfileCarousel}/>
           <Route path="/profiles/:id" component={ProfileView}/>
+          <Route exact path="/imageUpload" component={ImageUpload} />
+		  <Route  path="/verify" component={Verify} />
         </div>
       </div>
     </Router>

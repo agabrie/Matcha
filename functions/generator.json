@@ -1,0 +1,51 @@
+{
+	"names": [
+		[
+			"Johnathan",
+			"Ali",
+			"Peter",
+			"Samuel",
+			"Eric",
+			"Michael",
+			"Nicholas",
+			"Carl",
+			"Elliot",
+			"Justin",
+			"Francis",
+			"Muhammad"
+		],
+		[
+			"Sarah",
+			"McKenzie",
+			"Jessica",
+			"Cassidy",
+			"Naomi",
+			"Felicia",
+			"Michelle",
+			"Nora",
+			"Emily"
+		]
+	],
+	"surnames": [
+		"Daniels",
+		"Michaels",
+		"Hendricks",
+		"Wong",
+		"Smith",
+		"Williams",
+		"Jones",
+		"Johnson",
+		"Rodriguez",
+		"Parker",
+		"Lee"
+	],
+	"genders": [
+		"Male",
+		"Female"
+	],
+	"sexual_preferences": [
+		"Male",
+		"Female",
+		"Both"
+	]
+}

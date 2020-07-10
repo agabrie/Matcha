@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {login} from '../../func'
 
 class Login extends Component{
     constructor(props) {
         super(props);
         this.state={
-            email:'',
+            display_name:'',
             password:'',
             error: null
         };
@@ -18,21 +19,17 @@ class Login extends Component{
             [e.target.name] : e.target.value
         });
     }
-    submitHandler(e) {
-        e.preventDefault();
-        axios.post('http://localhost:4000/api/login', this.state).then(res => {
-            if(res.data.error) {
-                return this.setState({error:res.data.message});
-            }
-            return (window.location = '/mainpage');
-        });
+    async submitHandler(e) {
+		e.preventDefault();
+       let result = await login(this.state);
+		return result ? (window.location = '/mainpage') : null;
     }
     render() {
         return (
             <div>
                 {this.state.error && <p>{this.state.error}</p>}
                 <form onSubmit={this.submitHandler}>
-                    <input type="email" name="email" onChange={this.changeHandler} placeholder="name@example.com"/><br/>
+                    <input type="display_name" name="display_name" onChange={this.changeHandler} placeholder="display_name"/><br/>
                     <input type="password" name="password" onChange={this.changeHandler} placeholder="password"/><br/>
                     <button type="submit"> Submit </button>
                 </form>
