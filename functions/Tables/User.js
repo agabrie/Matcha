@@ -7,16 +7,15 @@ const { Password } = require('../Password');
 const getAllUsersData = async () => {
 	const query = `SELECT * FROM USERS;`;
 	let result = await client.query(query)
-		.then(result => {
-			return { result: result.rows };
-			// console.log(result.rows)
-			// res.send(result.rows);
-		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
-		});
+	.then(result => {
+		return result.rows;
+	})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
+	});
 	return result;
 }
 
@@ -26,69 +25,64 @@ const getUserFromLogin = async (detail) => {
 		query += `display_name = '${detail}' OR email = '${detail}';`;
 	else
 		query += `id = '${detail}'`;
-	// console.log(query);
 
 	let result = await client.query(query)
-		.then(result => {
-			return { result: result.rows[0] };
-			// console.log(result.rows)
-			// res.send(result.rows);
-		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
-		});
-		console.log(result);
+	.then(result => {
+		return result.rows[0];
+	})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
+	});
+	console.log(result);
 	return result;
 }
 
 const insertUser = async (data) => {
 	const values = validateData(data);
 	const query = InsertRecord("Users", values, null);
-	// console.log(query);
+	
 	if (query.errors) {
-		res.send({ "query error": query.errors });
-		throw query.errors;
+		return({ error: query.errors });
 	}
+
 	let results = await client.query(query.string, query.values)
-		.then(result => {
-			// console.log(result.rows)
-			return result.rows[0];
-		})
-		.catch(err => {
-			console.log({ "sql error": err, data });
-			return ({ error: err.detail });
-		});
+	.then(result => {
+		return result.rows[0];
+	})
+	.catch(error => {
+		console.log(error);
+		if(error.detail)
+			return ({ error: error.detail});
+		return ({ error: error});
+	});
+
 	return results;
 };
 
 const updateUser = async (login, data) => {
 	const values = validateUpdateData(data);
 	let user = await Users.get.Single(login)
-		.then((res) => {
-			return res.result
+	.then(async (user) => {
+		let query = await UpdateRecord("Users", values, { id: user.id });
+		let results = await client.query(query.string, query.values)
+		.then(result => {
+			return result.rows[0];
 		})
-		.then(async (user) => {
-			// console.log("update => ",user);
-			let query = await UpdateRecord("Users", values, { id: user.id });
-			// console.log(query);
-			let results = await client.query(query.string, query.values)
-				.then(result => {
-					// console.log(result.rows)
-					return result.rows[0];
-				})
-				.catch(err => {
-					console.log({ "sql error": err });
-					return ({ error: err.detail });
-				});
-			return results;
-		})
+		.catch(error => {
+			console.log(error);
+			if (error.detail)
+				return ({ error: error.detail });
+			return ({ error: error });
+		});
+		return results;
+	})
 	return user;
 }
 
 const validateData = (data) => {
-	// console.log(data);
 	try {
 		if (!(data.name && data.surname && data.email && data.display_name && data.password))
 			throw "some user fields incorrectly filled in or missing!";
@@ -102,15 +96,11 @@ const validateData = (data) => {
 		return validData;
 	}
 	catch (err) {
-		// console.log(err);
 		return ({ error: err });
 	}
-	// console.log("validated : ",validData);
-	// return validData;
 }
 
 const validateUpdateData = (data) => {
-	// console.log(data);
 	let validData = {}
 	if (data.name)
 		validData.name = data.name;
@@ -125,44 +115,36 @@ const validateUpdateData = (data) => {
 
 const validatePassword = async (login, password) => {
 	let result = await Users.get.Single(login)
-		.then((res) => { console.log(res); return res.result })
-		.then((user) => {
-			console.log(user);
-			return Password.validate(password, user);
-		})
-		.catch((error) => {
-			console.log(error)
-			return (error);
-		});
-		console.log(result);
+	.then((user) => {
+		return Password.validate(password, user);
+	})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
+	});
 	return result;
 };
 
-let get = {
-	Single: getUserFromLogin,
-	All: getAllUsersData
-}
-
-let validate = {
-	Password: validatePassword
-}
-
-let insert = {
-	Single: insertUser
-}
-
-let update = {
-	name: {},
-	surname: {},
-	display_name: {},
-	password: {},
-	Single: updateUser
-}
 let Users = {
-	get,
-	validate,
-	insert,
-	update
+	get : {
+		Single: getUserFromLogin,
+		All: getAllUsersData
+	},
+	validate : {
+		Password: validatePassword
+	},
+	insert : {
+		Single: insertUser
+	},
+	update : {
+		// name: {},
+		// surname: {},
+		// display_name: {},
+		// password: {},
+		Single: updateUser
+	}
 }
 
 module.exports = { Users }

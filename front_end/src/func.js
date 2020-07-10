@@ -18,6 +18,17 @@ const  login = async (user) => {
 	}
 };
 
+const registerUser = async(user)=>{
+	let result = axios.post('http://localhost:8001/api/Users',user)
+	.then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res ;
+	});
+	return result.error ? false : true;
+}
+
 const sendToken = async (user)=> {
 	let result = await axios.post('http://localhost:8001/api/verify', user).then(res => {
 		if(res.data.error){
@@ -28,5 +39,5 @@ const sendToken = async (user)=> {
 	return result.error ? false : true;
 }
 
-export {login, sendToken};
-export default {login, sendToken}
+export {login, sendToken, registerUser};
+export default {login, sendToken, registerUser}

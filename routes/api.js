@@ -8,8 +8,8 @@ const { Auth } = require('../functions/Tables/Auth');
 const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
-const {Views} = require('../functions/Tables/Views')
-const {Images} = require('../functions/Tables/Images')
+const { Views } = require('../functions/Tables/Views')
+const { Images } = require('../functions/Tables/Images')
 
 
 /* get a single user's data with their profile */
@@ -53,12 +53,25 @@ router.get('/users/:login', async function (req, res, next) {
 */
 router.post('/users', async function (req, res, next) {
 	// console.log("insert user => ",req.body.display_name);
-	let auth, user;
-	console.log("hello");
-	user = await Users.insert.Single(req.body);
-	// console.log("user id => ",user.id);
-	auth = await Auth.insert.Single(user.display_name, req.body);
-	res.send({ result: { user, auth } });
+	// let auth, user;
+	// console.log("hello");
+	let result = await Users.insert.Single(req.body)
+		.then(async (user) => {
+			// console.log(user);
+			if (user.error)
+				throw user.error
+			let auth = await Auth.insert.Single(user.display_name, req.body)
+				.then((auth) => {
+					// console.log(auth);
+					if (auth.error)
+						throw auth.error
+					return auth
+				})
+				.catch(error => { return { error } })
+				return({user,auth})
+		})
+		.catch(error => { return { error } })
+	res.send(result);
 });
 
 /*
@@ -162,14 +175,14 @@ router.post('/auth/:login', async function (req, res, next) {
 /* test endpoint for sending user emails */
 router.post('/verify', async function (req, res, next) {
 	// console.log("sending mail to :", req.body);
-	let result = await Auth.get.Single(req.body.mail).then ((res) => {
+	let result = await Auth.get.Single(req.body.mail).then((res) => {
 		return res.result;
-	}) 
+	})
 	// console.log(result.token);
 	// console.log(req.body.token);
-	if (result.token === req.body.token){
-		result = await Auth.update.Single(result.display_name, {verified: true}).then ((res) => {
-		return res.result;
+	if (result.token === req.body.token) {
+		result = await Auth.update.Single(result.display_name, { verified: true }).then((res) => {
+			return res.result;
 		});
 	}
 	res.send(result)
@@ -183,33 +196,33 @@ router.post('/verify', async function (req, res, next) {
 })
 
 /* in progress receives an image to uploaded */
-router.get('/images/:login',async function(req,res,next){
+router.get('/images/:login', async function (req, res, next) {
 	console.log("pics get")
-	let images = await Images.get.Single(req.params.login).then(res=>{/*console.log(res);*/return res.result});
+	let images = await Images.get.Single(req.params.login).then(res => {/*console.log(res);*/return res.result });
 	// console.log("images => ",images)
 	res.send(images)
 })
 
-router.post('/images/:login',async function(req, res, next){
+router.post('/images/:login', async function (req, res, next) {
 	console.log("pic upload")
 	// console.log("body=>",req.body)
 	// console.log(req.files)
-	try{
-		if(!req.body) {
+	try {
+		if (!req.body) {
 			console.log("no file")
 			res.send({
 				status: false,
 				message: 'No file uploaded'
 			});
 		}
-		else{
-			let image = await Images.insert.Single(req.params.login,req.body);
+		else {
+			let image = await Images.insert.Single(req.params.login, req.body);
 			// console.log("successfully uploaded : ",image);
 			res.send(image)
 		}
-	}catch (err) {
-        res.status(500).send(err);
-    }
+	} catch (err) {
+		res.status(500).send(err);
+	}
 })
 
 router.post('/views/:login', async function (req, res, next) {
