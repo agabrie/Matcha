@@ -5,6 +5,7 @@ import Home from './components/pages/Home';
 import ImageUpload from './components/pages/Picture';
 import './App.css';
 import Verify from './components/pages/Verify';
+import Profile from './components/pages/Profile';
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/imageUpload" component={ImageUpload} />
 		  <Route  path="/verify" component={Verify} />
+		  <Route path="/Profile" component={Profile} />
         </div>
       </div>
     </Router>

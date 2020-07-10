@@ -21,8 +21,15 @@ class Login extends Component{
     }
     async submitHandler(e) {
 		e.preventDefault();
-       let result = await login(this.state);
-		return result ? (window.location = '/mainpage') : null;
+	   let result = await login(this.state);
+	   let auth = await  axios.get(`http://localhost:8001/api/auth/${this.state.display_name}`).then(res => {
+		   return res
+		});
+		// console.log("dsa", auth.data.result.verified)
+	if (auth.data.result.verified)
+		return (window.location = '/mainpage');
+	else
+		return alert("please verify you account!"); 	
     }
     render() {
         return (
@@ -36,7 +43,7 @@ class Login extends Component{
                 <br/>
             </div>
         );
-    }
+	}	
 }
 
 export default Login;
