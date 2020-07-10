@@ -31,64 +31,7 @@ router.get('/users/:login/all', async function (req, res, next) {
 	res.send(results);
 });
 
-/*
-** do a filter and sort based on the following parameters
-**	preferences:{
-**		sexual_preference,
-**		age:{
-**			current,
-**			min,
-**			max
-**		},
-**		gender:Female
-**	},
-**	sort:{
-**		age_diff:1,
-**	}
-*/
-router.get('/search/', async (req, res, next) => {
-	console.log("search");
-	let age = 20;
-	let conditions = req.body.preferences;
-	let numConditions = 0;
-	if (conditions)
-		numConditions = Object.keys(conditions).length;
-	// let preferences = req.body.sexual_preference;
-	// let filter_on_preferences = '';
-	let logic = '';
-	let i = 0;
-	if (conditions) {
-		for (condition in conditions) {
-			let element = conditions[conditions];
-			// console.log("conditions => ", `${condition} : ${element}`);
-			logic += `WHERE ${condition} = $${element}`;
-			if (i == numConditions)
-				break;
-			logic += " \n\tAND ";
-			i++;
-		}
-	}
-	let sort_by = '';
-	let query = `
-		SELECT *,EXTRACT(YEAR from AGE(date_of_birth)) as "age", ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${conditions.age.current}) as "age_diff" FROM USERS
-		INNER JOIN PROFILES ON USERS.ID = USERID
-		WHERE EXTRACT(YEAR from AGE(date_of_birth)) BETWEEN ${conditions.age.min} AND ${conditions.age.max}
-		ORDER BY age_diff ASC, age ASC;
-		`;
-	// ${logic}
-	// ${sort_by}
-	console.log(query);
-	let results = await client.query(query)
-		.then(result => {
-			console.log(result.rows)
-			return result.rows;
-		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return ({ error: err.detail });
-		});
-	res.send(results);
-});
+
 
 /* get All users */
 router.get('/users', async function (req, res, next) {
@@ -239,31 +182,6 @@ router.post('/verify', async function (req, res, next) {
 	// console.log(req.params);
 })
 
-/*in progress : adds image to Images table*/
-// addImage=async (login,file)=>{
-// 	console.log("add image")
-// 	// let buf = Buffer.from(file.image,'binary')
-// 	console.log(login,file);
-// 	// let image = null;
-// 	let user = await Users.get.Single(login)
-// 		.then((res) => {
-// 			return res.result
-// 	})
-// 	console.log("user => ",user);
-// 	let query = `INSERT into IMAGES (data,rank,userId) values ('${file.image}','${file.rank}','${user.id}') RETURNING *;`
-// 	let results = await client.query(query)
-// 		.then(result => {
-// 			console.log("success",result.rows)
-// 			return result.rows;
-// 		})
-// 		.catch(err => {
-// 			console.log({ "sql error": err });
-// 			return ({ error: err.detail });
-// 		});
-// 	res.send(results);
-// 	// return image;
-// }
-
 /* in progress receives an image to uploaded */
 router.get('/images/:login',async function(req,res,next){
 	console.log("pics get")
@@ -302,5 +220,62 @@ router.post('/views/:login', async function (req, res, next) {
 	res.send(results);
 });
 
-
+/*
+** do a filter and sort based on the following parameters
+**	preferences:{
+**		sexual_preference,
+**		age:{
+**			current,
+**			min,
+**			max
+**		},
+**		gender:Female
+**	},
+**	sort:{
+**		age_diff:1,
+**	}
+*/
+router.get('/search/', async (req, res, next) => {
+	console.log("search");
+	let age = 20;
+	let conditions = req.body.preferences;
+	let numConditions = 0;
+	if (conditions)
+		numConditions = Object.keys(conditions).length;
+	// let preferences = req.body.sexual_preference;
+	// let filter_on_preferences = '';
+	let logic = '';
+	let i = 0;
+	if (conditions) {
+		for (condition in conditions) {
+			let element = conditions[conditions];
+			// console.log("conditions => ", `${condition} : ${element}`);
+			logic += `WHERE ${condition} = $${element}`;
+			if (i == numConditions)
+				break;
+			logic += " \n\tAND ";
+			i++;
+		}
+	}
+	let sort_by = '';
+	let query = `
+		SELECT *,EXTRACT(YEAR from AGE(date_of_birth)) as "age", ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${conditions.age.current}) as "age_diff" FROM USERS
+		INNER JOIN PROFILES ON USERS.ID = USERID
+		WHERE EXTRACT(YEAR from AGE(date_of_birth)) BETWEEN ${conditions.age.min} AND ${conditions.age.max}
+		ORDER BY age_diff ASC, age ASC;
+		`;
+	// ${logic}
+	// ${sort_by}
+	console.log(query);
+	let results = await client.query(query)
+		.then(result => {
+			console.log(result.rows)
+			return result.rows;
+		})
+		.catch(err => {
+			console.log({ "sql error": err });
+			return ({ error: err.detail });
+		});
+	res.send(results);
+});
 module.exports = router;
