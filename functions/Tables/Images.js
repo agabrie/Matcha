@@ -4,6 +4,9 @@ const { UpdateRecord } = require('../UpdateRecord');
 const { Users } = require('./User');
 const { Password } = require('../Password');
 const { sendMail } = require('../sendMail');
+const { BufferB64 } = require("../BufferB64");
+const { Buffer } = require('safe-buffer');
+
 require('dotenv').config();
 const getImagesFromLogin = async (login) => {
 	let user = await Users.get.Single(login)
@@ -20,7 +23,7 @@ const getImagesFromLogin = async (login) => {
 
 	let result = await client.query(query)
 		.then(result => {
-			return  convertimagestobase64(result.rows) ;
+			return  BufferB64.All.B64(result.rows) ;
 		})
 		.catch(error => {
 			console.log(error);
@@ -42,7 +45,7 @@ const getAllImagesData = async () => {
 	`;
 	let result = await client.query(query)
 	.then(result => {
-		return convertimagestobase64(result.rows);
+		return BufferB64.All.B64(result.rows);
 	})
 	.catch(error => {
 		console.log(error);
@@ -59,7 +62,7 @@ const deleteRankImageFromLogin = async (login,rank,user)=>{
 	const query = `DELETE FROM IMAGES WHERE Images.userId = ${user.id} AND Images.rank =${rank}`
 	let result = await client.query(query)
 		.then(result => {
-			return convertimagestobase64(result.rows) ;
+			return BufferB64.All.B64(result.rows);
 		})
 		.catch(error => {
 			console.log(error);
@@ -81,12 +84,13 @@ const insertImages=async (login,data)=>{
 
 	if (user.error)
 		return { error: user.error };
-	const values= validateData(data);
+	const values = validateData(data);
+	console.log("vals => ",values)
 	deleteRankImageFromLogin(login,data.rank,user);
 	let query = InsertRecord("Images", { ...values, ...{ userId: user.id } }, null);
 	let results = await client.query(query.string,query.values)
 	.then(result => {
-		return convertimagestobase64(result.rows);
+		return BufferB64.All.B64(result.rows);
 	})
 	.catch(error => {
 		console.log(error);
@@ -96,20 +100,12 @@ const insertImages=async (login,data)=>{
 	});
 	return (results);
 }
-const B64ImgToBuffer = (base64)=>{
-	let binary = new Buffer(base64,'base64')
-	return binary
-}
 
-const BufferToB64Img=(buffer) =>{
-	let res = Buffer.from(buffer, 'binary').toString('base64')
-	return res;
-}
 
 const validateData = (data) => {
 	let valid = {}
 	if (data.data)
-		valid.data = B64ImgToBuffer(data.data);
+		valid.data = BufferB64.Single.Buff(data.data);
 	if (data.rank)
 		valid.rank = data.rank;
 	if (data.type)
@@ -119,13 +115,7 @@ const validateData = (data) => {
 	return valid;
 }
 
-const convertimagestobase64=(images)=>{
-	images.forEach((image)=>{
-		console.log(image.data)
-		image.data = BufferToB64Img(image.data)
-	})
-	return images;
-}
+
 
 let Images = {
 	get : {

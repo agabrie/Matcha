@@ -155,7 +155,7 @@ router.get('/auth/:login', async function (req, res, next) {
 /* updates a users auth info */
 router.put('/auth/:login', async function (req, res, next) {
 	console.log("auth update");
-
+	// console.log("req.body => ", req.body);
 	let results = await Auth.update.Single(req.params.login, req.body);
 	res.send(results);
 });
@@ -211,6 +211,7 @@ router.post('/images/:login', async function (req, res, next) {
 			});
 		}
 		else {
+			console.log(req.body)
 			let image = await Images.insert.Single(req.params.login, req.body);
 			// console.log("successfully uploaded : ",image);
 			res.send(image)
@@ -243,6 +244,11 @@ router.post('/views/:login', async function (req, res, next) {
 **		age_diff:1,
 **	}
 */
+router.get('/search/sorted/age', async (req, res, next) => {
+	let users = await Users.get.Verified.unsorted();
+	res.send(users);
+});
+
 router.get('/search/', async (req, res, next) => {
 	console.log("search");
 	let age = 20;

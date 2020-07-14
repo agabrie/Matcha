@@ -7,6 +7,7 @@ const { sendMail } = require('../sendMail');
 require('dotenv').config();
 
 const getAuthFromLogin = async (login) => {
+	// console.log("login of auth => ",login)
 	let user = await Users.get.Single(login)
 	.catch(error => {
 		console.log(error);
@@ -24,7 +25,7 @@ const getAuthFromLogin = async (login) => {
 	INNER JOIN Auth ON Users.id = Auth.userId 
 	WHERE Auth.userId = ${user.id};
 	`;
-
+	// console.log("get single auth query => ",query);
 	let result = await client.query(query)
 	.then(result => {
 		return result.rows[0];
@@ -103,12 +104,15 @@ const insertAuth = async (login, data) => {
 };
 
 const updateAuth = async (login, data) => {
-	
+	// console.log("hit auth update function")
 	const values = validateData(data);
-	
+	// console.log("valid data =>", values);
 	let user = await Auth.get.Single(login)
-	.then(async (user) => {
-		let query = await UpdateRecord("Auth", values, { id: user.id });
+		.then(async (user) => {
+			// console.log("auth data returned =>",user);
+			let query = await UpdateRecord("Auth", values, { id: user.id });
+			// console.log("auth update query =>", query);
+			
 		let results = await client.query(query.string, query.values)
 		.then(async result => {
 			let results = await Auth.get.Single(login);

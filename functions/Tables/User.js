@@ -1,9 +1,79 @@
 const { client } = require('../../dbConnection');
 const { InsertRecord } = require('../InsertRecord');
 const { UpdateRecord } = require('../UpdateRecord');
+const { BufferB64 } = require('../BufferB64');
 
 const { Password } = require('../Password');
-
+const getAllVerifiedUsersSortedByAge = async() => {
+	let query = 
+	`SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.age_diff
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age",
+		ABS(EXTRACT(YEAR from AGE(date_of_birth)) - 30) as "age_diff" FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'
+	ORDER BY
+		age_diff ASC,
+		fame ASC,
+		age ASC`
+	let result = await client.query(query)
+	.then(result => {
+		return BufferB64.All.B64(result.rows);
+	})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
+	});
+	return result;
+}
+const getAllVerifiedUsers = async() => {
+	let query = 
+	`SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT
+			*, 
+			EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'`;
+	let result = await client.query(query)
+	.then(result => {
+		return BufferB64.All.B64(result.rows);
+	})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
+	});
+	return result;
+};
 const getAllUsersData = async () => {
 	const query = `SELECT * FROM USERS;`;
 	let result = await client.query(query)
@@ -27,16 +97,17 @@ const getUserFromLogin = async (detail) => {
 		query += `id = '${detail}'`;
 
 	let result = await client.query(query)
-	.then(result => {
+		.then(result => {
+		// console.log(result)
 		return result.rows[0];
 	})
-	.catch(error => {
-		console.log(error);
+		.catch(error => {
+		// console.log("gettin a user error =>",error);
 		if (error.detail)
 			return ({ error: error.detail });
 		return ({ error: error });
 	});
-	console.log(result);
+	// console.log(result);
 	return result;
 }
 
@@ -134,6 +205,10 @@ const validatePassword = async (login, password) => {
 let Users = {
 	get : {
 		Single: getUserFromLogin,
+		Verified: {
+			sorted: getAllVerifiedUsersSortedByAge,
+			unsorted:getAllVerifiedUsers
+		},
 		All: getAllUsersData
 	},
 	validate : {

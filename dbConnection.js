@@ -1,6 +1,5 @@
-const { Client } = require('pg');
-require('dotenv').config();
-
+const { Client } = require("pg");
+require("dotenv").config();
 
 let pghost = process.env.DBHost;
 let pgdb = process.env.DBDatabase;
@@ -16,18 +15,16 @@ const client = new Client({
 });
 const connect = () => {
 	client.connect();
-}
+};
 const end = () => {
 	client.end;
-}
+};
 
 module.exports = {
 	client: client,
 	// connect:connect,
 	// end:end
-}
-
-
+};
 
 /*
 function DB(){

@@ -47,5 +47,13 @@
 		"Male",
 		"Female",
 		"Both"
+	],
+	"verified":[
+		"TRUE",
+		"FALSE"
+	],
+	"loggedin":[
+		"TRUE",
+		"FALSE"
 	]
 }
