@@ -75,18 +75,22 @@ const getAllViewsData = async () => {
 }
 
 const insertView = async (login, data) => {
+	console.log("view data =>",login,data)
 	let user = await Users.get.Single(login)
-		.then((res) => {
-			if (res.id)
-				return res
-			else
-				throw { error: "no id" }
-		})
-		.catch((err) => { return { error: err }; })
+		// .then((res) => {
+		// 	if (res.id)
+		// 		return res
+		// 	else
+		// 		throw { error: "no id" }
+		// })
+		// .catch((err) => { return { error: err }; })
+	console.log("user =>", user);
 	if (user.error)
 		return { error: user.error };
 	const values = validateData(data);
+	console.log("values =>",values);
 	const query = InsertRecord("Views", { ...values, ...{ userId: user.id } }, null);
+	console.log("query =>",query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
 		throw query.errors;
@@ -127,6 +131,9 @@ const updateView = async (login, data) => {
 }
 const validateData = (data) => {
 	let valid = {}
+	if (data.userId) {
+		valid.userId = data.userId;
+	}
 	if (data.viewed) {
 		valid.viewed = data.viewed;
 	}

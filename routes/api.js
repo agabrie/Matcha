@@ -244,7 +244,7 @@ router.post('/views/:login', async function (req, res, next) {
 **		age_diff:1,
 **	}
 */
-router.get('/search/sorted/age', async (req, res, next) => {
+router.get('/search/unsorted/', async (req, res, next) => {
 	let users = await Users.get.Verified.unsorted();
 	res.send(users);
 });

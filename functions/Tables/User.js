@@ -95,14 +95,14 @@ const getUserFromLogin = async (detail) => {
 		query += `display_name = '${detail}' OR email = '${detail}';`;
 	else
 		query += `id = '${detail}'`;
-
+	console.log(query)
 	let result = await client.query(query)
 		.then(result => {
-		// console.log(result)
+		console.log(result)
 		return result.rows[0];
 	})
 		.catch(error => {
-		// console.log("gettin a user error =>",error);
+		console.log("gettin a user error =>",error);
 		if (error.detail)
 			return ({ error: error.detail });
 		return ({ error: error });
