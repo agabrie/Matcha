@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./components/layout/Header";
 import Home from "./components/pages/Home";
 import Search from "./components/pages/Search";
-import ImageUpload from "./components/pages/Picture";
+import ImageUpload from "./components/pages/ImageUpload";
 import Verify from "./components/pages/Verify";
 import Profile from "./components/pages/Profile";
 

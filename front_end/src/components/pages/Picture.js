@@ -1,6 +1,11 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-class ImageUpload extends Component {
+import React, { Component } from "react";
+import axios from "axios";
+class Image extends Component {
+	constructor(props) {
+		super(props)
+	}
+}
+class Picture extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -9,38 +14,38 @@ class ImageUpload extends Component {
 			data: this.props.file ? this.props.file.data : null,
 			uploaded: this.props.src ? true : false,
 			visibility: false,
-			display_name: this.props.display_name
+			display_name: this.props.display_name,
 		};
 	}
 	resetState = () => {
 		this.setState({
-			visibility: false
-		})
+			visibility: false,
+		});
 	};
-	onChangeHandler = event => {
+	onChangeHandler = (event) => {
 		// this.resetState();
-		var file = event.target.files[0]
-		let reader = new FileReader()
-		reader.readAsDataURL(file)
+		var file = event.target.files[0];
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
 
 		reader.onload = () => {
-			let base64 = reader.result
-			let data = base64.split(",")
+			let base64 = reader.result;
+			let data = base64.split(",");
 			this.setState({
 				data: data[1],
 				type: data[0],
-				visibility: true
-			})
+				visibility: true,
+			});
 		};
 	};
 	submit = async () => {
 		var { data, display_name, rank, type } = this.state;
-		let img = { data: data, rank: rank, type: type }
-		console.log("submit img", img)
-		let url = `http://localhost:8001/api/images/${display_name}`
-		console.log(url)
+		let img = { data: data, rank: rank, type: type };
+		console.log("submit img", img);
+		let url = `http://localhost:8001/api/images/${display_name}`;
+		console.log(url);
 		let result = await axios.post(url, img);
-		console.log(result)
+		console.log(result);
 	};
 
 	render() {
@@ -54,62 +59,21 @@ class ImageUpload extends Component {
 						type="file"
 						onChange={this.onChangeHandler}
 					/>
-					{this.state.data &&
+					{this.state.data && (
 						<div>
 							<h1>{this.state.rank}</h1>
-							<img src={`${this.state.type},${this.state.data}`} width="20%" alt="" />
-							<br /><button onClick={this.submit}>SAVE</button>
+							<img
+								src={`${this.state.type},${this.state.data}`}
+								width="20%"
+								alt=""
+							/>
+							<br />
+							<button onClick={this.submit}>SAVE</button>
 						</div>
-					}
+					)}
 				</div>
 			</div>
 		);
-	};
-}
-class Pictures extends Component {
-	constructor(props) {
-		super(props)
-		this.state = { display_name: '', rank: null }
-	}
-	getAllUserImages = async () => {
-		let results = await axios.get(`http://localhost:8001/api/images/${this.state.display_name}`)
-		.then(res => {
-			// console.log("res =>", res);
-			return res.data
-		})
-		// console.log(results)
-		return results;
-	}
-	async componentDidMount() {
-		let display_name = sessionStorage.getItem('display_name');
-		this.setState({ display_name: display_name })
-		let results = await axios.get(`http://localhost:8001/api/images/${display_name}`)
-		.then(res => {
-			return res.data
-		})
-		console.log("results : ",results)
-		let image = []
-		results.forEach(elem => {
-			image[elem.rank] = { data: elem.data, type: elem.type }
-		})
-		
-		this.setState({
-			data: image,
-		})
-	}
-	render() {
-		return (<div>
-			<h1>{this.state.display_name}</h1>
-			{this.state.data &&
-				<div>
-					<ImageUpload rank='1' display_name={this.state.display_name} file={this.state.data[1]} />
-					<ImageUpload rank='2' display_name={this.state.display_name} file={this.state.data[2]} />
-					<ImageUpload rank='3' display_name={this.state.display_name} file={this.state.data[3]} />
-					<ImageUpload rank='4' display_name={this.state.display_name} file={this.state.data[4]} />
-					<ImageUpload rank='5' display_name={this.state.display_name} file={this.state.data[5]} />
-				</div>
-			}
-		</div>)
 	}
 }
-export default Pictures;
+export default Picture;

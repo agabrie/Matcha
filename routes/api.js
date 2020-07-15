@@ -10,7 +10,7 @@ const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
 const { Views } = require('../functions/Tables/Views')
 const { Images } = require('../functions/Tables/Images')
-
+const { formatResponse } = require('../functions/formatResponse')
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -244,8 +244,11 @@ router.post('/views/:login', async function (req, res, next) {
 **		age_diff:1,
 **	}
 */
+
+
 router.get('/search/unsorted/', async (req, res, next) => {
 	let users = await Users.get.Verified.unsorted();
+	users = formatResponse.User.Multiple(users)
 	res.send(users);
 });
 
@@ -298,6 +301,11 @@ router.post('/like/:login', async function (req, res, next) {
 	let results = await Views.update.Single(req.params.login, req.body);
 	res.send(results);
 });
-
+router.get("/search/:login", async (req, res, next) => {
+	let users = await Users.get.Entire(req.params.login);
+	console.log("user => ",users)
+	formatResponse.User.Single(users);
+	res.send(users);
+});
 
 module.exports = router;

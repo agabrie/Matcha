@@ -4,9 +4,11 @@ const { UpdateRecord } = require('../UpdateRecord');
 const { BufferB64 } = require('../BufferB64');
 
 const { Password } = require('../Password');
-const getAllVerifiedUsersSortedByAge = async() => {
-	let query = 
-	`SELECT
+const getAllUserInfo = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	console.log("user",user);
+	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
 		IMAGES.type,
@@ -15,6 +17,49 @@ const getAllVerifiedUsersSortedByAge = async() => {
 		PROFILES.date_of_birth,
 		PROFILES.fame,
 		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWs
+	) as Views ON USERS.id = Views.by
+	WHERE USERS.id = ${user.id};`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+}
+const getAllVerifiedUsersSortedByAge = async() => {
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
 		PROFILES.age_diff
 	FROM USERS
 	INNER JOIN AUTH ON USERS.id = AUTH.userId
@@ -28,7 +73,7 @@ const getAllVerifiedUsersSortedByAge = async() => {
 	ORDER BY
 		age_diff ASC,
 		fame ASC,
-		age ASC`
+		age ASC`;
 	let result = await client.query(query)
 	.then(result => {
 		return BufferB64.All.B64(result.rows);
@@ -51,7 +96,8 @@ const getAllVerifiedUsers = async() => {
 		PROFILES.gender,
 		PROFILES.date_of_birth,
 		PROFILES.fame,
-		PROFILES.age
+		PROFILES.age,
+		PROFILES.gender
 	FROM USERS
 	INNER JOIN AUTH ON USERS.id = AUTH.userId
 	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
@@ -95,10 +141,10 @@ const getUserFromLogin = async (detail) => {
 		query += `display_name = '${detail}' OR email = '${detail}';`;
 	else
 		query += `id = '${detail}'`;
-	console.log(query)
+	// console.log(query)
 	let result = await client.query(query)
 		.then(result => {
-		console.log(result)
+		// console.log(result)
 		return result.rows[0];
 	})
 		.catch(error => {
@@ -205,6 +251,7 @@ const validatePassword = async (login, password) => {
 let Users = {
 	get : {
 		Single: getUserFromLogin,
+		Entire: getAllUserInfo,
 		Verified: {
 			sorted: getAllVerifiedUsersSortedByAge,
 			unsorted:getAllVerifiedUsers
