@@ -86,8 +86,9 @@ const insertImages=async (login,data)=>{
 		return { error: user.error };
 	const values = validateData(data);
 	console.log("vals => ",values)
-	deleteRankImageFromLogin(login,data.rank,user);
+	deleteRankImageFromLogin(login, data.rank, user);
 	let query = InsertRecord("Images", { ...values, ...{ userId: user.id } }, null);
+	console.log(query);
 	let results = await client.query(query.string,query.values)
 	.then(result => {
 		return BufferB64.All.B64(result.rows);

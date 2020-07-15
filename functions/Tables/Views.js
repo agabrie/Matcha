@@ -83,7 +83,7 @@ const checkViewed = (viewed,views) => {
 const insertView = async (login, data) => {
 	console.log("view data =>",login,data)
 	let user = await Users.get.Single(login)
-	let views = await Views.getViewFromLogin(login)
+	let views = await Views.get.Single(login)
 	// .then((res) => {
 		// 	if (res.id)
 		// 		return res

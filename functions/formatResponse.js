@@ -75,7 +75,7 @@ const formatViews = (data) => {
 };
 const formatUser = (data) => {
 	let valid = {};
-	if (data.userId) valid.id = data.id;
+	if (data.id) valid.id = data.id;
 	if (data.name) valid.name = data.name;
 	if (data.surname) valid.surname = data.surname;
 	if (data.email) valid.email = data.email;

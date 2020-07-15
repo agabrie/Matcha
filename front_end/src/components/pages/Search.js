@@ -77,16 +77,6 @@ class UserCard extends Component {
 		await this.props.getProfile(display_name, index);
 	}
 
-	// async getProfile(id) {
-	// 	let users = await axios
-	// 		.get(`http://localhost:8001/api/profiles/${id}`)
-	// 		.then((results) => {
-	// 			// this.setState({
-	// 			// users: results.data,
-	// 			// display_name: display_name,
-	// 			// });
-	// 		});
-	// }
 	componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
 		this.setState = {
@@ -140,6 +130,7 @@ class Search extends Component {
 	async registerView(id) {
 		let { display_name } = this.state;
 		let viewed = { viewed: id };
+		console.log("viewed => ",viewed);
 		let view = await axios
 			.post(`http://localhost:8001/api/views/${display_name}`, viewed)
 			.then((results) => {
