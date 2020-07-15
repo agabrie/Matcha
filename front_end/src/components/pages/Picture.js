@@ -1,10 +1,22 @@
 import React, { Component } from "react";
 import axios from "axios";
-class Image extends Component {
+import CenterStyle from "./CenterStyle";
+/*class Image extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
+		this.state = {
+			type: props.type,
+			data: props.data
+		}
 	}
-}
+	render() {
+		return (
+			<div width="100%" height="100%">
+				<img src={`${this.state.type},${this.state.data}`} style={{"height":"20vh","width":"auto","max-width":"20vw","max-height":"20vh",...CenterStyle(0) }} />
+			</div>
+		);
+	}
+}*/
 class Picture extends Component {
 	constructor(props) {
 		super(props);
@@ -50,28 +62,40 @@ class Picture extends Component {
 
 	render() {
 		return (
-			<div>
-				{console.log("here ->", this.state)}
-				<div>
-					<input
-						accept="image/*"
-						id="button"
-						type="file"
-						onChange={this.onChangeHandler}
-					/>
-					{this.state.data && (
-						<div>
-							<h1>{this.state.rank}</h1>
-							<img
-								src={`${this.state.type},${this.state.data}`}
-								width="20%"
-								alt=""
-							/>
-							<br />
-							<button onClick={this.submit}>SAVE</button>
-						</div>
-					)}
-				</div>
+			<div
+				width="20%"
+				style={{
+					backgroundColor: "darkgrey",
+					borderRadius: "10px",
+					padding: "5px",
+					margin: "1px",
+				}}
+			>
+				{/* <label htmlFor={`button${this.state.rank}`}>+</label> */}
+				<input
+					accept="image/*"
+					id={`button${this.state.rank}`}
+					type="file"
+					onChange={this.onChangeHandler}
+					// hidden
+				/>
+				{this.state.data && (
+					<div>
+						<h1>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</h1>
+						<img
+							src={`${this.state.type},${this.state.data}`}
+							style={{
+								height: "20vh",
+								width: "auto",
+								maxWidth: "20vw",
+								maxHeight: "20vh",
+								...CenterStyle(0),
+							}}
+						/>
+						<br />
+						<button onClick={this.submit}>SAVE</button>
+					</div>
+				)}
 			</div>
 		);
 	}

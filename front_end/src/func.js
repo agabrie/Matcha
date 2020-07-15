@@ -7,14 +7,9 @@ const  login = async (user) => {
 		}
 		return res
 	});
-	// console.log("this", result);
 	if (!result.error){
-		// return false
-	// }
-	// else {
 		sessionStorage.setItem("id", result.data.user.id);
 		sessionStorage.setItem("display_name", result.data.user.display_name)
-		// return true;
 	}
 	return result;
 };
@@ -31,6 +26,18 @@ const register = async(user)=>{
 	return result;
 }
 
+const getAllUserImages = async (display_name) => {
+	let results = await axios
+		.get(`http://localhost:8001/api/images/${display_name}`)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res.data;
+		});
+	return results;
+};
+
 const sendToken = async (user)=> {
 	let result = await axios.post('http://localhost:8001/api/verify', user).then(res => {
 		if(res.data.error){
@@ -41,5 +48,5 @@ const sendToken = async (user)=> {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register};
-export default {login, sendToken, register}
+export {login, sendToken, register,getAllUserImages};
+export default {login, sendToken, register,getAllUserImages}
