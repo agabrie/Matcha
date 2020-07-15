@@ -39,6 +39,7 @@ class Login extends Component{
                     <input type="display_name" name="display_name" onChange={this.changeHandler} placeholder="display_name"/><br/>
                     <input type="password" name="password" onChange={this.changeHandler} placeholder="password"/><br/>
                     <button type="submit"> Submit </button>
+					<a href="http://localhost:3001/ForgotPass">Forgot Password</a>
                 </form>
                 <br/>
             </div>

@@ -6,6 +6,7 @@ import ImageUpload from './components/pages/Picture';
 import './App.css';
 import Verify from './components/pages/Verify';
 import Profile from './components/pages/Profile';
+import ForgotPass from './components/pages/ForgotPass'
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
           <Route exact path="/imageUpload" component={ImageUpload} />
 		  <Route  path="/verify" component={Verify} />
 		  <Route path="/Profile" component={Profile} />
+		  <Route path="/ForgotPass" component={ForgotPass} />
         </div>
       </div>
     </Router>
