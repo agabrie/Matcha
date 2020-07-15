@@ -7,6 +7,7 @@ import './App.css';
 import Verify from './components/pages/Verify';
 import Profile from './components/pages/Profile';
 import ForgotPass from './components/pages/ForgotPass'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
   render() {
