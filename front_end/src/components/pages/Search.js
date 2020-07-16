@@ -25,11 +25,7 @@ class ProfileCard extends Component {
 	}
 	async handleClick(e) {
 		e.preventDefault();
-		console.log("clicked user");
-		// let { id, display_name, index } = this.state;
-		// await this.props.registerView(id);
-		// console.log("dn & index =>", display_name, index);
-		// await this.props.getProfile(display_name, index);
+		console.log("clicked profile");
 	}
 
 	componentDidMount() {
@@ -86,7 +82,6 @@ class UserCard extends Component {
 			color: { Male: "cyan", Female: "pink", null: "grey" },
 		};
 		this.handleClick = this.handleClick.bind(this);
-		// this.registerView = this.registerView.bind(this);
 	}
 	async handleClick(e) {
 		e.preventDefault();
@@ -152,19 +147,15 @@ class Search extends Component {
 			.get(`http://localhost:8001/api/profiles/${display_name}/all`)
 			.then((results) => {
 				let { users } = this.state;
-				console.log("users=>", users, index);
-				console.log("profile before => ", users[index]);
+				// console.log("users=>", users, index);
+				// console.log("profile before => ", users[index]);
 				let user = users[index];
 				let profile = user.profile;
 				results.data.profile = { ...profile, ...results.data.profile };
 				user = { ...user, ...results.data };
 				user.profile.active = true;
 				users[index] = user;
-				console.log("profile after => ", users[index]);
-				// this.setState({
-				// users: results.data,
-				// display_name: display_name,
-				// });
+				// console.log("profile after => ", users[index]);
 				return users;
 			})
 			.then((users) => {
@@ -176,7 +167,7 @@ class Search extends Component {
 	async registerView(id) {
 		let { display_name } = this.state;
 		let viewed = { viewed: id };
-		console.log("viewed => ", viewed);
+		// console.log("viewed => ", viewed);
 		await axios
 			.post(`http://localhost:8001/api/views/${display_name}`, viewed)
 			.then((results) => {

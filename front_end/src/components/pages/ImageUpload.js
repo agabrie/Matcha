@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import axios from "axios";
 import Picture from "./Picture";
 import { getAllUserImages } from "../../func";
 import { CenterStyle } from "./CenterStyle";

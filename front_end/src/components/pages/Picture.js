@@ -1,22 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CenterStyle from "./CenterStyle";
-/*class Image extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			type: props.type,
-			data: props.data
-		}
-	}
-	render() {
-		return (
-			<div width="100%" height="100%">
-				<img src={`${this.state.type},${this.state.data}`} style={{"height":"20vh","width":"auto","max-width":"20vw","max-height":"20vh",...CenterStyle(0) }} />
-			</div>
-		);
-	}
-}*/
 class Picture extends Component {
 	constructor(props) {
 		super(props);
