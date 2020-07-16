@@ -17,17 +17,17 @@ function ProfileCard(props) {
     <div>
        <div className="upper-container">
           <div className="image-container">
-              <img src={props.user.profile.images[0]} alt=""/>
+              
           </div>
        </div>
        <div className="lower-container">
           <div>
             <h3>{props.user.display_name}</h3>
           </div>
-
+         {/*<img src={props.user.profile.images[0]} alt=""/>*/}
           <div className="flex-parent">
               <div className="child">
-                  Age:  {Math.floor((Date.now() - Date.parse(props.user.profile.date_of_birth))/ 31556952000 )}
+                  Age:  {Math.floor((Date.now() - Date.parse(props.user.date_of_birth))/ 31556952000 )}
               </div>
               <div className="child">
                 5 km away
@@ -40,7 +40,7 @@ function ProfileCard(props) {
             </div>
             <div className="child">
               <p>Interests:</p>
-                <RenderInterests interests={props.user.profile.interests}/>
+                
             </div>
             <div className="child-btn">
             <button onClick={() => props.navigate("right")} className="btn-right"><i className="fa fa-arrow-right" aria-hidden="true"></i></button>

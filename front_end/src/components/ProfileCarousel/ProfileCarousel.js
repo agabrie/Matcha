@@ -13,8 +13,7 @@ function ProfileCarousel () {
     
    const fetchProfiles = async() => {
 		const response = await axios.get('http://localhost:8001/api/profiles')
-		console.log(response.data);
-        setProfiles(response.data);
+        setProfiles(response.data.result);
     }
 
     const navigate = (direction) => {

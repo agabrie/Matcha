@@ -8,14 +8,13 @@ function ProfileView({match}) {
         async function fetchProfile (){ 
             const response = await axios.get(`http://localhost:8001/api/profiles/${match.params.id}`)
             console.log(response)
-            setName(response.data.display_name)
-            setProfile(response.data.profile)
+            setProfile(response.data.result)
         }
         fetchProfile()
     }, [match])
 
     const [userProfile, setProfile] = useState({})
-    const [name, setName] = useState("")
+    
     return (
         
         <div className="profileView-container">
@@ -23,12 +22,12 @@ function ProfileView({match}) {
                 <div className="row">
                     <div className="column">
                         <div className="left-panel">
-                            <h2>{name ? name : null}</h2>
+                            <h2>{userProfile.display_name ? userProfile.display_name : null}</h2>
                         </div>
                     </div>
                     <div className="column">
                         <div className="images">
-                            {userProfile.images ?  <SlideView images={userProfile.images}/> : null}
+                        {/*    {userProfile.images ?  <SlideView images={userProfile.images}/> : null}*/}
                         </div>
                     </div>
                     <div className="column">
