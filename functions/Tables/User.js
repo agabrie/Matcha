@@ -50,6 +50,7 @@ getAllUsersViewsOnSelf = async (login) => {
 		});
 	return result;
 }
+
 const getAllUserInfo = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
@@ -59,6 +60,8 @@ const getAllUserInfo = async (login) => {
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
+		USERS.name,
+		USERS.surname,
 		IMAGES.type,
 		IMAGES.data,
 		PROFILES.gender,
@@ -88,6 +91,7 @@ const getAllUserInfo = async (login) => {
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
+			console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {

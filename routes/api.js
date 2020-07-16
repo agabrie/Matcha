@@ -20,6 +20,7 @@ router.get("/users/:login/all", async (req, res, next) => {
 	console.log("user => ", result);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
+	console.log("result=>",result)
 	res.send(result);
 });
 
@@ -82,7 +83,14 @@ router.put("/users/:login", async function (req, res, next) {
 });
 
 /***************************** PROFILES ***********************************/
-
+router.get("/profiles/:login/all", async (req, res, next) => {
+	let result = await Profiles.get.Entire(req.params.login);
+	console.log("user => ", result);
+	result = formatResponse.User.Single(result);
+	if (!result) res.send({ error: "no such user in database" });
+	console.log("result=>", result);
+	res.send(result);
+});
 /* gets all profiles */
 router.get("/profiles/", async function (req, res, next) {
 	console.log("profiles get");

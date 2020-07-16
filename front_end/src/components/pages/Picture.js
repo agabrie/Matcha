@@ -81,7 +81,7 @@ class Picture extends Component {
 				/>
 				{this.state.data && (
 					<div>
-						<h1>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</h1>
+						<h1>{this.state.rank === 1 ? "Profile Pic" : this.state.rank}</h1>
 						<img
 							src={`${this.state.type},${this.state.data}`}
 							style={{
@@ -91,6 +91,7 @@ class Picture extends Component {
 								maxHeight: "20vh",
 								...CenterStyle(0),
 							}}
+							alt=''
 						/>
 						<br />
 						<button onClick={this.submit}>SAVE</button>
