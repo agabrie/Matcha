@@ -1,6 +1,5 @@
-const { Client } = require('pg');
-require('dotenv').config();
-
+const { Client } = require("pg");
+require("dotenv").config();
 
 let pghost = process.env.DBHost;
 let pgdb = process.env.DBDatabase;
@@ -10,24 +9,22 @@ let pgpassword = process.env.DBPassword;
 let pgurl = `postgres://${pguser}:${pgpassword}@${pghost}:${pgport}/${pgdb}`;
 const client = new Client({
 	connectionString: pgurl,
-	ssl: {
-		rejectUnauthorized: false
-	}
+	// ssl: {
+	// 	rejectUnauthorized: false
+	// }
 });
 const connect = () => {
 	client.connect();
-}
+};
 const end = () => {
 	client.end;
-}
+};
 
 module.exports = {
 	client: client,
 	// connect:connect,
 	// end:end
-}
-
-
+};
 
 /*
 function DB(){

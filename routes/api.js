@@ -8,7 +8,9 @@ const { Auth } = require('../functions/Tables/Auth');
 const { Users } = require('../functions/Tables/User');
 const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
-const {Views} = require('../functions/Tables/Views')
+const { Views } = require('../functions/Tables/Views')
+const { Images } = require('../functions/Tables/Images')
+const { formatResponse } = require('../functions/formatResponse')
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -29,74 +31,18 @@ router.get('/users/:login/all', async function (req, res, next) {
 	res.send(results);
 });
 
-/*
-** do a filter and sort based on the following parameters
-**	preferences:{
-**		sexual_preference,
-**		age:{
-**			current,
-**			min,
-**			max
-**		},
-**		gender:Female
-**	},
-**	sort:{
-**		age_diff:1,
-**	}
-*/
-router.get('/search/', async (req, res, next) => {
-	console.log("search");
-	let age = 20;
-	let conditions = req.body.preferences;
-	let numConditions = 0;
-	if (conditions)
-		numConditions = Object.keys(conditions).length;
-	// let preferences = req.body.sexual_preference;
-	// let filter_on_preferences = '';
-	let logic = '';
-	let i = 0;
-	if (conditions) {
-		for (condition in conditions) {
-			let element = conditions[conditions];
-			// console.log("conditions => ", `${condition} : ${element}`);
-			logic += `WHERE ${condition} = $${element}`;
-			if (i == numConditions)
-				break;
-			logic += " \n\tAND ";
-			i++;
-		}
-	}
-	let sort_by = '';
-	let query = `
-		SELECT *,EXTRACT(YEAR from AGE(date_of_birth)) as "age", ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${conditions.age.current}) as "age_diff" FROM USERS
-		INNER JOIN PROFILES ON USERS.ID = USERID
-		WHERE EXTRACT(YEAR from AGE(date_of_birth)) BETWEEN ${conditions.age.min} AND ${conditions.age.max}
-		ORDER BY age_diff ASC, age ASC;
-		`;
-	// ${logic}
-	// ${sort_by}
-	console.log(query);
-	let results = await client.query(query)
-		.then(result => {
-			console.log(result.rows)
-			return result.rows;
-		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return ({ error: err.detail });
-		});
-	res.send(results);
-});
+
 
 /* get All users */
 router.get('/users', async function (req, res, next) {
+	console.log("get all users")
 	let result = await Users.get.All();
 	res.send(result);
 });
 
 /* get user based on display_name, email or id */
 router.get('/users/:login', async function (req, res, next) {
-	console.log("fetch users");
+	console.log("get user : ",req.params.login);
 	let data = await Users.get.Single(req.params.login);
 	console.log(data);
 	res.send(data);
@@ -107,13 +53,22 @@ router.get('/users/:login', async function (req, res, next) {
 ** requires {name, surname, email, display_name, password}
 */
 router.post('/users', async function (req, res, next) {
-	// console.log("insert user => ",req.body.display_name);
-	let auth, user;
-	console.log("hello");
-	user = await Users.insert.Single(req.body);
-	// console.log("user id => ",user.id);
-	auth = await Auth.insert.Single(user.display_name, req.body);
-	res.send({ result: { user, auth } });
+	console.log("register user")
+	let result = await Users.insert.Single(req.body)
+		.then(async (user) => {
+			if (user.error)
+				throw user.error
+			let auth = await Auth.insert.Single(user.display_name, req.body)
+				.then((auth) => {
+					if (auth.error)
+						throw auth.error
+					return auth
+				})
+				.catch(error => { return { error } })
+				return({user,auth})
+		})
+		.catch(error => { return { error } })
+	res.send(result);
 });
 
 /*
@@ -130,8 +85,7 @@ router.put('/users/:login', async function (req, res, next) {
 **	requires {password}
 */
 router.post('/login', async function (req, res, next) {
-	// console.log('result');
-	// console.log(req.body);
+	console.log("login user")
 	let results = await Users.validate.Password(req.body.display_name, req.body.password);
 	if (results.user) {
 		results.user.password = null;
@@ -201,7 +155,7 @@ router.get('/auth/:login', async function (req, res, next) {
 /* updates a users auth info */
 router.put('/auth/:login', async function (req, res, next) {
 	console.log("auth update");
-
+	// console.log("req.body => ", req.body);
 	let results = await Auth.update.Single(req.params.login, req.body);
 	res.send(results);
 });
@@ -216,18 +170,17 @@ router.post('/auth/:login', async function (req, res, next) {
 
 /* test endpoint for sending user emails */
 router.post('/verify', async function (req, res, next) {
-	// console.log("sending mail to :", req.body);
-	let result = await Auth.get.Single(req.body.mail).then ((res) => {
-		return res.result;
-	}) 
+	console.log("verifying user")
+	let user = await Auth.get.Single(req.body.mail)
 	// console.log(result.token);
 	// console.log(req.body.token);
-	if (result.token === req.body.token){
-		result = await Auth.update.Single(result.display_name, {verified: true}).then ((res) => {
-		return res.result;
-		});
+	if (user.token === req.body.token) {
+		let result = await Auth.update.Single(user.display_name, { verified: true })
+		res.send(result)
 	}
-	res.send(result)
+	else{
+		res.send({error:"verification token does not match"});
+	}
 	// let message = {
 	// 	to:req.params.address,
 	// 	subject:"Matcha Email",
@@ -237,87 +190,122 @@ router.post('/verify', async function (req, res, next) {
 	// console.log(req.params);
 })
 
-/*in progress : adds image to Images table*/
-addImage=async (file)=>{
-
-	let buf = Buffer.from(file.data,'binary')
-	console.log(buf);
-	let image = null;
-	return image;
-}
-
 /* in progress receives an image to uploaded */
-router.post('/uploadImage/:display_name',async function(req, res, next){
+router.get('/images/:login', async function (req, res, next) {
+	console.log("pics get")
+	let images = await Images.get.Single(req.params.login);
+	// console.log("images => ",images)
+	res.send(images)
+})
+
+router.post('/images/:login', async function (req, res, next) {
 	console.log("pic upload")
-	console.log(req.files)
-	try{
-		if(!req.files) {
+	// console.log("body=>",req.body)
+	// console.log(req.files)
+	try {
+		if (!req.body) {
 			console.log("no file")
 			res.send({
 				status: false,
 				message: 'No file uploaded'
 			});
 		}
-		else{
-			var inputImage = req.files.file;
-			let rank = req.body.rank;
-			console.log(req.files.file);
-			let image = await addImage(inputImage);
-			// let user = 	await User.findOne({'display_name':req.params.display_name},(err,obj)=>{return obj})
-			// .then(async(user)=>{
-			// 	if(!user.profile)
-			// 		user.profile = new Profile;
-			// 	var images = user.profile.images
-			// 	if(images.includes(image.data._id)){
-			// 		for (var i = images.length - 1; i >= 0; --i) {
-			// 			if(String(images[i])==String(image.data._id)) {
-			// 				images.splice(i, 1);
-			// 			}
-			// 		}
-			// 	}
-			// 	user.profile.images.splice(rank,0,image.data);
-			// 	return await user.save()
-			// 	.then((data)=>{
-			// 		return({
-			// 			status:true,
-			// 			message:"image uploaded to user successfully",
-			// 			data
-			// 		});
-			// 	}).catch((err)=>{
-			// 		console.log("err => ",err);
-			// 		return({
-			// 			status:false,
-			// 			message:"unsuccessful image upload to user",
-			// 			err
-			// 		});
-			// 	})
-			// }).catch((err)=>{
-			// 	return({
-			// 		status:false,
-			// 		message:"user does not exist in db",
-			// 		err
-			// 	});
-			// })
-			res.send(user)
+		else {
+			console.log(req.body)
+			let image = await Images.insert.Single(req.params.login, req.body);
+			// console.log("successfully uploaded : ",image);
+			res.send(image)
 		}
-	}catch (err) {
-        res.status(500).send(err);
-    }
+	} catch (err) {
+		res.status(500).send(err);
+	}
 })
 
 router.post('/views/:login', async function (req, res, next) {
 	console.log("Views insert");
 
 	let results = await Views.insert.Single(req.params.login, req.body);
+	// console.log("",results)
 	res.send(results);
 });
 
+/*
+** do a filter and sort based on the following parameters
+**	preferences:{
+**		sexual_preference,
+**		age:{
+**			current,
+**			min,
+**			max
+**		},
+**		gender:Female
+**	},
+**	sort:{
+**		age_diff:1,
+**	}
+*/
+
+
+router.get('/search/unsorted/', async (req, res, next) => {
+	let users = await Users.get.Verified.unsorted();
+	users = formatResponse.User.Multiple(users)
+	res.send(users);
+});
+
+router.get('/search/', async (req, res, next) => {
+	console.log("search");
+	let age = 20;
+	let conditions = req.body.preferences;
+	let numConditions = 0;
+	if (conditions)
+		numConditions = Object.keys(conditions).length;
+	// let preferences = req.body.sexual_preference;
+	// let filter_on_preferences = '';
+	let logic = '';
+	let i = 0;
+	if (conditions) {
+		for (condition in conditions) {
+			let element = conditions[conditions];
+			// console.log("conditions => ", `${condition} : ${element}`);
+			logic += `WHERE ${condition} = $${element}`;
+			if (i == numConditions)
+				break;
+			logic += " \n\tAND ";
+			i++;
+		}
+	}
+	let sort_by = '';
+	let query = `
+		SELECT *,EXTRACT(YEAR from AGE(date_of_birth)) as "age", ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${conditions.age.current}) as "age_diff" FROM USERS
+		INNER JOIN PROFILES ON USERS.ID = USERID
+		WHERE EXTRACT(YEAR from AGE(date_of_birth)) BETWEEN ${conditions.age.min} AND ${conditions.age.max}
+		ORDER BY age_diff ASC, age ASC;
+		`;
+	// ${logic}
+	// ${sort_by}
+	console.log(query);
+	let results = await client.query(query)
+		.then(result => {
+			console.log(result.rows)
+			return result.rows;
+		})
+		.catch(err => {
+			console.log({ "sql error": err });
+			return ({ error: err.detail });
+		});
+	res.send(results);
+});
 router.post('/like/:login', async function (req, res, next) {
 	console.log("like profile");
 
 	let results = await Views.update.Single(req.params.login, req.body);
 	res.send(results);
 });
-
+router.get("/search/:login", async (req, res, next) => {
+	let users = await Users.get.Entire(req.params.login);
+	console.log("user => ",users)
+	formatResponse.User.Single(users);
+	res.send(users);
+});
 
 module.exports = router;

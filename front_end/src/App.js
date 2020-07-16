@@ -18,6 +18,7 @@ class App extends Component {
           <Header />
           <Route exact path="/" component={Home} />
           <Route exact path="/imageUpload" component={ImageUpload} />
+		  <Route exact path="/search" component={Search} />
 		  <Route  path="/verify" component={Verify} />
 		  <Route path="/Profile" component={Profile} />
 		  <Route path="/ForgotPass" component={ForgotPass} />

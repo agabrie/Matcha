@@ -4,51 +4,71 @@ import axios from 'axios';
 
 class Profile extends Component{
 
-
+constructor(props){
+	super(props)
+	this.state={
+		firstname:null,
+		lastname:null,
+		display_name:null,
+		email:null,
+		biography:null,
+		gender:null,
+		sexual_preference:null
+	}
+	this.changeHandler = this.changeHandler.bind(this);
+        this.submitHandler = this.submitHandler.bind(this);
+}
 	componentDidMount(){
 			// token: queryString.parse(window.location.search).token
 	  }
 	  changeHandler(e) {
         this.setState({
             [e.target.name] : e.target.value
-        });
+		});
+		// console.log(this.state[e.target.name])
     }
     submitHandler(e) {
-
+		console.log(this.state);
     }
     render() {
         return (
             <div>
-                <form onSubmit={this.submitHandler}>
-					<label for="Firstname">Firstname</label>
-						<input type="text" name="Firstname" onChange={this.changeHandler} placeholder="" /><br></br>
-					<label for="Lastname">Lastname</label>
-						<input type="text" name="Lastname" onChange={this.changeHandler} placeholder="" /><br></br>
-					<label for="username">username</label>
-						<input type="text" name="username" onChange={this.changeHandler} placeholder="" /><br></br>
-					<label for="email">email</label>
+				{console.log(this.state)}
+                {/* <form onSubmit={this.submitHandler}> */}
+					<label htmlFor="firstname">First Name</label>
+						<input type="text" name="firstname" onChange={this.changeHandler} placeholder="" /><br></br>
+					<label htmlFor="lastname">Last Name</label>
+						<input type="text" name="lastname" onChange={this.changeHandler} placeholder="" /><br></br>
+					<label htmlFor="display_name">Display Name</label>
+						<input type="text" name="display_name" onChange={this.changeHandler} placeholder="" /><br></br>
+					<label htmlFor="email">Email</label>
 						<input type="text" name="email" onChange={this.changeHandler} placeholder="" /><br></br>
-					<label for="Bio">Bio</label>
-						<input type="text" name="Bio" onChange={this.changeHandler} placeholder="" /><br></br>
+					<label htmlFor="biography">Biography</label>
+						<input type="text" name="biography" onChange={this.changeHandler} placeholder="" /><br></br>
 
 
 					<fieldset id="group1">
-						<label for="radio">Gender:</label><br></br>
-						<input type="radio" id="male" name="gender" value="male"/>
-						<label for="male">male</label><br></br>
-						<input type="radio" id="female" name="gender" value="female"/>
-						<label for="female">Female</label><br></br>
+						<label htmlFor="radio">Gender:</label><br></br>
+						<input type="radio" id="male" name="gender" onChange={this.changeHandler} value="Male" checked/>
+						<label htmlFor="male" onClick={this.changeHandler}>Male</label><br></br>
+						<input type="radio" id="female" name="gender" onChange={this.changeHandler} value="Female"/>
+						<label htmlFor="female" onClick={this.changeHandler}>Female</label><br></br>
+						<input type="switch" />
   					</fieldset>
 
   					<fieldset id="group2">
-						<label for="radio">Sexual Preference:</label><br></br>
-						<input type="radio" id="male" name="gender" value="male"/>
-						<label for="male">male</label><br></br>
-						<input type="radio" id="female" name="gender" value="female"/>
-						<label for="female">Female</label><br></br>
+						<label htmlFor="radio">Sexual Preference:</label><br></br>
+						<input type="radio" id="male2" name="sexual_preference" onChange={this.changeHandler} value="Male"/>
+						<label htmlFor="male2" onClick={this.changeHandler}>Male</label><br></br>
+
+						<input type="radio" id="female2" name="sexual_preference" onChange={this.changeHandler} value="Female"/>
+						<label htmlFor="female2" onClick={this.changeHandler}>Female</label><br></br>
+
+						<input type="radio" id="both2" name="sexual_preference" onChange={this.changeHandler} value="Both" checked/>
+						<label htmlFor="both2" onClick={this.changeHandler}>Both</label><br></br>
   					</fieldset>
-                    <button type="submit"> Submit </button>
-                </form>
+                    <button type="submit" onClick={this.submitHandler}> Submit </button>
+                {/* </form> */}
             </div>
         );
     }

@@ -14,7 +14,8 @@ class Verify extends Component{
 	}
 	componentDidMount(){
 		this.setState({
-			info: queryString.parse(window.location.search)});
+			info: queryString.parse(window.location.search)
+		});
 			// token: queryString.parse(window.location.search).token
 	  }
 	async submit(e) {

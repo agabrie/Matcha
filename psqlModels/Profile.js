@@ -21,13 +21,18 @@ const validateData = (data) => {
 		// display_name:data.display_name,
 		// password:data.password
 		// }
-		if (data.gender)
-			validData.gender = data.gender;
+		if (data.gender) validData.gender = data.gender;
 		if (data.sexual_preference) {
 			switch (data.sexual_preference) {
-				case "Male": validData.sexual_preference = 0; break;
-				case "Female": validData.sexual_preference = 1; break;
-				case "Both": validData.sexual_preference = 2; break;
+				case "Male":
+					validData.sexual_preference = 0;
+					break;
+				case "Female":
+					validData.sexual_preference = 1;
+					break;
+				case "Both":
+					validData.sexual_preference = 2;
+					break;
 			}
 			// validData.sexual_preference = data.sexual_preference;
 		}
@@ -41,44 +46,38 @@ const validateData = (data) => {
 		validData.userId = data.userId;
 		console.log("v", validData);
 		return validData;
-	}
-	catch (err) {
+	} catch (err) {
 		console.log(err);
-		return ({ error: err });
+		return { error: err };
 	}
 	// console.log("validated : ",validData);
 	// return validData;
-}
+};
 
 const Profile = {
 	tableName: "Profiles",
-	fields:
-	{
-		id:
-		{
+	fields: {
+		id: {
 			type: "SERIAL",
 			required: true,
-			keyType: "PRIMARY"
+			keyType: "PRIMARY",
 			// value:id
 		},
-		gender:
-		{
+		gender: {
 			type: "INTEGER",
 			// length:20,
 			required: true,
 			default: "18",
 			// value:name
 		},
-		sexual_preference:
-		{
+		sexual_preference: {
 			type: "INTEGER",
 			// length:20,
 			required: true,
 			default: "2",
 			// value:surname
 		},
-		biography:
-		{
+		biography: {
 			type: "VARCHAR",
 			length: 150,
 			required: true,
@@ -112,7 +111,7 @@ const Profile = {
 		location: {
 			type: "POINT",
 			required: true,
-			default: "(0,0)"
+			default: "(0,0)",
 		},
 		date_of_birth: {
 			type: "DATE",
@@ -125,9 +124,9 @@ const Profile = {
 			keyType: "FOREIGN",
 			reference: {
 				table: "Users",
-				field: "id"
-			}
-		}
+				field: "id",
+			},
+		},
 		// profileId:{
 		// 	type:"INT",
 		// 	keyType:"FOREIGN",
@@ -138,7 +137,7 @@ const Profile = {
 		// // 	// value:profileId
 		// }
 	},
-	validateData
-}
+	validateData,
+};
 
 module.exports = Profile;

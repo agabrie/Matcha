@@ -1,139 +1,103 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-// import FormData from 'form-data';
-
-/*class Picture extends Component{
-    constructor(props){
-      super(props);
-      this.state = {value:this.props.value}
-    };
-    changeImage=(src)=>{
-      this.setState({value:src});
-    }
-    render(){
-      return(
-      <div>
-        <img src={this.props.value} width="600px" height="400px" alt=""/>
-      </div>);
-    }
-  }
-  class ImageUpload extends Component{
-    constructor(props){
-      super(props);
-      this.state = {rank:0,imageFile:null,image:"",visibility:false, username:""};
-    }
-    onChangeHandler=event=>{
-		var file = event.target.files[0]
-		console.log("change =>",file)
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-          this.setState({
-            image: reader.result,
-            imageFile:file,
-            visibility:true
-          })
-        };
-        reader.onerror = function (error) {
-          console.log('Error: ', error);
-        }
-    }
-    submit=async ()=>{
-        // image upload endpoint
-        var url = `http://localhost:8000/api/uploadImage/${this.state.username}`;
-        var form = new FormData();
-		var file = this.state.imageFile;
-		console.log("submit =>",file)
-        await form.append('file', file,this.state.rank);
-		// form.append('rank',this.state.rank)
-		console.log("submit form =>",form)
-		
-        await axios.post(url, form, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then((data)=>{
-          if (data.status){
-            console.log(data);
-            // res.redirect('/search');
-          }
-        }).catch((err)=>{
-          console.log(err)
-        });
-    }
-    render(){
-      return (
-        <div className="imageUpload">
-          <input className="upload" id="file" type="file" name="file" onChange={this.onChangeHandler}/>
-          <label htmlFor="file">Choose a file</label>
-          {this.state.visibility?<Picture value={this.state.image} />:<br />}
-          <input type="text" placeholder="Username" id="username" onChange={event=>{this.setState({username:event.target.value})}}/>
-          <input type="text" placeholder="Rank" id="rank" onChange={event=>{this.setState({rank:event.target.value})}}/>
-          <button onClick={this.submit}>upload</button>
-        </div>
-      );
-    }
-  }
-  */
- class ImageUpload extends Component{
-	 constructor(props){
-		 this.state = {
-			 file:null,
-			 visibility:true,
-			 name:"",
-			 description:"",
-			 url:null,
-			//  isPrivate:false,
-			//  privacy:public
-		 };
+import React, { Component } from "react";
+import axios from "axios";
+import CenterStyle from "./CenterStyle";
+/*class Image extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			type: props.type,
+			data: props.data
 		}
-		 fileUpload = ()=>{
-			 var file =null;
-			 if(file !=null)this.setState({
-				 file:file,
-				 visibility:true
-			 })
-		 };
-		handleVisibility=(visibility)=>{
+	}
+	render() {
+		return (
+			<div width="100%" height="100%">
+				<img src={`${this.state.type},${this.state.data}`} style={{"height":"20vh","width":"auto","max-width":"20vw","max-height":"20vh",...CenterStyle(0) }} />
+			</div>
+		);
+	}
+}*/
+class Picture extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			rank: this.props.rank,
+			type: this.props.file ? this.props.file.type : null,
+			data: this.props.file ? this.props.file.data : null,
+			uploaded: this.props.src ? true : false,
+			visibility: false,
+			display_name: this.props.display_name,
+		};
+	}
+	resetState = () => {
+		this.setState({
+			visibility: false,
+		});
+	};
+	onChangeHandler = (event) => {
+		// this.resetState();
+		var file = event.target.files[0];
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
+
+		reader.onload = () => {
+			let base64 = reader.result;
+			let data = base64.split(",");
 			this.setState({
-				visibility:visibility
-			})
+				data: data[1],
+				type: data[0],
+				visibility: true,
+			});
 		};
-		resetState=()=>{
-			this.setState({
-				visibility:false
-			})
-		};
-		onChangeHandler = event =>{
-			this.resetState();
-			var file = event.target.files[0]
-			if(file != null){
-				this.setState({
-					file:file,
-					name:file.name
-				})
-			}
-		};
-		submit=()=>{
-			let visibility = this.handleVisibility;
-			this.resetState();
-			var file = this.state.file;
-			var name = this.state.name;
-			console.log({name,file});
-		};
-		render(){
-			return(
-				<div>
+	};
+	submit = async () => {
+		var { data, display_name, rank, type } = this.state;
+		let img = { data: data, rank: rank, type: type };
+		console.log("submit img", img);
+		let url = `http://localhost:8001/api/images/${display_name}`;
+		console.log(url);
+		let result = await axios.post(url, img);
+		console.log(result);
+	};
+
+	render() {
+		return (
+			<div
+				width="20%"
+				style={{
+					backgroundColor: "darkgrey",
+					borderRadius: "10px",
+					padding: "5px",
+					margin: "1px",
+				}}
+			>
+				{/* <label htmlFor={`button${this.state.rank}`}>+</label> */}
+				<input
+					accept="image/*"
+					id={`button${this.state.rank}`}
+					type="file"
+					onChange={this.onChangeHandler}
+					// hidden
+				/>
+				{this.state.data && (
 					<div>
-						<input
-							accept="image/*"
-							id="button"
-							type="file"
-							onChange={this.onChangeHandler}
+						<h1>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</h1>
+						<img
+							src={`${this.state.type},${this.state.data}`}
+							style={{
+								height: "20vh",
+								width: "auto",
+								maxWidth: "20vw",
+								maxHeight: "20vh",
+								...CenterStyle(0),
+							}}
 						/>
+						<br />
+						<button onClick={this.submit}>SAVE</button>
 					</div>
-				</div>
-			);
-		};
-	 }
-  export default ImageUpload;
+				)}
+			</div>
+		);
+	}
+}
+export default Picture;
