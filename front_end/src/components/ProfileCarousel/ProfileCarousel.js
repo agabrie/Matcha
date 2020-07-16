@@ -12,8 +12,9 @@ function ProfileCarousel () {
     const [currentIndex, setIndex] = useState(0)
     
    const fetchProfiles = async() => {
-        const response = await axios.get('https://my-json-server.typicode.com/morganjander/testjson/profiles')//just a fake REST server 
-        setProfiles(response.data)
+		const response = await axios.get('http://localhost:8001/api/profiles')
+		console.log(response.data);
+        setProfiles(response.data);
     }
 
     const navigate = (direction) => {

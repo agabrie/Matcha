@@ -6,7 +6,7 @@ import axios from 'axios';
 function ProfileView({match}) {
     useEffect(() => {
         async function fetchProfile (){ 
-            const response = await axios.get(`https://my-json-server.typicode.com/morganjander/testjson/profiles/${match.params.id}`)
+            const response = await axios.get(`http://localhost:8001/api/profiles/${match.params.id}`)
             console.log(response)
             setName(response.data.display_name)
             setProfile(response.data.profile)
