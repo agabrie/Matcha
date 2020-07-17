@@ -52,6 +52,7 @@ import { login } from "../../func";
 					</div>
                     <div className="button">
 						<button type="button" className="btn" onClick={this.submitHandler}>Login</button>
+						<a href="http://localhost:3001/ForgotPass">Forgot Password</a>
 					</div>
                 </div>
             </div>
