@@ -1,16 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 
-const  login = async (user) => {
-	let result = await axios.post('http://localhost:8001/api/login', user).then(res => {
-		if(res.data.error) {
-			return {error: res.data.error}
-		}
-		return res
-	});
-	console.log(result.data)
-	if (!result.error){
+const login = async (user) => {
+	let result = await axios
+		.post("http://localhost:8001/api/login", user)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res;
+		});
+	console.log(result.data);
+	if (!result.error) {
 		sessionStorage.setItem("id", result.data.id);
-		sessionStorage.setItem("display_name", result.data.display_name)
+		sessionStorage.setItem("display_name", result.data.display_name);
 	}
 	return result;
 };
@@ -20,27 +22,25 @@ const hasImage = async (user) => {
 	console.log("has image? => ", hasImage);
 
 	if (!hasImage) {
-		let res = await axios.get(`http://localhost:8001/api/images/${user}`)
-		console.log(res.data)
+		let res = await axios.get(`http://localhost:8001/api/images/${user}`);
+		console.log(res.data);
 		if (res.data && res.data.images.length) {
-			sessionStorage.setItem("ppVerified",true)
+			sessionStorage.setItem("ppVerified", true);
 			return true;
 		}
 		return false;
-	}
-	else
-		return true;
-}
+	} else return true;
+};
 const hasProfile = async (user) => {
-	console.log("check profile")
+	console.log("check profile");
 	let hasProfile = sessionStorage.getItem("profileVerified");
-	console.log("has profile? => ",hasProfile)
+	console.log("has profile? => ", hasProfile);
 	if (hasProfile) {
 		return true;
 	} else {
-		console.log("here")
+		console.log("here");
 		let res = await axios.get(`http://localhost:8001/api/profiles/${user}`);
-		console.log("profile checkings ->",res.data);
+		console.log("profile checkings ->", res.data);
 		if (res.data && !isEmpty(res.data.profile)) {
 			sessionStorage.setItem("profileVerified", true);
 			return true;
@@ -49,39 +49,38 @@ const hasProfile = async (user) => {
 	}
 };
 const checkVerified = async () => {
-	let user = sessionStorage.getItem("display_name")
-	let profile = await hasProfile(user)
+	let user = sessionStorage.getItem("display_name");
+	let profile = await hasProfile(user);
 	console.log(profile);
 	if (profile) {
-		let image = await hasImage(user)
+		let image = await hasImage(user);
 		if (image) {
-			return true;
-		}
-		else
-			return "/imageUpload";
-	}else{
-		return "/Profile"
+			return null;
+		} else return "/imageUpload";
+	} else {
+		return "/Profile";
 	}
-	
-	return null;
-}
+
+	// return null;
+};
 function isEmpty(obj) {
 	for (var key in obj) {
 		if (obj.hasOwnProperty(key)) return false;
 	}
 	return true;
 }
-const register = async(user)=>{
-	let result = await axios.post('http://localhost:8001/api/Users',user)
-	.then(res => {
-		if(res.data.error){
-			return {error: res.data.error};
-		}
-		return res.data;
-	});
-	console.log(result)
+const register = async (user) => {
+	let result = await axios
+		.post("http://localhost:8001/api/Users", user)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res.data;
+		});
+	console.log(result);
 	return result;
-}
+};
 const deleteImage = async (state) => {
 	var { display_name, rank } = state;
 	let img = { rank: rank };
@@ -97,7 +96,7 @@ const uploadImage = async (state) => {
 	return result;
 };
 const getAllUserImages = async (display_name) => {
-	console.log(display_name)
+	console.log(display_name);
 	let results = await axios
 		.get(`http://localhost:8001/api/images/${display_name}`)
 		.then((res) => {
@@ -105,21 +104,102 @@ const getAllUserImages = async (display_name) => {
 				return { error: res.data.error };
 			}
 			console.log(res);
-			return isEmpty(res.data)?[]:res.data.images;
+			return isEmpty(res.data) ? [] : res.data.images;
 		});
 	console.log(results);
 	return results;
 };
 
-const sendToken = async (user)=> {
-	let result = await axios.post('http://localhost:8001/api/verify', user).then(res => {
-		if(res.data.error){
-			return {error: res.data.error};
-		}
-		return res ;
-	})
+const sendToken = async (user) => {
+	let result = await axios
+		.post("http://localhost:8001/api/verify", user)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res;
+		});
 	return result.error ? false : true;
-}
+};
 
-export {login, sendToken, register,getAllUserImages,deleteImage,uploadImage,checkVerified};
-export default {login, sendToken, register,getAllUserImages,deleteImage,uploadImage,checkVerified}
+const forgotPassword = async (user) => {
+	let result = await axios
+		.get("http://localhost:8001/api/forgotpass", user)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res.data;
+		});
+	return result.error ? false : true;
+};
+
+const resetPassword = async (pass) => {
+	console.log(pass);
+	if (pass.password === pass.passwordcon) {
+		let password = { password: pass.password };
+		let result = await axios
+			.post(
+				`http://localhost:8001/api/resetpass/${pass.display_name.display_name}`,
+				password
+			)
+			.then((res) => {
+				if (res.data.error) {
+					return { error: res.data.error };
+				}
+				return res.data;
+			});
+		return result.error ? false : true;
+	} else return { error: "passwords don't match" };
+};
+
+const locateUser = async () => {
+	let result = await axios
+		.get(`http://localhost:8001/api/location`)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res.data;
+		});
+	return result.error ? false : true;
+};
+
+const uploadProfile = async (user) => {
+	let result = await axios
+		.post(`http://localhost:8001/api/profiles/${user.display_name}`, user)
+		.then((res) => {
+			if (res.data.error) {
+				return { error: res.data.error };
+			}
+			return res.data;
+		});
+	console.log(result);
+	return result;
+};
+export {
+	login,
+	sendToken,
+	register,
+	getAllUserImages,
+	forgotPassword,
+	resetPassword,
+	locateUser,
+	deleteImage,
+	uploadImage,
+	uploadProfile,
+	checkVerified,
+};
+export default {
+	login,
+	sendToken,
+	register,
+	getAllUserImages,
+	forgotPassword,
+	resetPassword,
+	locateUser,
+	deleteImage,
+	uploadImage,
+	uploadProfile,
+	checkVerified,
+};
