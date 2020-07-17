@@ -58,6 +58,9 @@ const getProfileFromLogin = async (login) => {
 	`;
 	let result = await client.query(query)
 		.then(result => {
+			// console.log(result.rows)
+			if (!result.rows[0])
+				throw "no such profile"
 			return result.rows[0] ;
 		})
 		.catch(error => {
@@ -66,6 +69,7 @@ const getProfileFromLogin = async (login) => {
 				return ({ error: error.detail });
 			return ({ error: error });
 		});
+	console.log(result);
 	return result;
 };
 

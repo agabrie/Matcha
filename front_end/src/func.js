@@ -14,6 +14,57 @@ const  login = async (user) => {
 	}
 	return result;
 };
+const hasImage = async (user) => {
+	console.log("check images");
+	let hasImage = sessionStorage.getItem("ppVerified");
+	console.log("has image? => ", hasImage);
+
+	if (!hasImage) {
+		let res = await axios.get(`http://localhost:8001/api/images/${user}`)
+		console.log(res.data)
+		if (res.data && res.data.images.length) {
+			sessionStorage.setItem("ppVerified",true)
+			return true;
+		}
+		return false;
+	}
+	else
+		return true;
+}
+const hasProfile = async (user) => {
+	console.log("check profile")
+	let hasProfile = sessionStorage.getItem("profileVerified");
+	console.log("has profile? => ",hasProfile)
+	if (hasProfile) {
+		return true;
+	} else {
+		console.log("here")
+		let res = await axios.get(`http://localhost:8001/api/profiles/${user}`);
+		console.log("profile checkings ->",res.data);
+		if (res.data && !isEmpty(res.data.profile)) {
+			sessionStorage.setItem("profileVerified", true);
+			return true;
+		}
+		return false;
+	}
+};
+const checkVerified = async () => {
+	let user = sessionStorage.getItem("display_name")
+	let profile = await hasProfile(user)
+	console.log(profile);
+	if (profile) {
+		let image = await hasImage(user)
+		if (image) {
+			return true;
+		}
+		else
+			return "/imageUpload";
+	}else{
+		return "/Profile"
+	}
+	
+	return null;
+}
 function isEmpty(obj) {
 	for (var key in obj) {
 		if (obj.hasOwnProperty(key)) return false;
@@ -70,5 +121,5 @@ const sendToken = async (user)=> {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register,getAllUserImages,deleteImage,uploadImage};
-export default {login, sendToken, register,getAllUserImages,deleteImage,uploadImage}
+export {login, sendToken, register,getAllUserImages,deleteImage,uploadImage,checkVerified};
+export default {login, sendToken, register,getAllUserImages,deleteImage,uploadImage,checkVerified}

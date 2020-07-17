@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
+import { checkVerified } from "../../func";
 
 class ProfileCard extends Component {
 	constructor(props) {
@@ -86,6 +87,10 @@ class UserCard extends Component {
 	async handleClick(e) {
 		e.preventDefault();
 		console.log("clicked user");
+		let check = await checkVerified();
+		console.log("check",check);
+		if (check)
+			return (window.location = check)
 		let { id, display_name, index } = this.state;
 		await this.props.registerView(id);
 		console.log("dn & index =>", display_name, index);
