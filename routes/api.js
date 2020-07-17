@@ -262,9 +262,12 @@ router.put("/views/:login", async function (req, res, next) {
  */
 router.post("/login", async function (req, res, next) {
 	console.log("login user");
+	console.log(req.body)
+	let login = req.body.login;
+	let password = req.body.password
 	let result = await Users.validate.Password(
-		req.body.display_name,
-		req.body.password
+		login,
+		password
 	);
 	if (result.user) {
 		result.user.password = null;

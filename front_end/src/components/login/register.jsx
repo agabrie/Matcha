@@ -1,6 +1,6 @@
 import React from 'react';
 import loginLogo from './login_logo.jpg';
-import axios from 'axios';
+import { register } from "../../func";
 
  export class Register extends React.Component{
     constructor(props) {
@@ -24,14 +24,14 @@ import axios from 'axios';
             [e.target.name] : e.target.value
         });
     }
-    submitHandler(e) {
+    async submitHandler(e) {
         e.preventDefault();
-        axios.post('http://localhost:4000/api/Users',this.state).then(res => {
-            if(res.data.errors) {
-                return this.setState(res.data);
-            }
-            return this.setState({userdata:res, success:true}); 
-        });
+        await register(this.state).then((res) => {
+					if (res.error) {
+						return this.setState({ error:res.error });
+					}
+					return this.setState({ userdata: res, success: true });
+				});
     }
     render() {
         return (

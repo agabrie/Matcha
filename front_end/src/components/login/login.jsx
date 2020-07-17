@@ -1,12 +1,12 @@
 import React from 'react';
 import loginLogo from './login_logo.jpg';
-import axios from 'axios';
+import { login } from "../../func";
 
  export class Login extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            email:'',
+            login:'',
             password:'',
             error: null
         };
@@ -19,11 +19,13 @@ import axios from 'axios';
             [e.target.name] : e.target.value
         });
     }
-    submitHandler(e) {
+    async submitHandler(e) {
         e.preventDefault();
-        axios.post('http://localhost:4000/api/login', this.state).then(res => {
-            if(res.data.error) {
-                return this.setState({error:res.data.message});
+        console.log(this.state)
+        await login(this.state)
+            .then(res => {
+            if(res.error) {
+                return this.setState({error:res.error});
             }
             return (window.location = '/mainpage');
         });
@@ -40,7 +42,7 @@ import axios from 'axios';
 					<div className="form">
 						<div className="form-group">
 							<label htmlFor="email">Email</label>
-							<input type="text" name="email" onChange={this.changeHandler} placeholder="name@example.com" />
+							<input type="text" name="login" onChange={this.changeHandler} placeholder="name@example.com" />
 						</div>
 						<div className="form-group">
 							<label htmlFor="password">Password</label>
