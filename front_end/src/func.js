@@ -107,5 +107,5 @@ const locateUser = async () => {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser};
-export default {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser}
+export {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser, deleteImage, uploadImage};
+export default {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser, deleteImage, uploadImage}
