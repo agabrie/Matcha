@@ -9,6 +9,8 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "cors": "^2.8.5",
+    "ip-to-location": "^1.0.1",
+    "ipify": "^4.0.0",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",

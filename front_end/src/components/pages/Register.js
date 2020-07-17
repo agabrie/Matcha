@@ -25,7 +25,7 @@ class Register extends Component{
         });
     }
     async submitHandler(e) {
-        e.preventDefault();
+		e.preventDefault();
         let result = await register(this.state);
         if(result.error){
             this.setState({error:result.error})

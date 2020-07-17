@@ -10,7 +10,11 @@ const { client } = require('../dbConnection');
 const { sendMail } = require('../functions/sendMail');
 const { Views } = require('../functions/Tables/Views')
 const { Images } = require('../functions/Tables/Images')
-const { formatResponse } = require('../functions/formatResponse')
+const { formatResponse } = require('../functions/formatResponse');
+// const { default: ForgotPass } = require('../front_end/src/components/pages/ForgotPass');
+const {forgotPassEmail} = require('../functions/forgotPass');
+const ipify = require("ipify");
+var ip2location = require('ip-to-location');
 
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
@@ -54,6 +58,8 @@ router.get('/users/:login', async function (req, res, next) {
 */
 router.post('/users', async function (req, res, next) {
 	console.log("register user")
+	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
+	console.log(locationData);
 	let result = await Users.insert.Single(req.body)
 		.then(async (user) => {
 			if (user.error)
@@ -307,5 +313,23 @@ router.get("/search/:login", async (req, res, next) => {
 	formatResponse.User.Single(users);
 	res.send(users);
 });
+
+router.get("/forgotpass", async(req, res, next) => {
+	let user = await Users.get.Single(req.body.login);
+	forgotPassEmail(user);
+	res.send(user);
+})
+
+router.post("/resetpass/:login", async(req, res, next) => {
+	console.log('==>>', req.body);
+	let result = await Users.update.Single(req.params.login, req.body);
+	res.send(result);
+})
+
+router.get("/location", async(req, res, next) => {
+	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
+	console.log(locationData);
+	res.send(locationData);
+})
 
 module.exports = router;

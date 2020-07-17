@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 const  login = async (user) => {
 	let result = await axios.post('http://localhost:8001/api/login', user).then(res => {
 		if(res.data.error) {
@@ -48,5 +49,41 @@ const sendToken = async (user)=> {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register,getAllUserImages};
-export default {login, sendToken, register,getAllUserImages}
+const forgotPassword = async (user) =>{
+	let result = await axios.get('http://localhost:8001/api/forgotpass', user).then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res.data ;
+	})
+	return result.error ? false : true;
+}
+
+const resetPassword = async (pass) => {
+	console.log(pass);
+	if (pass.password === pass.passwordcon){
+		let password = {password: pass.password}
+		let result = await axios.post(`http://localhost:8001/api/resetpass/${pass.display_name.display_name}`, password).then(res => {
+			if(res.data.error){
+				return {error: res.data.error};
+			}
+			return res.data ;
+		})
+		return result.error ? false : true;
+	}
+	else 
+		return {error: "passwords don't match"};
+}
+
+const locateUser = async () => {
+	let result = await axios.get(`http://localhost:8001/api/location`).then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res.data ;
+	})
+	return result.error ? false : true;
+}
+
+export {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser};
+export default {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser}

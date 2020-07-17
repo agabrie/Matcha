@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import {forgotPassword} from '../../func';
+import {resetPassword} from '../../func';
+import queryString from 'query-string';
 
 class ForgotPass extends Component{
 	constructor(props) {
 	super(props);
 	this.state={
-		display_name:'',
+		display_name: '',
+		password:'',
+		passswordcon: '',
 		success: false,
 		error: null
 	};
@@ -13,19 +16,25 @@ class ForgotPass extends Component{
 	this.submitHandler = this.submitHandler.bind(this);
 }
 
+	componentDidMount(){
+		this.setState({
+			display_name: queryString.parse(window.location.search)
+		});
+	}
+
 	changeHandler(e) {
         this.setState({
-            display_name : e.target.value
+			[e.target.name]: e.target.value
         });
 	}
 	
 	async submitHandler(e) {
         e.preventDefault();
-		let result = await forgotPassword(this.state);
+		let result = await resetPassword(this.state);
         if(result.error){
             this.setState({error:result.error})
         } else {
-            this.setState({success:"Password Reset email has been sent"})
+            this.setState({success:"Password has been reset!!"})
         }
         console.log(result);
     }
@@ -36,7 +45,8 @@ class ForgotPass extends Component{
 				{this.state.success && <p>{this.state.success}</p>}
        			{this.state.error && <p>{this.state.error}</p>}
                 <form onSubmit={this.submitHandler}>
-                    <input type="display_name" name="display_name" onChange={this.changeHandler} placeholder="display_name"/><br/>
+					<input type="password" name="password" onChange={this.changeHandler} placeholder="password"/><br/>
+                    <input type="password" name="passwordcon" onChange={this.changeHandler} placeholder="Confirm password"/>
                     <button type="submit"> Submit </button>
                 </form>
                 <br/>

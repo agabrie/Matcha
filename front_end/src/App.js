@@ -8,6 +8,7 @@ import Verify from './components/pages/Verify';
 import Profile from './components/pages/Profile';
 import ForgotPass from './components/pages/ForgotPass';
 import Search from './components/pages/Search';
+import ResetPass from './components/pages/ResetPass';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
@@ -23,6 +24,7 @@ class App extends Component {
 		  <Route  path="/verify" component={Verify} />
 		  <Route path="/Profile" component={Profile} />
 		  <Route path="/ForgotPass" component={ForgotPass} />
+		  <Route path="/resetpass" component={ResetPass} />
         </div>
       </div>
     </Router>
