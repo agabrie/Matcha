@@ -27,7 +27,8 @@ import { login } from "../../func";
             if(res.error) {
                 return this.setState({error:res.error});
             }
-            return (window.location = '/mainpage');
+                // return (window.location = '/mainpage');
+                return (window.location = '/imageUpload');
         });
     }
     render() {

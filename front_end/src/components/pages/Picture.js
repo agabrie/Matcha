@@ -47,40 +47,46 @@ class Picture extends Component {
 	render() {
 		return (
 			<div
-				width="20%"
 				style={{
 					backgroundColor: "darkgrey",
 					borderRadius: "10px",
 					padding: "5px",
 					margin: "1px",
+					width: "20vw",
+					height: "30vw",
 				}}
 			>
-				{/* <label htmlFor={`button${this.state.rank}`}>+</label> */}
-				<input
-					accept="image/*"
-					id={`button${this.state.rank}`}
-					type="file"
-					onChange={this.onChangeHandler}
-					// hidden
-				/>
-				{this.state.data && (
-					<div>
-						<h1>{this.state.rank === 1 ? "Profile Pic" : this.state.rank}</h1>
-						<img
-							src={`${this.state.type},${this.state.data}`}
-							style={{
-								height: "20vh",
-								width: "auto",
-								maxWidth: "20vw",
-								maxHeight: "20vh",
-								...CenterStyle(0),
-							}}
-							alt=''
-						/>
-						<br />
-						<button onClick={this.submit}>SAVE</button>
-					</div>
-				)}
+				<div style={{"fontSize":"2vw"}}>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</div>
+				<div>
+					<label
+						htmlFor={`button${this.state.rank}`}
+					>
+						{this.state.data ? (
+							<div>
+								<img
+									src={`${this.state.type},${this.state.data}`}
+									style={{
+										height: "19vw",
+										width: "19vw",
+									}}
+									alt=""
+								/>
+								<button onClick={this.submit}>SAVE</button>
+							</div>
+						) : (
+							<div style={{ fontSize: "19vw", height: "19vw", width: "19vw",margin:0 }}>
+								+
+							</div>
+						)}
+					</label>
+					<input
+						accept="image/*"
+						id={`button${this.state.rank}`}
+						type="file"
+						onChange={this.onChangeHandler}
+						hidden
+					/>
+				</div>
 			</div>
 		);
 	}
