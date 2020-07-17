@@ -7,7 +7,8 @@ class Footer extends Component {
 		this.state = {};
 	}
 	logout = () => {
-		sessionStorage.removeItem("id");
+		// sessionStorage.removeItem("id");
+		sessionStorage.clear();
 		this.setState({ loggedInUser: null });
 		return (window.location = "/");
 	};

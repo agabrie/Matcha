@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import './ProfileView.css';
 import SlideView from '../SlideView/SlideView';
 import axios from 'axios';
+import { checkVerified} from '../../func'
 
 function ProfileView({match}) {
     useEffect(() => {
@@ -17,8 +18,15 @@ function ProfileView({match}) {
             console.log("images =>",images.data)
             setUser(profile.data)
             setProfile(profile.data.profile)
-        }
-        fetchProfile()
+		}
+		async function getVerified() {
+			let check = await checkVerified();
+			console.log("check", check);
+			if (check)
+			return (window.location = check)
+		}
+		fetchProfile()
+		getVerified()
     }, [match])
 
     const [profile, setProfile] = useState({})

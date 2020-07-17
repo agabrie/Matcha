@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {uploadProfile, login} from '../../func';
+import {uploadProfile} from '../../func';
 
 
 class Profile extends Component{
@@ -21,7 +21,7 @@ constructor(props){
 }
 		async componentDidMount(){
 			// token: queryString.parse(window.location.search).token
-			let data = await axios.get(`http://localhost:8001/api/users/${sessionStorage.display_name}`)
+			 await axios.get(`http://localhost:8001/api/users/${sessionStorage.display_name}`)
 			// console.log(data);
 			// return data
 			

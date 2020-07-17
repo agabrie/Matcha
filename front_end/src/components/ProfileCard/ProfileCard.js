@@ -2,15 +2,15 @@ import React from 'react';
 import './ProfileCard.css';
 import { Link } from 'react-router-dom'
 
-function RenderInterests(props) {
-      return (
-        <div>
-          {props.interests.map((interest) => {
-            return <p key={interest}>#{interest}</p>
-          })}
-        </div>
-      )
-}
+// function RenderInterests(props) {
+//       return (
+//         <div>
+//           {props.interests.map((interest) => {
+//             return <p key={interest}>#{interest}</p>
+//           })}
+//         </div>
+//       )
+// }
 
 function ProfileCard(props) {
   return (
