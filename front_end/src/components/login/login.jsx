@@ -28,6 +28,7 @@ import { login } from "../../func";
                 return this.setState({error:res.error});
             }
                 // return (window.location = '/mainpage');
+                
                 return (window.location = '/imageUpload');
         });
     }

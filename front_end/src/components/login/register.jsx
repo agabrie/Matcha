@@ -29,8 +29,9 @@ import { register } from "../../func";
         await register(this.state).then((res) => {
 					if (res.error) {
 						return this.setState({ error:res.error });
-					}
-					return this.setState({ userdata: res, success: true });
+			}
+			return (window.location = "/");
+			// return this.setState({ userdata: res, success: true });
 				});
     }
     render() {
