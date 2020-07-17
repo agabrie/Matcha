@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-// import axios from 'axios';
+import axios from 'axios';
+import {uploadProfile, login} from '../../func';
 
 
 class Profile extends Component{
@@ -15,36 +16,48 @@ constructor(props){
 		gender:null,
 		sexual_preference:null
 	}
-	this.changeHandler = this.changeHandler.bind(this);
+		this.changeHandler = this.changeHandler.bind(this);
         this.submitHandler = this.submitHandler.bind(this);
 }
-	componentDidMount(){
+		async componentDidMount(){
 			// token: queryString.parse(window.location.search).token
-	  }
-	  changeHandler(e) {
+			let data = await axios.get(`http://localhost:8001/api/users/${sessionStorage.display_name}`)
+			console.log(data);
+			return data
+			
+		}
+		changeHandler(e) {
         this.setState({
             [e.target.name] : e.target.value
 		});
 		// console.log(this.state[e.target.name])
-    }
-    submitHandler(e) {
-		console.log(this.state);
+	}
+    async submitHandler(e) {
+		e.preventDefault();
+        let result = await uploadProfile(this.state);
+        if(result.error){
+            this.setState({error:result.error})
+        } else {
+            this.setState({success:"You are successfully registered"})
+        //    return (window.location = '/');
+        }
+        console.log(result);
     }
     render() {
         return (
             <div>
 				{console.log(this.state)}
-                {/* <form onSubmit={this.submitHandler}> */}
+                <form onSubmit={this.submitHandler}>
 					<label htmlFor="firstname">First Name</label>
-						<input type="text" name="firstname" onChange={this.changeHandler} placeholder="" /><br></br>
+						<input type="text" name="firstname" onChange={this.changeHandler} /><br></br>
 					<label htmlFor="lastname">Last Name</label>
-						<input type="text" name="lastname" onChange={this.changeHandler} placeholder="" /><br></br>
+						<input type="text" name="lastname" onChange={this.changeHandler} /><br></br>
 					<label htmlFor="display_name">Display Name</label>
-						<input type="text" name="display_name" onChange={this.changeHandler} placeholder="" /><br></br>
+						<input type="text" name="display_name" onChange={this.changeHandler}  /><br></br>
 					<label htmlFor="email">Email</label>
-						<input type="text" name="email" onChange={this.changeHandler} placeholder="" /><br></br>
+						<input type="text" name="email" onChange={this.changeHandler}  /><br></br>
 					<label htmlFor="biography">Biography</label>
-						<input type="text" name="biography" onChange={this.changeHandler} placeholder="" /><br></br>
+						<input type="text" name="biography" onChange={this.changeHandler}  /><br></br>
 
 
 					<fieldset id="group1">
@@ -68,7 +81,7 @@ constructor(props){
 						<label htmlFor="both2" onClick={this.changeHandler}>Both</label><br></br>
   					</fieldset>
                     <button type="submit" onClick={this.submitHandler}> Submit </button>
-                {/* </form> */}
+                </form>
             </div>
         );
     }

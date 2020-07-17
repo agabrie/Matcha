@@ -107,5 +107,17 @@ const locateUser = async () => {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser};
-export default {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser}
+const	uploadProfile = async (user) => {
+	let result = await axios.put(`http://localhost:8001/api/profiles/${user.display_name}`, user)
+	.then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res.data;
+	});
+	console.log(result)
+	return result;
+} 
+
+export {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser, deleteImage, uploadImage, uploadProfile};
+export default {login, sendToken, register,getAllUserImages, forgotPassword, resetPassword, locateUser, deleteImage, uploadImage, uploadProfile}
