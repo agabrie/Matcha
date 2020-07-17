@@ -76,7 +76,7 @@
 	height: 19vw;
 	padding: auto;
 }
-.btn {
+.btnImage {
 	font-size: 2vw;
 	padding: 1vw 2vw;
 	border: 0;
@@ -87,11 +87,11 @@
 	cursor: pointer;
 	margin: 2px;
 }
-.btn:hover {
+.btnImage:hover {
 	background-color: #966fd6;
 	border: solid 1px #fff;
 	color:#fff;
 }
-.btn:focus {
+.btnImage:focus {
 	outline: none;
 }

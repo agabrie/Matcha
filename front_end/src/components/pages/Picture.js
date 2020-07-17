@@ -68,10 +68,10 @@ class Picture extends Component {
 										alt=""
 									/>
 								</div>
-								<button className="btn" onClick={this.submit}>
+								<button className="btnImage" onClick={this.submit}>
 									✓
 								</button>
-								<button className="btn" onClick={this.delete}>
+								<button className="btnImage" onClick={this.delete}>
 									🛇
 								</button>
 							</div>
