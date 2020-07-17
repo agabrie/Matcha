@@ -4,10 +4,15 @@ import "./App.scss";
 // import Header from "./components/layout/Header";
 /*just loads in the correct front end*/
 import Home from "./App";
+// import Header from "./components/layout/Header";
+// import Home from "./components/pages/Home";
 import Search from "./components/pages/Search";
-import ImageUpload from "./components/pages/ImageUpload";
 import Verify from "./components/pages/Verify";
 import Profile from "./components/pages/Profile";
+import ImageUpload from "./components/pages/ImageUpload";
+import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
+import ProfileView from "./components/ProfileView/ProfileView";
+import "./App.css";
 
 
 class App extends Component {
@@ -22,6 +27,8 @@ class App extends Component {
 						<Route exact path="/imageUpload" component={ImageUpload} />
 						<Route path="/verify" component={Verify} />
 						<Route path="/Profile" component={Profile} />
+						<Route path="/ProfileCarousel" component={ProfileCarousel} />
+						<Route path="/profiles/:id" component={ProfileView} />
 					</div>
 				</div>
 			</Router>

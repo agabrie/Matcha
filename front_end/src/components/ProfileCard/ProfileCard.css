@@ -1,0 +1,118 @@
+.upper-container{
+  height: 150px;
+  background: #ebcfc1;
+  }
+  .image-container{
+  background: white;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  padding: 5px;
+  transform: translate(100px,100px);
+  }
+  .image-container img{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  }
+  .lower-container{
+  height: 280px;
+  background: #FFF;
+  padding: 20px;
+  padding-top: 40px;
+  text-align: center;
+  }
+  .lower-container h3, h4{
+  box-sizing: border-box;
+  line-height: .6;
+  font-weight: lighter;
+  color: #ff6666;
+  }
+  .lower-container h4{
+  
+  opacity: .6;
+  font-weight: bold;
+  }
+  .lower-container .flex-parent {
+    display: flex;
+  }
+
+  .lower-container .flex-parent .child {
+    flex: 1;
+    color: #ff6666;
+    
+    font-weight: bold;
+  }
+ 
+  .lower-container p{
+  font-size: 16px;
+  color: gray;
+  line-height: 1px;
+  margin-bottom: 20px;
+  }
+
+  .lower-container .buttons{
+    display: flex;
+  }
+  
+
+  .lower-container .profile-btn{
+  padding: 12px 20px;
+  background: #ebcfc1;
+  border: none;
+  color: #ff6666;
+  border-radius: 30px;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all .3s ease-in;
+  }
+  .lower-container .flex-parent .child-btn .btn-right{
+    width:20%;
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #ebcfc1;
+    border: none;
+    color: #ff6666;
+    border-radius: 30px;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all .3s ease-in;
+    }
+
+    .lower-container .child-btn .btn-left{
+      width:20%;
+      padding-left: 10px;
+      padding-right: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      background: #ebcfc1;
+      border: none;
+      color: #ff6666;
+      border-radius: 30px;
+      text-align: left;
+      font-size: 16px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all .3s ease-in;
+      }
+  
+  .lower-container .profile-btn:hover{
+  background: transparent;
+  color: #ff6666;
+  border: 2px solid #ff6666;
+  }
+  .lower-container .child-btn .btn-left:hover{
+    background: transparent;
+    color: #ff6666;
+    border: 2px solid #ff6666;
+    }
+    .lower-container .child-btn .btn-right:hover{
+      background: transparent;
+      color: #ff6666;
+      border: 2px solid #ff6666;
+      }
