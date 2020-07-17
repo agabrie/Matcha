@@ -72,10 +72,15 @@ const dropInterestsTable = async () => {
 const dropAllTables = async () => {
 	let output = {};
 	// try{
+	console.log("########## drop ##########");
 	output.views = await drop.Views();
+	console.log("views dropped")
 	output.images = await drop.Images();
+	console.log("images dropped");
 	output.interests = await drop.Interests();
+	console.log("interests dropped");
 	output.auth = await drop.Auth();
+	console.log("auth dropped");
 	output.profiles = await drop.Profiles();
 	output.users = await drop.Users();
 	return output;

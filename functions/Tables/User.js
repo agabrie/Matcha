@@ -1,165 +1,329 @@
-const { client } = require('../../dbConnection');
-const { InsertRecord } = require('../InsertRecord');
-const { UpdateRecord } = require('../UpdateRecord');
+const { client } = require("../../dbConnection");
+const { InsertRecord } = require("../InsertRecord");
+const { UpdateRecord } = require("../UpdateRecord");
+const { BufferB64 } = require("../BufferB64");
 
-const { Password } = require('../Password');
-
-const getAllUsersData = async () => {
-	const query = `SELECT * FROM USERS;`;
-	let result = await client.query(query)
-		.then(result => {
-			return { result: result.rows };
-			// console.log(result.rows)
-			// res.send(result.rows);
+const { Password } = require("../Password");
+getAllUsersViewsOnSelf = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	console.log(user);
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWS
+	) as Views ON USERS.id = Views.by
+	WHERE IMAGES.rank = '1'
+	AND Views.viewed = ${user.id};`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			return result.rows;
 		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
 		});
 	return result;
 }
 
+const getAllUserInfo = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	if (!user)
+		return {error:"no such user"}
+	console.log("user", user);
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		USERS.name,
+		USERS.surname,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWs
+	) as Views ON USERS.id = Views.by
+	WHERE USERS.id = ${user.id};`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			console.log(result.rows)
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
+const getAllVerifiedUsersSortedByAge = async () => {
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		PROFILES.age_diff
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age",
+		ABS(EXTRACT(YEAR from AGE(date_of_birth)) - 30) as "age_diff" FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'
+	ORDER BY
+		age_diff ASC,
+		fame DESC,
+		age ASC`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
+const getAllVerifiedUsers = async () => {
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT
+			*, 
+			EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
+const getAllUsersData = async () => {
+	const query = `SELECT * FROM USERS;`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
+
 const getUserFromLogin = async (detail) => {
+	// console.log(detail)
 	let query = `SELECT * FROM USERS WHERE `;
 	if (isNaN(detail))
 		query += `display_name = '${detail}' OR email = '${detail}';`;
-	else
-		query += `id = '${detail}'`;
-	// console.log(query);
-
-	let result = await client.query(query)
-		.then(result => {
-			return { result: result.rows[0] };
+	else query += `id = '${detail}'`;
+	// console.log(query)
+	let result = await client
+		.query(query)
+		.then((result) => {
 			// console.log(result.rows)
-			// res.send(result.rows);
+			return result.rows[0];
 		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
+		.catch((error) => {
+			console.log("gettin a user error =>", error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
 		});
+	// console.log(result);
 	return result;
-}
+};
 
 const insertUser = async (data) => {
 	const values = validateData(data);
 	const query = InsertRecord("Users", values, null);
-	// console.log(query);
+
 	if (query.errors) {
-		res.send({ "query error": query.errors });
-		throw query.errors;
+		return { error: query.errors };
 	}
-	let results = await client.query(query.string, query.values)
-		.then(result => {
-			// console.log(result.rows)
+
+	let results = await client
+		.query(query.string, query.values)
+		.then((result) => {
 			return result.rows[0];
 		})
-		.catch(err => {
-			console.log({ "sql error": err, data });
-			return ({ error: err.detail });
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
 		});
+
 	return results;
 };
 
 const updateUser = async (login, data) => {
 	const values = validateUpdateData(data);
-	let user = await Users.get.Single(login)
-		.then((res) => {
-			return res.result
-		})
-		.then(async (user) => {
-			// console.log("update => ",user);
-			let query = await UpdateRecord("Users", values, { id: user.id });
-			// console.log(query);
-			let results = await client.query(query.string, query.values)
-				.then(result => {
-					// console.log(result.rows)
-					return result.rows[0];
-				})
-				.catch(err => {
-					console.log({ "sql error": err });
-					return ({ error: err.detail });
-				});
-			return results;
-		})
+	let user = await Users.get.Single(login).then(async (user) => {
+		let query = await UpdateRecord("Users", values, { id: user.id });
+		let results = await client
+			.query(query.string, query.values)
+			.then((result) => {
+				return result.rows[0];
+			})
+			.catch((error) => {
+				console.log(error);
+				if (error.detail) return { error: error.detail };
+				return { error: error };
+			});
+		return results;
+	});
 	return user;
-}
+};
 
 const validateData = (data) => {
-	// console.log(data);
 	try {
-		if (!(data.name && data.surname && data.email && data.display_name && data.password))
+		if (
+			!(
+				data.name &&
+				data.surname &&
+				data.email &&
+				data.display_name &&
+				data.password
+			)
+		)
 			throw "some user fields incorrectly filled in or missing!";
 		let validData = {
 			name: data.name,
 			surname: data.surname,
 			email: data.email,
 			display_name: data.display_name,
-			password: Password.encode_password(data.password)
-		}
+			password: Password.encode_password(data.password),
+		};
 		return validData;
+	} catch (err) {
+		return { error: err };
 	}
-	catch (err) {
-		// console.log(err);
-		return ({ error: err });
-	}
-	// console.log("validated : ",validData);
-	// return validData;
-}
+};
 
 const validateUpdateData = (data) => {
-	// console.log(data);
-	let validData = {}
-	if (data.name)
-		validData.name = data.name;
-	if (data.surname)
-		validData.surname = data.surname;
-	if (data.display_name)
-		validData.display_name = data.display_name;
+	let validData = {};
+	if (data.name) validData.name = data.name;
+	if (data.surname) validData.surname = data.surname;
+	if (data.display_name) validData.display_name = data.display_name;
 	if (data.password)
 		validData.password = Password.encode_password(data.password);
-	return (validData);
-}
+	return validData;
+};
 
 const validatePassword = async (login, password) => {
-	let result = await Users.get.Single(login)
-		.then((res) => { console.log(results); return res.result })
-		.then((user) => {
-			return Password.validate(password, user);
+	let result = await Users.get
+		.Single(login)
+		.then(async (user) => {
+			let results = await Password.validate(password, user);
+			if (results.error) throw "password is incorrect";
+			else return results;
 		})
 		.catch((error) => {
-			console.log(error)
-			return (error);
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
 		});
 	return result;
 };
 
-let get = {
-	Single: getUserFromLogin,
-	All: getAllUsersData
-}
-
-let validate = {
-	Password: validatePassword
-}
-
-let insert = {
-	Single: insertUser
-}
-
-let update = {
-	name: {},
-	surname: {},
-	display_name: {},
-	password: {},
-	Single: updateUser
-}
 let Users = {
-	get,
-	validate,
-	insert,
-	update
-}
+	get: {
+		Single: getUserFromLogin,
+		Entire: getAllUserInfo,
+		Verified: {
+			sorted: { age:getAllVerifiedUsersSortedByAge },
+			unsorted: getAllVerifiedUsers,
+		},
+		ViewedBy: {Self:null,Others:getAllUsersViewsOnSelf},
+		All: getAllUsersData,
+	},
+	validate: {
+		Password: validatePassword,
+	},
+	insert: {
+		Single: insertUser,
+	},
+	update: {
+		// name: {},
+		// surname: {},
+		// display_name: {},
+		// password: {},
+		Single: updateUser,
+	},
+};
 
-module.exports = { Users }
+module.exports = { Users };

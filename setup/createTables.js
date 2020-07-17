@@ -92,6 +92,7 @@ const createImagesTable = async () => {
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
 		data BYTEA NOT NULL,
+		type VARCHAR (30) NOT NULL DEFAULT 'data:image/png;base64,',
 		rank INT NOT NULL DEFAULT '0',
 		userId INT REFERENCES Users(id),
 		profileId INT REFERENCES Profiles(id)
@@ -118,10 +119,10 @@ const createViewsTable = async () => {
 	Views
 	(
 		id SERIAL NOT NULL PRIMARY KEY,
+		userId INT REFERENCES Users(id),
 		viewed INT references users(id),
 		liked BOOLEAN NOT NULL DEFAULT 'FALSE',
-		userId INT REFERENCES Users(id),
-        profileId INT REFERENCES Profiles(id)
+        likedback BOOLEAN NOT NULL DEFAULT 'FALSE'
 	);`;
 	// console.log(User);
 	let result = await client.query(query)
