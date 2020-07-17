@@ -4,7 +4,8 @@ import "./App.scss";
 // import Header from "./components/layout/Header";
 /*just loads in the correct front end*/
 import Home from "./App";
-// import Header from "./components/layout/Header";
+import Header from "./components/pages/Header";
+import Footer from "./components/pages/Footer";
 // import Home from "./components/pages/Home";
 import Search from "./components/pages/Search";
 import Verify from "./components/pages/Verify";
@@ -21,7 +22,9 @@ class App extends Component {
 			<Router>
 				<div className="App">
 					<div className="container">
-						{/* <Header /> */}
+						<Header />
+						<div className="mainbody">
+
 						<Route exact path="/" component={Home} />
 						<Route exact path="/search" component={Search} />
 						<Route exact path="/imageUpload" component={ImageUpload} />
@@ -29,6 +32,8 @@ class App extends Component {
 						<Route path="/Profile" component={Profile} />
 						<Route path="/ProfileCarousel" component={ProfileCarousel} />
 						<Route path="/profiles/:id" component={ProfileView} />
+						</div>
+						<Footer />
 					</div>
 				</div>
 			</Router>
