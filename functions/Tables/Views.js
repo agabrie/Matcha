@@ -6,9 +6,6 @@ const { Users } = require('./User');
 const getMatchesFromlogin = async (login1, login2) => {
 	let user1 = await Users.get.Single(login1);
 	let user2 = await Users.get.Single(login1)
-	.then((res) => {
-		return res.result
-	})
 const query =
 	`SELECT
 	Users.display_name,
@@ -20,23 +17,19 @@ const query =
 `;
 let result = await client.query(query)
 	.then(result => {
-		return { result: result.rows };
-		// console.log(result.rows)
-		// res.send(result.rows);
+		return result.rows ;
 	})
-	.catch(err => {
-		return { error: err };
-		// console.log({"sql error":err});
-		// res.send({error:err})
+	.catch(error => {
+		console.log(error);
+		if (error.detail)
+			return ({ error: error.detail });
+		return ({ error: error });
 	});
 return result;
 }
 
 const getViewFromLogin = async (login) => {
 	let user = await Users.get.Single(login)
-		.then((res) => {
-			return res.result
-		})
 	const query =
 		`SELECT
 		Users.display_name,
@@ -48,14 +41,13 @@ const getViewFromLogin = async (login) => {
 	`;
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows };
-			// console.log(result.rows)
-			// res.send(result.rows);
+			return result.rows;
 		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
+		.catch(error => {
+			console.log(error);
+			if (error.detail)
+				return ({ error: error.detail });
+			return ({ error: error });
 		});
 	return result;
 };
@@ -71,47 +63,59 @@ const getAllViewsData = async () => {
 	`;
 	let result = await client.query(query)
 		.then(result => {
-			return { result: result.rows };
-			// console.log(result.rows)
-			// res.send(result.rows);
+			return result.rows;
 		})
-		.catch(err => {
-			return { error: err };
-			// console.log({"sql error":err});
-			// res.send({error:err})
+		.catch(error => {
+			console.log(error);
+			if (error.detail)
+				return ({ error: error.detail });
+			return ({ error: error });
 		});
 	return result;
 }
-
+const checkViewed = (viewed,views) => {
+	views.forEach((view) => {
+		if (view.viewed == viewed);
+			return view;
+	})
+	return null;
+}
 const insertView = async (login, data) => {
+	console.log("view data =>",login,data)
 	let user = await Users.get.Single(login)
-		.then((res) => {
-			if (res.result.id)
-				return res.result
-			else
-				throw { error: "no id" }
-		})
-		.catch((err) => { return { error: err }; })
-	if (user.error)
+	let views = await Views.get.Single(login)
+	// .then((res) => {
+		// 	if (res.id)
+		// 		return res
+		// 	else
+		// 		throw { error: "no id" }
+		// })
+		// .catch((err) => { return { error: err }; })
+		console.log("user =>", user);
+		if (user.error)
 		return { error: user.error };
-	const values = validateData(data);
-	// console.log("values => ",values)
+		console.log("data => ", data);
+		const values = validateData(data);
+		console.log("values =>",values);
+	if (checkViewed(values.viewed,views)) {
+		return checkViewed(values.viewed,views);
+	}
 	const query = InsertRecord("Views", { ...values, ...{ userId: user.id } }, null);
-	// console.log(query);
+	console.log("query =>",query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
 		throw query.errors;
 	}
 	let results = await client.query(query.string, query.values)
 		.then(async result => {
-			// console.log(result.rows)
-			// return result.rows[0];
 			let results = await Views.get.Single(login);
 			return results;
 		})
-		.catch(err => {
-			console.log({ "sql error": err });
-			return ({ error: err.detail });
+		.catch(error => {
+			console.log(error);
+			if (error.detail)
+				return ({ error: error.detail });
+			return ({ error: error });
 		});
 	return results;
 };
@@ -119,38 +123,29 @@ const insertView = async (login, data) => {
 const updateView = async (login, data) => {
 	const values = validateData(data);
 	let user = await View.get.Single(login)
-		.then((res) => {
-			return res.result
-		})
 		.then(async (user) => {
-			// console.log("update => ",user);
 			let query = await UpdateRecord("Views", values, { id: user.id });
-			// console.log(query);
 			let results = await client.query(query.string, query.values)
 				.then(async result => {
-					console.log(result.rows)
-					// return result.rows[0];
 					let results = await Views.get.Single(login);
 					return results;
 				})
-				.catch(err => {
-					console.log({ "sql error": err });
-					return ({ error: err.detail });
+				.catch(error => {
+					console.log(error);
+					if (error.detail)
+						return ({ error: error.detail });
+					return ({ error: error });
 				});
 			return results;
 		})
 	return user;
 }
 const validateData = (data) => {
-	// console.log(data);
 	let valid = {}
+	if (data.userId) {
+		valid.userId = data.userId;
+	}
 	if (data.viewed) {
-		/*
-		if(data.gender == "Male")
-			valid.gender = 1;
-		else
-			valid.gender = 2;
-		*/
 		valid.viewed = data.viewed;
 	}
 	if (data.liked) {
@@ -160,31 +155,24 @@ const validateData = (data) => {
 		valid.userId = data.userId;
 	return valid;
 }
-let get = {
-	Single: getViewFromLogin,
-	All: getAllViewsData
-}
-
-let validate = {
-	// Password:validatePassword
-}
-
-let insert = {
-	Single: insertView
-}
-
-let update = {
-	// name:{},
-	// surname:{},
-	// display_name:{},
-	// password:{},
-	Single: updateView
-}
 let Views = {
-	get,
-	validate,
-	insert,
-	update
+	get : {
+		Single: getViewFromLogin,
+		All: getAllViewsData
+	},
+	validate: {
+		// Password:validatePassword
+	},
+	insert: {
+		Single: insertView
+	},
+	update :{
+		// name:{},
+		// surname:{},
+		// display_name:{},
+		// password:{},
+		Single: updateView
+	}
 }
 
 module.exports = { Views }

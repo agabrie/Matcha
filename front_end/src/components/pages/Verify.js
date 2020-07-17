@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import queryString from 'query-string';
-import axios from 'axios';
+// import axios from 'axios';
 import {sendToken} from '../../func';
 
 class Verify extends Component{
@@ -14,7 +14,8 @@ class Verify extends Component{
 	}
 	componentDidMount(){
 		this.setState({
-			info: queryString.parse(window.location.search)});
+			info: queryString.parse(window.location.search)
+		});
 			// token: queryString.parse(window.location.search).token
 	  }
 	async submit(e) {
