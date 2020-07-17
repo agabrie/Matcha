@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
-// import CenterStyle from "./CenterStyle";
+import { deleteImage, uploadImage } from "../../func";
 import "./Picture.css"
-// const ImageStyle = {
-// 	height: "19vw",
-// 	width: "19vw",
-// };
+
 class Picture extends Component {
 	constructor(props) {
 		super(props);
@@ -39,23 +35,23 @@ class Picture extends Component {
 			});
 		};
 	};
+	
 	submit = async () => {
-		var { data, display_name, rank, type } = this.state;
-		let img = { data: data, rank: rank, type: type };
-		console.log("submit img", img);
-		let url = `http://localhost:8001/api/images/${display_name}`;
-		console.log(url);
-		let result = await axios.post(url, img);
-		console.log(result);
+		let result = await uploadImage(this.state);
+		console.log(result)
 	};
+	
 	delete = async () => {
-		/* doesn't do anything yet*/
+		let result = await deleteImage(this.state).then(res => {
+			this.setState({ data: null,type:null});
+		})
+		console.log(result);
 	 }
 	render() {
 		return (
 			<div className="imgcontainer">
 				<div className="text">
-					{this.state.rank == 1 ? "Profile Pic" : this.state.rank}
+					{this.state.rank === '1' ? "Profile Pic" : this.state.rank}
 				</div>
 				<div>
 					<label htmlFor={`button${this.state.rank}`}>
