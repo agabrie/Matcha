@@ -12,7 +12,7 @@ import Profile from "./components/pages/Profile";
 import ImageUpload from "./components/pages/ImageUpload";
 import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
-import "./App.css";
+// import "./App.css";
 
 
 class App extends Component {

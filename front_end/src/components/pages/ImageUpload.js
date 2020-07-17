@@ -12,7 +12,9 @@ class ImageUpload extends Component {
 			rank: null,
 		};
 	}
-
+	goToUsers = () => {
+		return (window.location = '/ProfileCarousel');
+	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
 
@@ -67,6 +69,9 @@ class ImageUpload extends Component {
 							/>
 						</div>
 					)}
+					<button onClick={this.goToUsers}>
+						view users
+					</button>
 				</div>
 			</div>
 		);
