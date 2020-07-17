@@ -58,8 +58,6 @@ router.get('/users/:login', async function (req, res, next) {
 */
 router.post('/users', async function (req, res, next) {
 	console.log("register user")
-	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
-	console.log(locationData);
 	let result = await Users.insert.Single(req.body)
 		.then(async (user) => {
 			if (user.error)
