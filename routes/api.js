@@ -3,25 +3,36 @@ const router = express.Router();
 // const create = require('../setup/createTables');
 const { insertRecord } = require("../functions/InsertRecord");
 // const User = require('../models/User');
-const { Profiles } = require("../functions/Tables/Profile");
-const { Auth } = require("../functions/Tables/Auth");
-const { Users } = require("../functions/Tables/User");
-const { client } = require("../dbConnection");
-const { sendMail } = require("../functions/sendMail");
-const { Views } = require("../functions/Tables/Views");
-const { Images } = require("../functions/Tables/Images");
-const { formatResponse } = require("../functions/formatResponse");
+const { Profiles } = require('../functions/Tables/Profile');
+const { Auth } = require('../functions/Tables/Auth');
+const { Users } = require('../functions/Tables/User');
+const { client } = require('../dbConnection');
+const { sendMail } = require('../functions/sendMail');
+const { Views } = require('../functions/Tables/Views')
+const { Images } = require('../functions/Tables/Images')
+const { formatResponse } = require('../functions/formatResponse');
+// const { default: ForgotPass } = require('../front_end/src/components/pages/ForgotPass');
+const {forgotPassEmail} = require('../functions/forgotPass');
+const ipify = require("ipify");
+var ip2location = require('ip-to-location');
 
-/******************************* USERS ************************************/
+/* get a single user's data with their profile */
+router.get('/users/:login/all', async function (req, res, next) {
+	console.log("fetch user data");
 
-/* get a single user's data with their profile,images, views and auth */
-router.get("/users/:login/all", async (req, res, next) => {
-	let result = await Users.get.Entire(req.params.login);
-	console.log("user => ", result);
-	result = formatResponse.User.Single(result);
-	if (!result) res.send({ error: "no such user in database" });
-	console.log("result=>",result)
-	res.send(result);
+	let query = `SELECT * FROM USERS
+		INNER JOIN PROFILES ON USERS.ID = USERID
+		`;
+	let results = await client.query(query)
+		.then(result => {
+			console.log(result.rows)
+			return result.rows;
+		})
+		.catch(err => {
+			console.log({ "sql error": err });
+			return ({ error: err.detail });
+		});
+	res.send(results);
 });
 
 /* get All users */
@@ -418,6 +429,25 @@ router.get("/search/unsorted/", async (req, res, next) => {
 	res.send(result);
 });
 
+router.get("/forgotpass", async(req, res, next) => {
+	let user = await Users.get.Single(req.body.login);
+	forgotPassEmail(user);
+	res.send(user);
+})
+
+router.post("/resetpass/:login", async(req, res, next) => {
+	console.log('==>>', req.body);
+	let result = await Users.update.Single(req.params.login, req.body);
+	res.send(result);
+})
+
+router.get("/location", async(req, res, next) => {
+	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
+	console.log(locationData);
+	res.send(locationData);
+})
+
+module.exports = router;
 router.get("/search/sorted/age", async (req, res, next) => {
 	let result = await Users.get.Verified.sorted.age();
 	result = formatResponse.User.Multiple(result);

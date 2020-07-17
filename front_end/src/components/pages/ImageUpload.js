@@ -34,7 +34,7 @@ class ImageUpload extends Component {
 	render() {
 		return (
 			<div>
-				<div className="text">{this.state.display_name}</div>
+				{/* <div className="text">{this.state.display_name}</div> */}
 				{this.state.data && (
 					<div style={CenterStyle(0)}>
 						<Picture
@@ -46,7 +46,7 @@ class ImageUpload extends Component {
 				)}
 				<div className="centerStyle">
 					{this.state.data && (
-						<div className="secondary">
+						<div style={CenterStyle(0)}>
 							<Picture
 								rank="2"
 								display_name={this.state.display_name}
@@ -69,9 +69,7 @@ class ImageUpload extends Component {
 							/>
 						</div>
 					)}
-					<button onClick={this.goToUsers}>
-						view users
-					</button>
+					<button onClick={this.goToUsers}>view users</button>
 				</div>
 			</div>
 		);

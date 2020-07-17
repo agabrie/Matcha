@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { login } from '../../func'
+import { locateUser } from '../../func';
 
 class Login extends Component {
     constructor(props) {
@@ -10,14 +11,21 @@ class Login extends Component {
             error: null
         };
         this.changeHandler = this.changeHandler.bind(this);
-        this.submitHandler = this.submitHandler.bind(this);
+		this.submitHandler = this.submitHandler.bind(this);
+		this.location = this.location.bind(this);
     }
 
     changeHandler(e) {
         this.setState({
             [e.target.name]: e.target.value
         });
-    }
+	}
+	
+	async location () {
+		let location = locateUser();
+		console.log(location);	
+	}
+
     async submitHandler(e) {
         e.preventDefault();
         let result = await login(this.state);
@@ -37,7 +45,10 @@ class Login extends Component {
                     <input type="display_name" name="display_name" onChange={this.changeHandler} placeholder="display_name" /><br />
                     <input type="password" name="password" onChange={this.changeHandler} placeholder="password" /><br />
                     <button type="submit"> Submit </button>
+					<a href="http://localhost:3001/ForgotPass">Forgot Password</a>
                 </form>
+				<button onClick={this.location}>Locate
+				</button>
                 <br />
             </div>
         );
