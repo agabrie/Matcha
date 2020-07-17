@@ -86,7 +86,7 @@ const insertImages=async (login,data)=>{
 		return { error: user.error };
 	const values = validateData(data);
 	console.log("vals => ",values)
-	deleteRankImageFromLogin(login, data.rank, user);
+	Images.delete.rank(login, data.rank, user);
 	let query = InsertRecord("Images", { ...values, ...{ userId: user.id } }, null);
 	console.log(query);
 	let results = await client.query(query.string,query.values)
@@ -135,6 +135,9 @@ let Images = {
 		// display_name:{},
 		// password:{},
 		// Single: updateImages
+	},
+	delete: {
+		rank: deleteRankImageFromLogin
 	}
 }
 

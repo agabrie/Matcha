@@ -32,7 +32,20 @@ const register = async(user)=>{
 	console.log(result)
 	return result;
 }
-
+const deleteImage = async (state) => {
+	var { display_name, rank } = state;
+	let img = { rank: rank };
+	let url = `http://localhost:8001/api/images/${display_name}`;
+	let result = await axios.delete(url, { data: img });
+	return result;
+};
+const uploadImage = async (state) => {
+	var { data, display_name, rank, type } = state;
+	let img = { data: data, rank: rank, type: type };
+	let url = `http://localhost:8001/api/images/${display_name}`;
+	let result = await axios.post(url, img);
+	return result;
+};
 const getAllUserImages = async (display_name) => {
 	console.log(display_name)
 	let results = await axios

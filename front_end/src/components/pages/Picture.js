@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
-import CenterStyle from "./CenterStyle";
+import { deleteImage, uploadImage } from "../../func";
+import "./Picture.css"
+
 class Picture extends Component {
 	constructor(props) {
 		super(props);
@@ -34,53 +35,58 @@ class Picture extends Component {
 			});
 		};
 	};
+	
 	submit = async () => {
-		var { data, display_name, rank, type } = this.state;
-		let img = { data: data, rank: rank, type: type };
-		console.log("submit img", img);
-		let url = `http://localhost:8001/api/images/${display_name}`;
-		console.log(url);
-		let result = await axios.post(url, img);
-		console.log(result);
+		let result = await uploadImage(this.state);
+		console.log(result)
 	};
-
+	
+	delete = async () => {
+		let result = await deleteImage(this.state).then(res => {
+			this.setState({ data: null,type:null});
+		})
+		console.log(result);
+	 }
 	render() {
 		return (
-			<div
-				width="20%"
-				style={{
-					backgroundColor: "darkgrey",
-					borderRadius: "10px",
-					padding: "5px",
-					margin: "1px",
-				}}
-			>
-				{/* <label htmlFor={`button${this.state.rank}`}>+</label> */}
-				<input
-					accept="image/*"
-					id={`button${this.state.rank}`}
-					type="file"
-					onChange={this.onChangeHandler}
-					// hidden
-				/>
-				{this.state.data && (
-					<div>
-						<h1>{this.state.rank === 1 ? "Profile Pic" : this.state.rank}</h1>
-						<img
-							src={`${this.state.type},${this.state.data}`}
-							style={{
-								height: "20vh",
-								width: "auto",
-								maxWidth: "20vw",
-								maxHeight: "20vh",
-								...CenterStyle(0),
-							}}
-							alt=''
-						/>
-						<br />
-						<button onClick={this.submit}>SAVE</button>
-					</div>
-				)}
+			<div className="imgcontainer">
+				<div className="text">
+					{this.state.rank === '1' ? "Profile Pic" : this.state.rank}
+				</div>
+				<div>
+					<label htmlFor={`button${this.state.rank}`}>
+						{this.state.data ? (
+							<div>
+								<div>
+									<img
+										className="imgupload"
+										src={`${this.state.type},${this.state.data}`}
+										style={{
+											height: "19vw",
+											width: "19vw",
+										}}
+										alt=""
+									/>
+								</div>
+								<button className="btnImage" onClick={this.submit}>
+									✓
+								</button>
+								<button className="btnImage" onClick={this.delete}>
+									🛇
+								</button>
+							</div>
+						) : (
+							<div className="no-image">☺</div>
+						)}
+					</label>
+					<input
+						accept="image/*"
+						id={`button${this.state.rank}`}
+						type="file"
+						onChange={this.onChangeHandler}
+						hidden
+					/>
+				</div>
 			</div>
 		);
 	}

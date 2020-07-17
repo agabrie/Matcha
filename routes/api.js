@@ -235,7 +235,14 @@ router.post("/images/:login", async function (req, res, next) {
 		res.status(500).send(err);
 	}
 });
+router.delete("/images/:login", async function (req, res, next) {
+	console.log("deleting an image")
+	let rank = req.body.rank;
+	console.log(req.body,req.params.login)
+	let result = await Images.delete.rank(req.params.login,rank,null);
+	res.send(result);
 
+})
 /***************************** views *********************************/
 router.get("/views/:login/self", async function (req, res, next) {
 	console.log("Views insert");
@@ -273,9 +280,12 @@ router.put("/views/:login", async function (req, res, next) {
  */
 router.post("/login", async function (req, res, next) {
 	console.log("login user");
+	console.log(req.body)
+	let login = req.body.login;
+	let password = req.body.password
 	let result = await Users.validate.Password(
-		req.body.display_name,
-		req.body.password
+		login,
+		password
 	);
 	if (result.user) {
 		result.user.password = null;

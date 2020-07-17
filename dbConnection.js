@@ -7,12 +7,19 @@ let pguser = process.env.DBUser;
 let pgport = process.env.DBPort;
 let pgpassword = process.env.DBPassword;
 let pgurl = `postgres://${pguser}:${pgpassword}@${pghost}:${pgport}/${pgdb}`;
-const client = new Client({
-	connectionString: pgurl,
-	ssl: {
-		rejectUnauthorized: false
-	}
+let client = null;
+
+if (pghost == "localhost")
+client = new Client({
+	connectionString: pgurl
 });
+else
+	client = new Client({
+		connectionString: pgurl,
+		ssl: {
+			rejectUnauthorized: false,
+		},
+	});
 const connect = () => {
 	client.connect();
 };
