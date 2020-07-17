@@ -42,7 +42,7 @@ class App extends React.Component{
 
 const Side = props => {
 	return(
-		<div className="side" ref={ props.containerRef } onClick={ props.onClick }>
+		<div className="side right" ref={ props.containerRef } onClick={ props.onClick }>
 			<div className="inner-container">
 				<div className="text">{ props.current }</div>
 			</div>

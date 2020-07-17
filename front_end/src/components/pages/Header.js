@@ -6,11 +6,16 @@ class Header extends Component {
 		super(props);
 		this.state = { loggedInUser: null };
 	}
-	
+
 	gotoSearch = () => {
 		// sessionStorage.removeItem("id")
 		// this.setState({ loggedInUser: null });
 		return (window.location = "/search");
+	};
+	gotoLogin = () => {
+		// sessionStorage.removeItem("id")
+		// this.setState({ loggedInUser: null });
+		return (window.location = "/");
 	};
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
@@ -20,10 +25,16 @@ class Header extends Component {
 		return (
 			<div className="mainheader">
 				<h1 className="text big">Matcha</h1>
-				{this.state.loggedInUser && (
+				{this.state.loggedInUser ? (
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoSearch}>
 							Search
+						</button>
+					</div>
+				) : (
+					<div className="headercontent right">
+						<button className="btnContent" onClick={this.gotoLogin}>
+							Login
 						</button>
 					</div>
 				)}
@@ -31,5 +42,5 @@ class Header extends Component {
 		);
 	}
 }
- 
+
 export default Header;

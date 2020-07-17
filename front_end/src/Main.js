@@ -13,8 +13,20 @@ import Profile from "./components/pages/Profile";
 import ImageUpload from "./components/pages/ImageUpload";
 import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
-// import "./App.css";
+// import { Login } from "./components/login/l"
+// import { Register } from "./components/login/register";
 
+// import  Register  from "./components/login/register"; 
+
+// import "./App.css";
+// class Home extends Component {
+// 	componentDidMount() {
+// 		return (window.location = "/login")
+// 	}
+// 	render() {
+// 		return(<div></div>)
+// 	}
+// }
 
 class App extends Component {
 	render() {
@@ -24,14 +36,15 @@ class App extends Component {
 					<div className="container">
 						<Header />
 						<div className="mainbody">
-
-						<Route exact path="/" component={Home} />
-						<Route exact path="/search" component={Search} />
-						<Route exact path="/imageUpload" component={ImageUpload} />
-						<Route path="/verify" component={Verify} />
-						<Route path="/Profile" component={Profile} />
-						<Route path="/ProfileCarousel" component={ProfileCarousel} />
-						<Route path="/profiles/:id" component={ProfileView} />
+							<Route exact path="/" component={Home}/>
+							{/* <Route exact path="/login" component={Login} /> */}
+							{/* <Route exact path="/register" component={Register} /> */}
+							<Route exact path="/search" component={Search} />
+							<Route exact path="/imageUpload" component={ImageUpload} />
+							<Route path="/verify" component={Verify} />
+							<Route path="/Profile" component={Profile} />
+							<Route path="/ProfileCarousel" component={ProfileCarousel} />
+							<Route path="/profiles/:id" component={ProfileView} />
 						</div>
 						<Footer />
 					</div>
