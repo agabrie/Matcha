@@ -1,22 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
 import CenterStyle from "./CenterStyle";
-/*class Image extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			type: props.type,
-			data: props.data
-		}
-	}
-	render() {
-		return (
-			<div width="100%" height="100%">
-				<img src={`${this.state.type},${this.state.data}`} style={{"height":"20vh","width":"auto","max-width":"20vw","max-height":"20vh",...CenterStyle(0) }} />
-			</div>
-		);
-	}
-}*/
 class Picture extends Component {
 	constructor(props) {
 		super(props);
@@ -81,7 +65,7 @@ class Picture extends Component {
 				/>
 				{this.state.data && (
 					<div>
-						<h1>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</h1>
+						<h1>{this.state.rank === 1 ? "Profile Pic" : this.state.rank}</h1>
 						<img
 							src={`${this.state.type},${this.state.data}`}
 							style={{
@@ -91,6 +75,7 @@ class Picture extends Component {
 								maxHeight: "20vh",
 								...CenterStyle(0),
 							}}
+							alt=''
 						/>
 						<br />
 						<button onClick={this.submit}>SAVE</button>

@@ -8,13 +8,19 @@ const  login = async (user) => {
 		}
 		return res
 	});
+	console.log(result.data)
 	if (!result.error){
-		sessionStorage.setItem("id", result.data.user.id);
-		sessionStorage.setItem("display_name", result.data.user.display_name)
+		sessionStorage.setItem("id", result.data.id);
+		sessionStorage.setItem("display_name", result.data.display_name)
 	}
 	return result;
 };
-
+function isEmpty(obj) {
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) return false;
+	}
+	return true;
+}
 const register = async(user)=>{
 	let result = await axios.post('http://localhost:8001/api/Users',user)
 	.then(res => {
@@ -28,14 +34,17 @@ const register = async(user)=>{
 }
 
 const getAllUserImages = async (display_name) => {
+	console.log(display_name)
 	let results = await axios
 		.get(`http://localhost:8001/api/images/${display_name}`)
 		.then((res) => {
 			if (res.data.error) {
 				return { error: res.data.error };
 			}
-			return res.data;
+			console.log(res);
+			return isEmpty(res.data)?[]:res.data.images;
 		});
+	console.log(results);
 	return results;
 };
 

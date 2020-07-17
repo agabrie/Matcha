@@ -46,7 +46,7 @@ const getAllAuthData = async () => {
 	Users.email,
 	Auth.*
 	FROM Users
-	INNER JOIN Auth ON Users.id = Profiles.userId
+	INNER JOIN Auth ON Users.id = AUTH.userId
 	`;
 	let result = await client.query(query)
 	.then(result => {

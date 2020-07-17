@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import queryString from 'query-string';
-import axios from 'axios';
+// import axios from 'axios';
 import {sendToken} from '../../func';
 
 class Verify extends Component{

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import Picture from "./Picture";
 import { getAllUserImages } from "../../func";
 import { CenterStyle } from "./CenterStyle";
@@ -17,8 +16,9 @@ class ImageUpload extends Component {
 		let display_name = sessionStorage.getItem("display_name");
 
 		let images = [];
+		console.log(display_name)
 		let res = await getAllUserImages(display_name);
-
+		console.log(res);
 		res.forEach((elem) => {
 			images[elem.rank] = { data: elem.data, type: elem.type };
 		});

@@ -23,7 +23,7 @@ const getImagesFromLogin = async (login) => {
 
 	let result = await client.query(query)
 		.then(result => {
-			return  BufferB64.All.B64(result.rows) ;
+			return  result.rows ;
 		})
 		.catch(error => {
 			console.log(error);
@@ -45,7 +45,7 @@ const getAllImagesData = async () => {
 	`;
 	let result = await client.query(query)
 	.then(result => {
-		return BufferB64.All.B64(result.rows);
+		return result.rows;
 	})
 	.catch(error => {
 		console.log(error);
@@ -62,7 +62,7 @@ const deleteRankImageFromLogin = async (login,rank,user)=>{
 	const query = `DELETE FROM IMAGES WHERE Images.userId = ${user.id} AND Images.rank =${rank}`
 	let result = await client.query(query)
 		.then(result => {
-			return BufferB64.All.B64(result.rows);
+			return result.rows;
 		})
 		.catch(error => {
 			console.log(error);
@@ -91,7 +91,7 @@ const insertImages=async (login,data)=>{
 	console.log(query);
 	let results = await client.query(query.string,query.values)
 	.then(result => {
-		return BufferB64.All.B64(result.rows);
+		return result.rows;
 	})
 	.catch(error => {
 		console.log(error);

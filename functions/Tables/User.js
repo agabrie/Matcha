@@ -4,13 +4,64 @@ const { UpdateRecord } = require("../UpdateRecord");
 const { BufferB64 } = require("../BufferB64");
 
 const { Password } = require("../Password");
+getAllUsersViewsOnSelf = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	console.log(user);
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWS
+	) as Views ON USERS.id = Views.by
+	WHERE IMAGES.rank = '1'
+	AND Views.viewed = ${user.id};`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+}
+
 const getAllUserInfo = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
+	if (!user)
+		return {error:"no such user"}
 	console.log("user", user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
+		USERS.name,
+		USERS.surname,
 		IMAGES.type,
 		IMAGES.data,
 		PROFILES.gender,
@@ -40,6 +91,7 @@ const getAllUserInfo = async (login) => {
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
+			console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {
@@ -72,12 +124,12 @@ const getAllVerifiedUsersSortedByAge = async () => {
 	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'
 	ORDER BY
 		age_diff ASC,
-		fame ASC,
+		fame DESC,
 		age ASC`;
 	let result = await client
 		.query(query)
 		.then((result) => {
-			return BufferB64.All.B64(result.rows);
+			return result.rows;
 		})
 		.catch((error) => {
 			console.log(error);
@@ -110,7 +162,7 @@ const getAllVerifiedUsers = async () => {
 	let result = await client
 		.query(query)
 		.then((result) => {
-			return BufferB64.All.B64(result.rows);
+			return result.rows;
 		})
 		.catch((error) => {
 			console.log(error);
@@ -135,6 +187,7 @@ const getAllUsersData = async () => {
 };
 
 const getUserFromLogin = async (detail) => {
+	// console.log(detail)
 	let query = `SELECT * FROM USERS WHERE `;
 	if (isNaN(detail))
 		query += `display_name = '${detail}' OR email = '${detail}';`;
@@ -143,7 +196,7 @@ const getUserFromLogin = async (detail) => {
 	let result = await client
 		.query(query)
 		.then((result) => {
-			// console.log(result)
+			// console.log(result.rows)
 			return result.rows[0];
 		})
 		.catch((error) => {
@@ -252,9 +305,10 @@ let Users = {
 		Single: getUserFromLogin,
 		Entire: getAllUserInfo,
 		Verified: {
-			sorted: getAllVerifiedUsersSortedByAge,
+			sorted: { age:getAllVerifiedUsersSortedByAge },
 			unsorted: getAllVerifiedUsers,
 		},
+		ViewedBy: {Self:null,Others:getAllUsersViewsOnSelf},
 		All: getAllUsersData,
 	},
 	validate: {
