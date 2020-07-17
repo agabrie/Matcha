@@ -12,8 +12,9 @@ function ProfileCarousel () {
     const [currentIndex, setIndex] = useState(0)
     
    const fetchProfiles = async() => {
-		const response = await axios.get('http://localhost:8001/api/profiles')
-        setProfiles(response.data.result);
+       const response = await axios.get('http://localhost:8001/api/search/unsorted')
+       console.log(response.data)
+        setProfiles(response.data);
     }
 
     const navigate = (direction) => {

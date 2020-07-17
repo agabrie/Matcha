@@ -26,8 +26,9 @@ function ProfileCard(props) {
           </div>
          {/*<img src={props.user.profile.images[0]} alt=""/>*/}
           <div className="flex-parent">
-              <div className="child">
-                  Age:  {Math.floor((Date.now() - Date.parse(props.user.date_of_birth))/ 31556952000 )}
+          <div className="child">
+            {console.log(props)}
+                  Age:  {props.user.profile.age}
               </div>
               <div className="child">
                 5 km away

@@ -37,7 +37,13 @@ function NextArrow(props) {
           <Slider {...settings}>
           {
                 props.images.map(image => {
-                    return <img key={image} src={image} alt=""/>
+                    return (
+											<img
+												key={image}
+												src={`${image.type},${image.data}`}
+												alt=""
+											/>
+										);
                 })
         }
           </Slider>
