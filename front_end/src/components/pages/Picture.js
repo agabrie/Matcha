@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
-import CenterStyle from "./CenterStyle";
+// import CenterStyle from "./CenterStyle";
+import "./Picture.css"
+// const ImageStyle = {
+// 	height: "19vw",
+// 	width: "19vw",
+// };
 class Picture extends Component {
 	constructor(props) {
 		super(props);
@@ -43,40 +48,39 @@ class Picture extends Component {
 		let result = await axios.post(url, img);
 		console.log(result);
 	};
-
+	delete = async () => {
+		/* doesn't do anything yet*/
+	 }
 	render() {
 		return (
-			<div
-				style={{
-					backgroundColor: "darkgrey",
-					borderRadius: "10px",
-					padding: "5px",
-					margin: "1px",
-					width: "20vw",
-					height: "30vw",
-				}}
-			>
-				<div style={{"fontSize":"2vw"}}>{this.state.rank == 1 ? "Profile Pic" : this.state.rank}</div>
+			<div className="imgcontainer">
+				<div className="text">
+					{this.state.rank == 1 ? "Profile Pic" : this.state.rank}
+				</div>
 				<div>
-					<label
-						htmlFor={`button${this.state.rank}`}
-					>
+					<label htmlFor={`button${this.state.rank}`}>
 						{this.state.data ? (
 							<div>
-								<img
-									src={`${this.state.type},${this.state.data}`}
-									style={{
-										height: "19vw",
-										width: "19vw",
-									}}
-									alt=""
-								/>
-								<button onClick={this.submit}>SAVE</button>
+								<div>
+									<img
+										className="imgupload"
+										src={`${this.state.type},${this.state.data}`}
+										style={{
+											height: "19vw",
+											width: "19vw",
+										}}
+										alt=""
+									/>
+								</div>
+								<button className="btn" onClick={this.submit}>
+									✓
+								</button>
+								<button className="btn" onClick={this.delete}>
+									🛇
+								</button>
 							</div>
 						) : (
-							<div style={{ fontSize: "19vw", height: "19vw", width: "19vw",margin:0 }}>
-								+
-							</div>
+							<div className="no-image">☺</div>
 						)}
 					</label>
 					<input

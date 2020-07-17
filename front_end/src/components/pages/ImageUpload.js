@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Picture from "./Picture";
 import { getAllUserImages } from "../../func";
 import { CenterStyle } from "./CenterStyle";
+import "./Picture.css";
 
 class ImageUpload extends Component {
 	constructor(props) {
@@ -31,18 +32,19 @@ class ImageUpload extends Component {
 	render() {
 		return (
 			<div>
-				<h1>{this.state.display_name}</h1>
+				<div className="text">{this.state.display_name}</div>
 				{this.state.data && (
 					<div style={CenterStyle(0)}>
-					<Picture
-						rank="1"
-						display_name={this.state.display_name}
-						file={this.state.data[1]}
+						<Picture
+							rank="1"
+							display_name={this.state.display_name}
+							file={this.state.data[1]}
 						/>
-					</div>)}
-				<div style={CenterStyle(0)}>
+					</div>
+				)}
+				<div className="centerStyle">
 					{this.state.data && (
-						<div style={CenterStyle(0)}>
+						<div className="secondary">
 							<Picture
 								rank="2"
 								display_name={this.state.display_name}
