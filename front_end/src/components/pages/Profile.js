@@ -22,8 +22,8 @@ constructor(props){
 		async componentDidMount(){
 			// token: queryString.parse(window.location.search).token
 			let data = await axios.get(`http://localhost:8001/api/users/${sessionStorage.display_name}`)
-			console.log(data);
-			return data
+			// console.log(data);
+			// return data
 			
 		}
 		changeHandler(e) {

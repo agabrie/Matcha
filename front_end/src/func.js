@@ -108,7 +108,7 @@ const locateUser = async () => {
 }
 
 const	uploadProfile = async (user) => {
-	let result = await axios.put(`http://localhost:8001/api/profiles/${user.display_name}`, user)
+	let result = await axios.post(`http://localhost:8001/api/profiles/${user.display_name}`, user)
 	.then(res => {
 		if(res.data.error){
 			return {error: res.data.error};
