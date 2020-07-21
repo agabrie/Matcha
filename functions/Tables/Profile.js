@@ -124,7 +124,7 @@ const insertProfile = async (login, data) => {
 
 const updateProfile = async (login, data) => {
 	const values = validateData(data);
-	let user = await Profile.get.Single(login)
+	let user = await Profiles.get.Single(login)
 	.then(async (user) => {
 		let query = await UpdateRecord("Profiles", values, { id: user.id });
 		let results = await client.query(query.string, query.values)

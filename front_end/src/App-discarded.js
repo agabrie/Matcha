@@ -12,6 +12,7 @@ import Profile from "./components/pages/Profile";
 import ImageUpload from "./components/pages/ImageUpload";
 import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
+import editProfile from "./components/editProfile/editProfile"
 // import "./App.css";
 
 
@@ -29,6 +30,7 @@ class App extends Component {
 						<Route path="/Profile" component={Profile} />
 						<Route path="/ProfileCarousel" component={ProfileCarousel} />
 						<Route path="/profiles/:id" component={ProfileView} />
+						<Route path="/editProfile" component={editProfile} />
 					</div>
 				</div>
 			</Router>

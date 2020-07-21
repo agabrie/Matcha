@@ -6,7 +6,7 @@ function NextArrow(props) {
     return (
       <div
         className={className}
-        style={{ ...style, borderRadius: "50%", background: "#ff6666"}}
+        style={{ ...style, borderRadius: "50%", background: "#b19cd9"}}
         onClick={onClick}
       />
     );
@@ -17,7 +17,7 @@ function NextArrow(props) {
     return (
       <div
         className={className}
-        style={{ ...style, borderRadius: "50%", background: "#ff6666"}}
+        style={{ ...style, borderRadius: "50%", background: "#b19cd9"}}
         onClick={onClick}
       />
     );

@@ -1,0 +1,33 @@
+.profileForm {
+    width: 100%;
+    position: relative;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 0px 12px 0.8px #b19cd9;
+    padding: 10px;
+}
+
+.bio {
+    display:block;
+    align-items: center;
+    text-align: center;
+}
+
+.form {
+    margin: 2em;
+}
+
+    .form-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 5px;
+      }
+      .form-group > label {
+        padding: .5em 1em .5em 0;
+        flex: 1;
+      }
+      .form-group > input {
+        flex: 2;
+      }

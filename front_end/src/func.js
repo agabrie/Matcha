@@ -60,6 +60,18 @@ const getAllUserImages = async (display_name) => {
 	return results;
 };
 
+const addProfile = async(id, profile)=>{
+	let result = await axios.put(`http://localhost:8001/api/profiles/${id}`,profile)
+	.then(res => {
+		if(res.data.error){
+			return {error: res.data.error};
+		}
+		return res.data;
+	});
+	console.log(result)
+	return result;
+}
+
 const sendToken = async (user)=> {
 	let result = await axios.post('http://localhost:8001/api/verify', user).then(res => {
 		if(res.data.error){
@@ -70,5 +82,5 @@ const sendToken = async (user)=> {
 	return result.error ? false : true;
 }
 
-export {login, sendToken, register,getAllUserImages,deleteImage,uploadImage};
-export default {login, sendToken, register,getAllUserImages,deleteImage,uploadImage}
+export {login, sendToken, register,getAllUserImages,deleteImage,uploadImage, addProfile};
+export default {login, sendToken, register,getAllUserImages,deleteImage, uploadImage, addProfile}
