@@ -1,6 +1,6 @@
 .upper-container{
   height: 150px;
-  background: #ebcfc1;
+  background: #b19cd9;
   }
   .image-container{
   background: white;
@@ -26,7 +26,7 @@
   box-sizing: border-box;
   line-height: .6;
   font-weight: lighter;
-  color: #ff6666;
+  color: #b19cd9;
   }
   .lower-container h4{
   
@@ -39,7 +39,7 @@
 
   .lower-container .flex-parent .child {
     flex: 1;
-    color: #ff6666;
+    color: #b19cd9;
     
     font-weight: bold;
   }
@@ -58,9 +58,9 @@
 
   .lower-container .profile-btn{
   padding: 12px 20px;
-  background: #ebcfc1;
+  background: white;
   border: none;
-  color: #ff6666;
+  color: #b19cd9;
   border-radius: 30px;
   font-size: 12px;
   text-decoration: none;
@@ -73,9 +73,9 @@
     padding-right: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #ebcfc1;
+    background: white;
     border: none;
-    color: #ff6666;
+    color: #b19cd9;
     border-radius: 30px;
     text-align: center;
     font-size: 16px;
@@ -90,9 +90,9 @@
       padding-right: 20px;
       padding-top: 10px;
       padding-bottom: 10px;
-      background: #ebcfc1;
+      background: white;
       border: none;
-      color: #ff6666;
+      color: #b19cd9;
       border-radius: 30px;
       text-align: left;
       font-size: 16px;
@@ -103,16 +103,16 @@
   
   .lower-container .profile-btn:hover{
   background: transparent;
-  color: #ff6666;
-  border: 2px solid #ff6666;
+  color: #b19cd9;
+  border: 2px solid #b19cd9;
   }
   .lower-container .child-btn .btn-left:hover{
     background: transparent;
-    color: #ff6666;
-    border: 2px solid #ff6666;
+    color: #b19cd9;
+    border: 2px solid #b19cd9;
     }
     .lower-container .child-btn .btn-right:hover{
       background: transparent;
-      color: #ff6666;
-      border: 2px solid #ff6666;
+      color: #b19cd9;
+      border: 2px solid #b19cd9;
       }

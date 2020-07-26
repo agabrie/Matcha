@@ -14,6 +14,7 @@ import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
 import ForgotPass from "./components/pages/ForgotPass";
 import ResetPass from "./components/pages/ResetPass";
+import editProfile from "./components/editProfile/editProfile"
 // import "./App.css";
 
 
@@ -33,6 +34,7 @@ class App extends Component {
 						<Route path="/profiles/:id" component={ProfileView} />
 						<Route path="/ForgotPass" component={ForgotPass} />
 						<Route path="/ResetPass" component={ResetPass} />
+						<Route path="/editProfile" component={editProfile} />
 					</div>
 				</div>
 			</Router>
