@@ -27,7 +27,6 @@ function ProfileCard(props) {
          {/*<img src={props.user.profile.images[0]} alt=""/>*/}
           <div className="flex-parent">
           <div className="child">
-            {console.log(props)}
                   Age:  {props.user.profile.age}
               </div>
               <div className="child">

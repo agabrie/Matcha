@@ -1,28 +1,36 @@
 import axios from "axios";
+const port = 8002;
+const host = "localhost";
+// const host = "192.168.8.101";
+const api = `http://${host}:${port}/api`;
 
+// const api = `http://192.168.8.101:${port}/api/`;
 const login = async (user) => {
+	console.log("login click!");
 	let result = await axios
-		.post("http://localhost:8001/api/login", user)
+		.post(`${api}/login`, user)
 		.then((res) => {
+			console.log(res);
 			if (res.data.error) {
 				return { error: res.data.error };
 			}
 			return res;
 		});
-	console.log(result.data);
+	console.log(result);
 	if (!result.error) {
 		sessionStorage.setItem("id", result.data.id);
 		sessionStorage.setItem("display_name", result.data.display_name);
 	}
 	return result;
 };
+
 const hasImage = async (user) => {
 	console.log("check images");
 	let hasImage = sessionStorage.getItem("ppVerified");
 	console.log("has image? => ", hasImage);
 
 	if (!hasImage) {
-		let res = await axios.get(`http://localhost:8001/api/images/${user}`);
+		let res = await axios.get(`${api}/images/${user}`);
 		console.log(res.data);
 		if (res.data && res.data.images.length) {
 			sessionStorage.setItem("ppVerified", true);
@@ -39,7 +47,7 @@ const hasProfile = async (user) => {
 		return true;
 	} else {
 		console.log("here");
-		let res = await axios.get(`http://localhost:8001/api/profiles/${user}`);
+		let res = await axios.get(`${api}/profiles/${user}`);
 		console.log("profile checkings ->", res.data);
 		if (res.data && !isEmpty(res.data.profile)) {
 			sessionStorage.setItem("profileVerified", true);
@@ -70,67 +78,70 @@ function isEmpty(obj) {
 	return true;
 }
 const register = async (user) => {
-	let result = await axios
-		.post("http://localhost:8001/api/Users", user)
-		.then((res) => {
-			if (res.data.error) {
-				return { error: res.data.error };
-			}
-			return res.data;
-		});
+	let result = await axios.post(`${api}/Users`, user).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res.data;
+	});
 	console.log(result);
 	return result;
 };
 const deleteImage = async (state) => {
 	var { display_name, rank } = state;
 	let img = { rank: rank };
-	let url = `http://localhost:8001/api/images/${display_name}`;
+	let url = `${api}/images/${display_name}`;
 	let result = await axios.delete(url, { data: img });
 	return result;
 };
 const uploadImage = async (state) => {
 	var { data, display_name, rank, type } = state;
 	let img = { data: data, rank: rank, type: type };
-	let url = `http://localhost:8001/api/images/${display_name}`;
+	let url = `${api}/images/${display_name}/`;
 	let result = await axios.post(url, img);
 	return result;
 };
 const getAllUserImages = async (display_name) => {
 	console.log(display_name);
-	let results = await axios
-		.get(`http://localhost:8001/api/images/${display_name}`)
-		.then((res) => {
-			if (res.data.error) {
-				return { error: res.data.error };
-			}
-			console.log(res);
-			return isEmpty(res.data) ? [] : res.data.images;
-		});
+	let results = await axios.get(`${api}/images/${display_name}`).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		console.log(res);
+		return isEmpty(res.data) ? [] : res.data.images;
+	});
 	console.log(results);
 	return results;
 };
 
-const sendToken = async (user) => {
-	let result = await axios
-		.post("http://localhost:8001/api/verify", user)
-		.then((res) => {
-			if (res.data.error) {
-				return { error: res.data.error };
-			}
-			return res;
-		});
+const addProfile = async(id, profile)=>{
+	let result = await axios.put(`${api}/profiles/${id}`, profile).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res.data;
+	});
+	console.log(result)
+	return result;
+}
+
+const sendToken = async (user)=> {
+	let result = await axios.post(`${api}/verify`, user).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res;
+	});
 	return result.error ? false : true;
 };
 
 const forgotPassword = async (user) => {
-	let result = await axios
-		.get("http://localhost:8001/api/forgotpass", user)
-		.then((res) => {
-			if (res.data.error) {
-				return { error: res.data.error };
-			}
-			return res.data;
-		});
+	let result = await axios.get(`${api}/forgotpass`, user).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res.data;
+	});
 	return result.error ? false : true;
 };
 
@@ -139,10 +150,7 @@ const resetPassword = async (pass) => {
 	if (pass.password === pass.passwordcon) {
 		let password = { password: pass.password };
 		let result = await axios
-			.post(
-				`http://localhost:8001/api/resetpass/${pass.display_name.display_name}`,
-				password
-			)
+			.post(`${api}/resetpass/${pass.display_name.display_name}`, password)
 			.then((res) => {
 				if (res.data.error) {
 					return { error: res.data.error };
@@ -154,20 +162,18 @@ const resetPassword = async (pass) => {
 };
 
 const locateUser = async () => {
-	let result = await axios
-		.get(`http://localhost:8001/api/location`)
-		.then((res) => {
-			if (res.data.error) {
-				return { error: res.data.error };
-			}
-			return res.data;
-		});
+	let result = await axios.get(`${api}/location`).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res.data;
+	});
 	return result.error ? false : true;
 };
 
 const uploadProfile = async (user) => {
 	let result = await axios
-		.post(`http://localhost:8001/api/profiles/${user.display_name}`, user)
+		.post(`${api}/profiles/${user.display_name}`, user)
 		.then((res) => {
 			if (res.data.error) {
 				return { error: res.data.error };
@@ -189,6 +195,7 @@ export {
 	uploadImage,
 	uploadProfile,
 	checkVerified,
+	addProfile
 };
 export default {
 	login,
@@ -202,4 +209,6 @@ export default {
 	uploadImage,
 	uploadProfile,
 	checkVerified,
+	addProfile
 };
+
