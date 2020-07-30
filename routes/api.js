@@ -289,6 +289,8 @@ router.post("/login", async function (req, res, next) {
 	);
 	if (result.user) {
 		result.user.password = null;
+	} else {
+		res.send(result)
 	}
 	console.log("success", result);
 	result = formatResponse.User.Single(result.user);

@@ -6,7 +6,7 @@ const CenterStyle = (top) => {
 		flexWrap: 'wrap',
 		alignItems: 'center',
 		justifyContent: 'center',
-		// width: '100%',
+		width: '100%',
 		marginTop:parseInt(top)
 	}
 }

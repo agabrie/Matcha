@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { deleteImage, uploadImage } from "../../func";
-import "./Picture.css"
+import "./Picture.scss"
 
 class Picture extends Component {
 	constructor(props) {
@@ -50,7 +50,7 @@ class Picture extends Component {
 	render() {
 		return (
 			<div className="imgcontainer">
-				<div className="text">
+				<div className="text small">
 					{this.state.rank === '1' ? "Profile Pic" : this.state.rank}
 				</div>
 				<div>

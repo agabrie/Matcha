@@ -149,7 +149,7 @@ class Search extends Component {
 	}
 	async getProfile(display_name, index) {
 		await axios
-			.get(`http://localhost:8001/api/profiles/${display_name}/all`)
+			.get(`http://localhost:8002/api/profiles/${display_name}/all`)
 			.then((results) => {
 				let { users } = this.state;
 				// console.log("users=>", users, index);
@@ -174,7 +174,7 @@ class Search extends Component {
 		let viewed = { viewed: id };
 		// console.log("viewed => ", viewed);
 		await axios
-			.post(`http://localhost:8001/api/views/${display_name}`, viewed)
+			.post(`http://localhost:8002/api/views/${display_name}`, viewed)
 			.then((results) => {
 				console.log(results.data);
 			});
@@ -183,7 +183,7 @@ class Search extends Component {
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
 		await axios
-			.get(`http://localhost:8001/api/search/unsorted`)
+			.get(`http://localhost:8002/api/search/unsorted`)
 			.then((results) => {
 				this.setState({
 					users: results.data,

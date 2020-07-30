@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Picture from "./Picture";
 import { getAllUserImages } from "../../func";
 import { CenterStyle } from "./CenterStyle";
-import "./Picture.css";
+import "./Picture.scss";
 
 class ImageUpload extends Component {
 	constructor(props) {
