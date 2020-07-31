@@ -88,6 +88,7 @@ router.post("/users", async function (req, res, next) {
  ** requires at least one of {name, surname, display_name, password}
  */
 router.put("/users/:login", async function (req, res, next) {
+	console.log("update user ! ",req.body);
 	let result = await Users.update.Single(req.params.login, req.body);
 	result = formatResponse.User.Single(result);
 	res.send(result);
@@ -431,8 +432,10 @@ router.get("/search/unsorted/", async (req, res, next) => {
 	res.send(result);
 });
 
-router.get("/forgotpass", async(req, res, next) => {
+router.post("/forgotpass", async (req, res, next) => {
+	console.log(req.body);
 	let user = await Users.get.Single(req.body.login);
+	console.log("user->",user);
 	forgotPassEmail(user);
 	res.send(user);
 })

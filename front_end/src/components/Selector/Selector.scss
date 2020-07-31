@@ -1,0 +1,20 @@
+.selector{
+	padding: 2vw;
+	display: inline-block;
+	color: white;
+	// float:left;
+	flex-direction: row;
+	align-items: center;
+	width:fit-content;
+	font-size: 1.5vw;
+	border-radius: 10px;
+	font-family: "Open Sans", sans-serif;
+	background-color: #966fd6;
+	border:solid 1px #fff;
+}
+
+.selected{
+	background-color: #fff;
+	color:#966fd6;
+	border:solid 1px #966fd6;
+}

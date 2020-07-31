@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Picture from "./Picture";
+import Picture from "./Images/Picture";
 import { getAllUserImages } from "../../func";
 import { CenterStyle } from "./CenterStyle";
 import "./Picture.scss";

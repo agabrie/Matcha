@@ -32,7 +32,7 @@ const hasImage = async (user) => {
 	if (!hasImage) {
 		let res = await axios.get(`${api}/images/${user}`);
 		console.log(res.data);
-		if (res.data && res.data.images.length) {
+		if (res.data && res.data.images && res.data.images.length) {
 			sessionStorage.setItem("ppVerified", true);
 			return true;
 		}
@@ -79,6 +79,16 @@ function isEmpty(obj) {
 }
 const register = async (user) => {
 	let result = await axios.post(`${api}/Users`, user).then((res) => {
+		if (res.data.error) {
+			return { error: res.data.error };
+		}
+		return res.data;
+	});
+	console.log(result);
+	return result;
+};
+const updateUser = async (user) => {
+	let result = await axios.put(`${api}/Users/${sessionStorage.display_name}`, user).then((res) => {
 		if (res.data.error) {
 			return { error: res.data.error };
 		}
@@ -136,7 +146,8 @@ const sendToken = async (user)=> {
 };
 
 const forgotPassword = async (user) => {
-	let result = await axios.get(`${api}/forgotpass`, user).then((res) => {
+	console.log("user->",user)
+	let result = await axios.post(`${api}/forgotpass`, user).then((res) => {
 		if (res.data.error) {
 			return { error: res.data.error };
 		}
@@ -144,7 +155,16 @@ const forgotPassword = async (user) => {
 	});
 	return result.error ? false : true;
 };
-
+const isStrongPassword=(password)=>{
+	let passwordregex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
+	if (password.match(passwordregex))
+		return true;
+	else
+		return false;
+}
+const formatError = (error) => {
+	return error.replace(/(Key|[=()])/g, " ");
+}
 const resetPassword = async (pass) => {
 	console.log(pass);
 	if (pass.password === pass.passwordcon) {
@@ -236,7 +256,10 @@ export {
 	checkVerified,
 	addProfile,
 	getUserData,
-	getProfileData
+	getProfileData,
+	updateUser,
+	isStrongPassword,
+	formatError
 };
 export default {
 	login,
@@ -252,6 +275,9 @@ export default {
 	checkVerified,
 	addProfile,
 	getUserData,
-	getProfileData
+	getProfileData,
+	updateUser,
+	isStrongPassword,
+	formatError
 };
 

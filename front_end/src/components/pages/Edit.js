@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 // import axios from "axios";
-import { uploadProfile,getUserData,getProfileData, locateUser } from "../../func";
+import {
+	uploadProfile,
+	getUserData,
+	getProfileData,
+	locateUser,
+	updateUser,
+	isStrongPassword,
+	formatError,
+} from "../../func";
 import "../../App.scss";
 // import CenterStyle from "./CenterStyle";
 import ImageUpload from "./ImageUpload";
-import Selector from "./Selector";
-
+import Selector from "../Selector/Selector";
+// import ResetPass from "./ResetPass";
 
 class User extends Component {
 	constructor(props) {
@@ -15,15 +23,43 @@ class User extends Component {
 			surname: null,
 			display_name: null,
 			email: null,
-			// password: null,
+			password: null,
+			passwordcon: null,
 		};
 		this.changeHandler = this.changeHandler.bind(this);
+		this.submitHandler = this.submitHandler.bind(this);
 	}
 	changeHandler(e) {
 		this.setState({
+			success: null,
+			error:null,
 			[e.target.name]: e.target.value,
 		});
 	}
+	async submitHandler(e) {
+		const { password, passwordcon } = this.state;
+		if (password) {
+			if (!isStrongPassword(password)) {
+				this.setState({ error: "Password must contain digits,upperCase and lowercase letters and be greater than 8 characters" });
+				return;
+			}
+			if (password != passwordcon) {
+				this.setState({ error: "passwords dont match" });
+				return;
+			}
+		}
+				await updateUser(this.state).then((res) => {
+					console.log(res);
+					if (res.error) {
+						this.setState({ error: formatError(res.error) });
+					}
+					else {
+						this.setState({success:"user successfully updated"})
+					}
+				});
+					
+	}
+	
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
 		let data = await getUserData();
@@ -37,10 +73,16 @@ class User extends Component {
 		// return data
 	}
 	render() {
-		// console.log(this.state);
+		console.log(this.state);
 		return (
 			<div className="main-container">
 				<p>User</p>
+				{this.state.error && (
+					<div style={{ color: "red" }}>{this.state.error}</div>
+				)}
+				{this.state.success && (
+					<div style={{ color: "lime" }}>{this.state.success}</div>
+				)}
 				<label htmlFor="name">First Name</label>
 				<br />
 				<input
@@ -76,8 +118,29 @@ class User extends Component {
 					defaultValue={this.state.email}
 					onChange={this.changeHandler}
 				/>
-				<br></br>
-				<button className="btn">save</button>
+				<br />
+				<label htmlFor="password">Password</label>
+				<br />
+				<input
+					type="password"
+					name="password"
+					defaultValue={this.state.password}
+					onChange={this.changeHandler}
+				/>
+				<br />
+				<label htmlFor="passwordcon">Confirm Password</label>
+				<br />
+				<input
+					type="password"
+					name="passwordcon"
+					defaultValue={this.state.passwordcon}
+					onChange={this.changeHandler}
+				/>
+				<br />
+				{/* <ResetPass /> */}
+				<button className="btn" onClick={this.submitHandler}>
+					save
+				</button>
 			</div>
 		);
 	}
@@ -89,7 +152,7 @@ class Profile extends Component {
 			biography: "",
 			gender: "Male",
 			sexual_preference: "Both",
-			date_of_birth:this.formatDate(Date.now())
+			date_of_birth: this.formatDate(Date.now()),
 		};
 		this.changeHandler = this.changeHandler.bind(this);
 		this.submitHandler = this.submitHandler.bind(this);
@@ -98,34 +161,28 @@ class Profile extends Component {
 	}
 	changeHandler(e) {
 		this.setState({
+			error: null,
+			success:null,
 			[e.target.name]: e.target.value,
 		});
 		// console.log(this.state);
 	}
 	dateHandler(e) {
 		let date = new Date(e.target.value);
-		let selectedYear = date.getFullYear();
-		let selectedMonth = date.getMonth()+1;
-		let selectedDay = date.getDate();
-
-		let currentDate = new Date();
-		let currentYear = currentDate.getFullYear();
-
-		if (selectedYear > currentYear - 18) selectedYear = currentYear - 18;
-		if (selectedYear < currentYear - 68) selectedYear = currentYear - 68;
-		if (selectedMonth < 10)
-			selectedMonth = `0${selectedMonth}`;
-		if (selectedDay < 10) selectedDay = `0${selectedDay}`;
-
-		let selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
-		this.setState({date_of_birth:selectedDate})
+		let selectedDate = this.formatDate(e.target.value);
+		this.setState({ date_of_birth: selectedDate });
 	}
 	formatDate(date) {
 		// console.log(date);
 		let d = new Date(date);
+		let cdate = new Date();
+		let cyear = cdate.getFullYear();
 		let year = d.getFullYear();
 		let month = d.getMonth() + 1;
 		let day = d.getDate();
+		if (year > cyear - 18) year = cyear - 18;
+		if (year < cyear - 68) year = cyear - 68;
+		// if (selectedYear < currentYear - 68) selectedYear = currentYear - 68;
 		if (month < 10) month = `0${month}`;
 		if (day < 10) day = `0${day}`;
 		let fdate = `${year}-${month}-${day}`;
@@ -135,35 +192,44 @@ class Profile extends Component {
 	async submitHandler(e) {
 		// console.log("save profile!");
 		// console.log(this.state);
-		await uploadProfile(this.state);
+		await uploadProfile(this.state).then((res)=>{
+			if (res.error) {
+				return this.setState({ error: formatError(res.error) });
+			} else {
+				this.setState({success:"User Profile Updated!"})
+			}
+		})
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
 		let data = await getProfileData();
 		if (!data.error) {
-			console.log(data)
+			console.log(data);
 			this.setState({
-				gender:data.profile.gender,
-				sexual_preference:data.profile.sexual_preference,
+				gender: data.profile.gender,
+				sexual_preference: data.profile.sexual_preference,
 				biography: data.profile.biography,
-				date_of_birth:this.formatDate(data.profile.date_of_birth)
-			})
+				date_of_birth: this.formatDate(data.profile.date_of_birth),
+			});
 		}
 		let location = await locateUser().then((res) => {
-
 			console.log("location", res);
 			this.setState({
-				location: `(${res.latitude}, ${res.longitude})`
+				location: `(${res.latitude}, ${res.longitude})`,
 			});
-		})
-		
+		});
 	}
 	render() {
 		// console.log(this.state)
 		return (
 			<div className="main-container">
 				<p>Profile</p>
-
+				{this.state.error && (
+					<div style={{ color: "red" }}>{this.state.error}</div>
+				)}
+				{this.state.success && (
+					<div style={{ color: "lime" }}>{this.state.success}</div>
+				)}
 				<label htmlFor="gender">Gender</label>
 				<br />
 				<Selector
@@ -202,7 +268,6 @@ class Profile extends Component {
 					name="date_of_birth"
 					onChange={this.dateHandler}
 					value={this.state.date_of_birth}
-					
 				/>
 				<br />
 
@@ -295,14 +360,14 @@ class Edit extends Component {
 			<div>
 				{/* <p>Edit</p> */}
 				{/* <div style={CenterStyle(0)}> */}
-					{/* <div style={{ textAlign: "center", justifyContent: "center" }}> */}
-					{/* </div> */}
-					<User />
-					{/* <div className="vl"></div> */}
-					<Profile />
-					{/* <div className="vl"></div> */}
+				{/* <div style={{ textAlign: "center", justifyContent: "center" }}> */}
+				{/* </div> */}
+				<User />
+				{/* <div className="vl"></div> */}
+				<Profile />
+				{/* <div className="vl"></div> */}
 				<Other />
-				
+
 				{/* </div> */}
 				{/* {console.log(this.state)}
                 <form onSubmit={this.submitHandler}>

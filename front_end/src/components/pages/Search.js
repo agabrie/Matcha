@@ -115,7 +115,7 @@ class UserCard extends Component {
 					}}
 				>
 					<div>
-						<p>{this.state.id}</p>
+						{/* <p>{this.state.id}</p> */}
 						<p>
 							{this.state.display_name}
 						</p>

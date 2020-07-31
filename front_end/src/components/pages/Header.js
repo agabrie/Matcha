@@ -17,6 +17,11 @@ class Header extends Component {
 		// this.setState({ loggedInUser: null });
 		return (window.location = "/");
 	};
+	gotoRegister = () => {
+		// sessionStorage.removeItem("id")
+		// this.setState({ loggedInUser: null });
+		return (window.location = "/Register");
+	};
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
 		this.setState({ loggedInUser: user });
@@ -35,6 +40,9 @@ class Header extends Component {
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoLogin}>
 							Login
+						</button>
+						<button className="btnContent" onClick={this.gotoRegister}>
+							Register
 						</button>
 					</div>
 				)}

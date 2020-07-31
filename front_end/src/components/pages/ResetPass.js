@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {resetPassword} from '../../func';
 import queryString from 'query-string';
 
-class ForgotPass extends Component{
+class ResetPass extends Component{
 	constructor(props) {
 	super(props);
 	this.state={
@@ -41,18 +41,18 @@ class ForgotPass extends Component{
 
     render() {
         return (
-            <div>
+            <div className="main-container">
 				{this.state.success && <p>{this.state.success}</p>}
        			{this.state.error && <p>{this.state.error}</p>}
-                <form onSubmit={this.submitHandler}>
+                {/* <form onSubmit={this.submitHandler}> */}
 					<input type="password" name="password" onChange={this.changeHandler} placeholder="password"/><br/>
                     <input type="password" name="passwordcon" onChange={this.changeHandler} placeholder="Confirm password"/>
-                    <button type="submit"> Submit </button>
-                </form>
+				<button className="btn" onClick={this.submitHandler}> Submit </button>
+                {/* </form> */}
                 <br/>
             </div>
         );
 	}	
 }
 
-export default ForgotPass;
+export default ResetPass;
