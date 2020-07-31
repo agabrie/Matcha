@@ -1,62 +1,12 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { uploadProfile } from "../../func";
+// import axios from "axios";
+import { uploadProfile,getUserData,getProfileData, locateUser } from "../../func";
 import "../../App.scss";
-import CenterStyle from "./CenterStyle";
+// import CenterStyle from "./CenterStyle";
 import ImageUpload from "./ImageUpload";
-class Switch extends Component{
-	constructor(props) {
-		super(props);
-		this.state = {
-			textOn: this.props.texton,
-			textOff: this.props.textoff,
-			colorOn: this.props.colorOn ? this.props.coloron : '#2196f3',
-			colorOff: this.props.colorOff ? this.props.coloroff : "#ccc",
-		};
-	}
-	render() {
-		const { textOn, textOff, colorOn, colorOff } = this.state;
-		console.log("colorOn -> ", colorOn);
-		console.log("colorOn -> ", colorOff);
-		return (
-			<div>
-			<label className="switch">
-				<input type="checkbox"/>
-					<span className="slider round" text-on={textOn} text-off={textOff} color-on={colorOn} color-off={colorOff}></span>
-				</label>
-			</div>
-		);
-	}
-}
-/*
-class Switch extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			name: this.props.name,
-			id: this.props.id,
-		};
-	}
-	render() {
-		const { name, id } = this.state;
-		return (
-			<div className="switch">
-				<label class="switch-label" htmlFor={name}>
-					<span class="switch-thumb" />
-					<span class="switch-rail" />
-					Toggle Me!
-				</label>
-				<input
-					type="checkbox"
-					className="switch-checkbox"
-					name={name}
-					id={id}
-				/>
-			</div>
-		);
-	}
-}
-*/
+import Selector from "./Selector";
+
+
 class User extends Component {
 	constructor(props) {
 		super(props);
@@ -67,45 +17,65 @@ class User extends Component {
 			email: null,
 			// password: null,
 		};
+		this.changeHandler = this.changeHandler.bind(this);
+	}
+	changeHandler(e) {
+		this.setState({
+			[e.target.name]: e.target.value,
+		});
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
-		let data = await axios
-			.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
-			.then((res) => {
-				return res.data;
-			});
+		let data = await getUserData();
 		this.setState({
 			name: data.name,
 			surname: data.surname,
+			display_name: data.display_name,
+			email: data.email,
 		});
-		console.log(this.state);
+		// console.log(this.state);
 		// return data
 	}
 	render() {
+		// console.log(this.state);
 		return (
 			<div className="main-container">
 				<p>User</p>
-				<label htmlFor="firstname">First Name</label>
+				<label htmlFor="name">First Name</label>
 				<br />
 				<input
 					type="text"
-					name="firstname"
+					name="name"
 					defaultValue={this.state.name}
 					onChange={this.changeHandler}
 				/>
 				<br></br>
-				<label htmlFor="lastname">Last Name</label>
+				<label htmlFor="surname">Last Name</label>
 				<br />
-				<input type="text" name="lastname" onChange={this.changeHandler} />
+				<input
+					type="text"
+					name="surname"
+					defaultValue={this.state.surname}
+					onChange={this.changeHandler}
+				/>
 				<br></br>
 				<label htmlFor="display_name">Display Name</label>
 				<br />
-				<input type="text" name="display_name" onChange={this.changeHandler} />
+				<input
+					type="text"
+					name="display_name"
+					defaultValue={this.state.display_name}
+					onChange={this.changeHandler}
+				/>
 				<br></br>
 				<label htmlFor="email">Email</label>
 				<br />
-				<input type="text" name="email" onChange={this.changeHandler} />
+				<input
+					type="text"
+					name="email"
+					defaultValue={this.state.email}
+					onChange={this.changeHandler}
+				/>
 				<br></br>
 				<button className="btn">save</button>
 			</div>
@@ -116,49 +86,126 @@ class Profile extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: null,
-			surname: null,
-			display_name: null,
-			email: null,
-			// password: null,
+			biography: "",
+			gender: "Male",
+			sexual_preference: "Both",
+			date_of_birth:this.formatDate(Date.now())
 		};
+		this.changeHandler = this.changeHandler.bind(this);
+		this.submitHandler = this.submitHandler.bind(this);
+		this.dateHandler = this.dateHandler.bind(this);
+		this.formatDate = this.formatDate.bind(this);
+	}
+	changeHandler(e) {
+		this.setState({
+			[e.target.name]: e.target.value,
+		});
+		// console.log(this.state);
+	}
+	dateHandler(e) {
+		let date = new Date(e.target.value);
+		let selectedYear = date.getFullYear();
+		let selectedMonth = date.getMonth()+1;
+		let selectedDay = date.getDate();
+
+		let currentDate = new Date();
+		let currentYear = currentDate.getFullYear();
+
+		if (selectedYear > currentYear - 18) selectedYear = currentYear - 18;
+		if (selectedYear < currentYear - 68) selectedYear = currentYear - 68;
+		if (selectedMonth < 10)
+			selectedMonth = `0${selectedMonth}`;
+		if (selectedDay < 10) selectedDay = `0${selectedDay}`;
+
+		let selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
+		this.setState({date_of_birth:selectedDate})
+	}
+	formatDate(date) {
+		// console.log(date);
+		let d = new Date(date);
+		let year = d.getFullYear();
+		let month = d.getMonth() + 1;
+		let day = d.getDate();
+		if (month < 10) month = `0${month}`;
+		if (day < 10) day = `0${day}`;
+		let fdate = `${year}-${month}-${day}`;
+		// console.log(fdate);
+		return fdate;
+	}
+	async submitHandler(e) {
+		// console.log("save profile!");
+		// console.log(this.state);
+		await uploadProfile(this.state);
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
-		let data = await axios
-			.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
-			.then((res) => {
-				return res.data;
-			});
-		console.log(data);
-		// return data
+		let data = await getProfileData();
+		if (!data.error) {
+			console.log(data)
+			this.setState({
+				gender:data.profile.gender,
+				sexual_preference:data.profile.sexual_preference,
+				biography: data.profile.biography,
+				date_of_birth:this.formatDate(data.profile.date_of_birth)
+			})
+		}
+		let location = await locateUser();
+		console.log("location",location);
+		
 	}
 	render() {
 		return (
 			<div className="main-container">
 				<p>Profile</p>
-				{/* <label htmlFor="firstname">First Name</label>
+
+				<label htmlFor="gender">Gender</label>
 				<br />
-				<input type="text" name="firstname" onChange={this.changeHandler} />
-				<br></br>
-				<label htmlFor="lastname">Last Name</label>
+				<Selector
+					name="gender"
+					values={["Male", "Female"]}
+					value={this.state.gender}
+					onClick={this.changeHandler}
+				/>
 				<br />
-				<input type="text" name="lastname" onChange={this.changeHandler} />
-				<br></br>
-				<label htmlFor="display_name">Display Name</label>
+
+				<label htmlFor="sexual_preference">Sexual Preference</label>
 				<br />
-				<input type="text" name="display_name" onChange={this.changeHandler} />
-				<br></br>
-				<label htmlFor="email">Email</label>
+				<Selector
+					name="sexual_preference"
+					text={["None", "Males", "Females"]}
+					values={["Both", "Male", "Female"]}
+					value={this.state.sexual_preference}
+					onClick={this.changeHandler}
+				/>
 				<br />
-				<input type="text" name="email" onChange={this.changeHandler} />
-				<br></br> */}
-				<Switch texton="M" textoff="F"  coloroff='#b19cd9' />
+
 				<label htmlFor="biography">Biography</label>
 				<br />
-				<textarea name="biography" onChange={this.changeHandler} />
-				<br></br>
-				<button className="btn">save</button>
+				<textarea
+					name="biography"
+					onChange={this.changeHandler}
+					value={this.state.biography}
+					placeholder="me is here!"
+				/>
+				<br />
+
+				<label htmlFor="date_of_birth">Date Of Birth</label>
+				<br />
+				<input
+					type="date"
+					name="date_of_birth"
+					onChange={this.dateHandler}
+					value={this.state.date_of_birth}
+					
+				/>
+				<br />
+
+				{/* <label htmlFor="getLocation">Location</label> */}
+				{/* <br /> */}
+
+				<button className="btn" onClick={this.submitHandler}>
+					save
+				</button>
 			</div>
 		);
 	}
@@ -176,12 +223,12 @@ class Other extends Component {
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
-		let data = await axios
-			.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
-			.then((res) => {
-				return res.data;
-			});
-		console.log(data);
+		// let data = await axios
+		// 	.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
+		// 	.then((res) => {
+		// 		return res.data;
+		// 	});
+		// console.log(data);
 		// return data
 	}
 	render() {
@@ -212,12 +259,12 @@ class Edit extends Component {
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
-		let data = await axios
-			.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
-			.then((res) => {
-				return res.data;
-			});
-		console.log(data);
+		// let data = await axios
+		// 	.get(`http://localhost:8002/api/users/${sessionStorage.display_name}`)
+		// 	.then((res) => {
+		// 		return res.data;
+		// 	});
+		// console.log(data);
 		// return data
 	}
 	changeHandler(e) {

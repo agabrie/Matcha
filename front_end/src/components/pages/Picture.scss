@@ -1,5 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
-
+// [theme=purple]{
+// 	background-color: #966fd6;
+// 	border: solid 1px #fff;
+// 	color:#966fd6;
+// }
+// [theme=selected]{
+// 	background-color: #fff;
+// 	border: solid 1px #966fd6;
+// 	color: #966fd6;
+// }
 .imgupload {
 	height: 19vw;
 	width: 19vw;
@@ -88,6 +97,7 @@
 	border: 0;
 	color: #b19cd9;
 	background-color: #fff;
+	border: solid 1px #fff;
 	border-radius: 3px;
 	transition: all 200ms ease-in-out;
 	cursor: pointer;
@@ -184,6 +194,7 @@
 	color: #b19cd9;
 	background-color: #fff;
 	border-radius: 3px;
+	border: solid 1px #fff;
 	transition: all 200ms ease-in-out;
 	cursor: pointer;
 	margin: 2px;
@@ -334,4 +345,25 @@ input:checked + .slider:before{
 .slider.round:before{
 	border-radius: 50%;
 	// border-radius: 50px;
+}
+
+.selector{
+	padding: 2vw;
+	display: inline-block;
+	color: white;
+	// float:left;
+	flex-direction: row;
+	align-items: center;
+	width:fit-content;
+	font-size: 1.5vw;
+	border-radius: 10px;
+	font-family: "Open Sans", sans-serif;
+	background-color: #966fd6;
+	border:solid 1px #fff;
+}
+
+.selected{
+	background-color: #fff;
+	color:#966fd6;
+	border:solid 1px #966fd6;
 }

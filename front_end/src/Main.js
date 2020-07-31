@@ -6,7 +6,7 @@ import "./App.scss";
 import Home from "./App";
 import Header from "./components/pages/Header";
 import Footer from "./components/pages/Footer";
-// import Home from "./components/pages/Home";
+import ForgotPass from "./components/pages/ForgotPass";
 import Search from "./components/pages/Search";
 import Verify from "./components/pages/Verify";
 import Profile from "./components/pages/Profile";
@@ -36,11 +36,12 @@ class App extends Component {
 					<div className="container">
 						<Header />
 						<div className="mainbody">
-							<Route exact path="/" component={Home}/>
+							<Route exact path="/" component={Home} />
 							{/* <Route exact path="/login" component={Login} /> */}
 							{/* <Route exact path="/register" component={Register} /> */}
 							<Route exact path="/search" component={Search} />
 							<Route exact path="/imageUpload" component={ImageUpload} />
+							<Route exact path="/forgotPass" component={ForgotPass} />
 							<Route path="/verify" component={Verify} />
 							<Route path="/Profile" component={Profile} />
 							<Route path="/ProfileCarousel" component={ProfileCarousel} />

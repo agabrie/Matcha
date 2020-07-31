@@ -443,9 +443,11 @@ router.post("/resetpass/:login", async(req, res, next) => {
 	res.send(result);
 })
 
-router.get("/location", async(req, res, next) => {
+router.get("/location", async (req, res, next) => {
+	console.log("get Location!");
+	// console.log(req);
 	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
-	console.log(locationData);
+	console.log("location data!",locationData);
 	res.send(locationData);
 })
 
