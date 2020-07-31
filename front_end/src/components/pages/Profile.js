@@ -149,11 +149,17 @@ class Profile extends Component {
 				date_of_birth:this.formatDate(data.profile.date_of_birth)
 			})
 		}
-		let location = await locateUser();
-		console.log("location",location);
+		let location = await locateUser().then((res) => {
+
+			console.log("location", res);
+			this.setState({
+				location: `(${res.latitude}, ${res.longitude})`
+			});
+		})
 		
 	}
 	render() {
+		// console.log(this.state)
 		return (
 			<div className="main-container">
 				<p>Profile</p>

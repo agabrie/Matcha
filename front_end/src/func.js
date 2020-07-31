@@ -190,13 +190,13 @@ const getProfileData = async () => {
 const locateUser = async () => {
 	console.log("locateUser!");
 	let result = await axios.get(`${api}/location`).then((res) => {
-		console.log(res.data);
+		// console.log(res.data);
 		if (res.data.error) {
 			return { error: res.data.error };
 		}
 		return res.data;
 	});
-	return result.error ? false : true;
+	return result;
 };
 
 const uploadProfile = async (user) => {
