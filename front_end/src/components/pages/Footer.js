@@ -26,7 +26,7 @@ class Footer extends Component {
 			<div className="mainfooter">
 				{this.state.loggedInUser && (
 					<div className="footercontent right">
-						<button className="btnContent" onClick={this.gotoEdit}>
+						<button className="btnContent small" onClick={this.gotoEdit}>
 							Profile
 						</button>
 						<button className="btnContent" onClick={this.logout}>

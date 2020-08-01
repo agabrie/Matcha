@@ -27,16 +27,16 @@ class Login extends Component {
 				return this.setState({ error: formatError( res.error) });
 			}
 			// return (window.location = '/mainpage');
-
-			return (window.location = "/imageUpload");
+			
+			return (window.location = "/Search");
 		});
 	}
 	render() {
 		return (
 			<div className="main-container">
-				<p>Login</p>
+				<div className="heading">Login</div>
 				<div style={CenterStyle(0)}>
-					<img width="80%" src={loginLogo} alt="" />
+					<img className="logoImage" src={loginLogo} alt="" />
 				</div>
 				{this.state.error && (
 					<div style={{ color: "red" }}>{this.state.error}</div>
@@ -63,9 +63,10 @@ class Login extends Component {
 				<button type="button" className="btn" onClick={this.submitHandler}>
 					Login
 				</button>
-				<div className="btnContent">
-					<a href="/ForgotPass">Forgot Password</a>
-				</div>
+				<br />
+				{/* <div > */}
+					<a className="small" href="/ForgotPass">Forgot Password</a>
+				{/* </div> */}
 			</div>
 		);
 	}

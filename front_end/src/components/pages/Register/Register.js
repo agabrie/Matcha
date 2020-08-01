@@ -23,7 +23,7 @@ class Register extends Component {
 	changeHandler(e) {
 		this.setState({
 			error: null,
-			success:null,
+			success: null,
 			[e.target.name]: e.target.value,
 		});
 	}
@@ -38,6 +38,7 @@ class Register extends Component {
 				});
 				return;
 			}
+			// eslint-disable-next-line
 			if (password != passwordcon) {
 				this.setState({ error: "passwords dont match" });
 				return;
@@ -56,7 +57,7 @@ class Register extends Component {
 			<div className="main-container">
 				<p>Register</p>
 				<div style={CenterStyle(0)}>
-					<img width="80%" src={loginLogo} alt="" />
+					<img className="logoImage" src={loginLogo} alt="" />
 				</div>
 				{this.state.error && (
 					<div style={{ color: "red" }}>{this.state.error}</div>
@@ -144,5 +145,5 @@ class Register extends Component {
 		);
 	}
 }
- 
+
 export default Register;

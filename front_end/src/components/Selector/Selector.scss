@@ -1,20 +1,30 @@
+@import "../../global.scss";
+
 .selector{
-	padding: 2vw;
+	padding: $padding-small;
 	display: inline-block;
-	color: white;
-	// float:left;
+	color: $color-primary-text;
 	flex-direction: row;
 	align-items: center;
 	width:fit-content;
-	font-size: 1.5vw;
-	border-radius: 10px;
-	font-family: "Open Sans", sans-serif;
-	background-color: #966fd6;
-	border:solid 1px #fff;
+	font-size: $text-regular;
+	border-radius: $radius-small;
+	font-family: $font;
+	background-color: $color-primary;
+	border:solid 1px $color-primary-text;
+	transition: $transition-speed;
+	cursor: pointer;
 }
-
+.selector:hover{
+	background-color: $color-secondary;
+	color: $color-secondary-text;
+	border:solid 1px $color-secondary-text;
+	transition: $transition-speed;
+}
 .selected{
 	background-color: #fff;
 	color:#966fd6;
 	border:solid 1px #966fd6;
+	cursor:not-allowed;
+	transition: $transition-speed;
 }

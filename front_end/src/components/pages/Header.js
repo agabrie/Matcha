@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Picture.scss";
+import CenterStyle from "./CenterStyle";
 
 class Header extends Component {
 	constructor(props) {
@@ -29,7 +30,9 @@ class Header extends Component {
 	render() {
 		return (
 			<div className="mainheader">
-				<h1 className="text big">Matcha</h1>
+				<div style={CenterStyle(10)}>
+					<div className="text big">Matcha</div>
+				</div>
 				{this.state.loggedInUser ? (
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoSearch}>

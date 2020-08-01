@@ -61,10 +61,10 @@ class Picture extends Component {
 									<img
 										className="imgupload"
 										src={`${this.state.type},${this.state.data}`}
-										style={{
-											height: "19vw",
-											width: "19vw",
-										}}
+										// style={{
+										// 	height: "19vw",
+										// 	width: "19vw",
+										// }}
 										alt=""
 									/>
 								</div>

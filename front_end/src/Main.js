@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.scss";
 // import Header from "./components/layout/Header";
 /*just loads in the correct front end*/
-import Home from "./App";
+// import Home from "./App";
 import Login from "./components/pages/Login/Login";
 import Register from "./components/pages/Register/Register";
 import Header from "./components/pages/Header";

@@ -34,6 +34,7 @@ class Selector extends Component {
 						index={index}
 						// data-color={this.state.colors[index]}
 						className={
+							// eslint-disable-next-line
 							selected == index ? "selector selected" : "selector"
 						}
 						value={values[index]}

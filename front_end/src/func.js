@@ -1,7 +1,7 @@
 import axios from "axios";
 const port = 8002;
-const host = "localhost";
-// const host = "192.168.8.101";
+// const host = "localhost";
+const host = "192.168.8.100";
 const api = `http://${host}:${port}/api`;
 
 // const api = `http://192.168.8.101:${port}/api/`;
@@ -23,7 +23,21 @@ const login = async (user) => {
 	}
 	return result;
 };
+const isVerified = async (user) => {
+	// console.log("check images");
+	let isVerified = sessionStorage.getItem("vVerified");
+	// console.log("has image? => ", hasImage);
 
+	if (!hasImage) {
+		let res = await axios.get(`${api}/images/${user}`);
+		console.log(res.data);
+		if (res.data && res.data.images && res.data.images.length) {
+			sessionStorage.setItem("vVerified", true);
+			return true;
+		}
+		return false;
+	} else return true;
+};
 const hasImage = async (user) => {
 	// console.log("check images");
 	let hasImage = sessionStorage.getItem("ppVerified");
@@ -66,7 +80,7 @@ const checkVerified = async () => {
 			return null;
 		} else return "/imageUpload";
 	} else {
-		return "/Profile";
+		return "/Edit";
 	}
 
 	// return null;
@@ -135,8 +149,9 @@ const addProfile = async(id, profile)=>{
 	return result;
 }
 
-const sendToken = async (user)=> {
-	let result = await axios.post(`${api}/verify`, user).then((res) => {
+const sendToken = async (user) => {
+	console.log(user);
+	let result = await axios.post(`${api}/auth/verify`, user).then((res) => {
 		if (res.data.error) {
 			return { error: res.data.error };
 		}
@@ -242,6 +257,31 @@ const uploadProfile = async (user) => {
 	console.log(result);
 	return result;
 };
+const getFullProfile=async (users,display_name,index) =>{
+		return await axios
+			.get(`${api}/profiles/${display_name}/all`)
+			.then((results) => {
+				// let { users } = this.state;
+				// console.log("users=>", users, index);
+				// console.log("profile before => ", users[index]);
+				let user = users[index];
+				let profile = user.profile;
+				results.data.profile = { ...profile, ...results.data.profile };
+				user = { ...user, ...results.data };
+				user.profile.active = true;
+				users[index] = user;
+				// console.log("profile after => ", users[index]);
+				return users;
+			})
+			
+}
+const getSearchResult = async () => {
+	return await axios.get(`${api}/search/unsorted`);
+}
+const registerView = async (viewed) => {
+	return await axios
+			.post(`${api}/views/${sessionStorage.display_name}`, viewed)
+}
 export {
 	login,
 	sendToken,
@@ -259,7 +299,10 @@ export {
 	getProfileData,
 	updateUser,
 	isStrongPassword,
-	formatError
+	formatError,
+	getFullProfile,
+	getSearchResult,
+	registerView
 };
 export default {
 	login,
@@ -278,6 +321,9 @@ export default {
 	getProfileData,
 	updateUser,
 	isStrongPassword,
-	formatError
+	formatError,
+	getFullProfile,
+	getSearchResult,
+	registerView
 };
 

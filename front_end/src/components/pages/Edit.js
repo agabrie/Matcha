@@ -32,7 +32,7 @@ class User extends Component {
 	changeHandler(e) {
 		this.setState({
 			success: null,
-			error:null,
+			error: null,
 			[e.target.name]: e.target.value,
 		});
 	}
@@ -40,26 +40,28 @@ class User extends Component {
 		const { password, passwordcon } = this.state;
 		if (password) {
 			if (!isStrongPassword(password)) {
-				this.setState({ error: "Password must contain digits,upperCase and lowercase letters and be greater than 8 characters" });
+				this.setState({
+					error:
+						"Password must contain digits,upperCase and lowercase letters and be greater than 8 characters",
+				});
 				return;
 			}
+			// eslint-disable-next-line
 			if (password != passwordcon) {
 				this.setState({ error: "passwords dont match" });
 				return;
 			}
 		}
-				await updateUser(this.state).then((res) => {
-					console.log(res);
-					if (res.error) {
-						this.setState({ error: formatError(res.error) });
-					}
-					else {
-						this.setState({success:"user successfully updated"})
-					}
-				});
-					
+		await updateUser(this.state).then((res) => {
+			console.log(res);
+			if (res.error) {
+				this.setState({ error: formatError(res.error) });
+			} else {
+				this.setState({ success: "user successfully updated" });
+			}
+		});
 	}
-	
+
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
 		let data = await getUserData();
@@ -162,13 +164,13 @@ class Profile extends Component {
 	changeHandler(e) {
 		this.setState({
 			error: null,
-			success:null,
+			success: null,
 			[e.target.name]: e.target.value,
 		});
 		// console.log(this.state);
 	}
 	dateHandler(e) {
-		let date = new Date(e.target.value);
+		// let date = new Date(e.target.value);
 		let selectedDate = this.formatDate(e.target.value);
 		this.setState({ date_of_birth: selectedDate });
 	}
@@ -192,13 +194,13 @@ class Profile extends Component {
 	async submitHandler(e) {
 		// console.log("save profile!");
 		// console.log(this.state);
-		await uploadProfile(this.state).then((res)=>{
+		await uploadProfile(this.state).then((res) => {
 			if (res.error) {
 				return this.setState({ error: formatError(res.error) });
 			} else {
-				this.setState({success:"User Profile Updated!"})
+				this.setState({ success: "User Profile Updated!" });
 			}
-		})
+		});
 	}
 	async componentDidMount() {
 		// token: queryString.parse(window.location.search).token
@@ -212,7 +214,7 @@ class Profile extends Component {
 				date_of_birth: this.formatDate(data.profile.date_of_birth),
 			});
 		}
-		let location = await locateUser().then((res) => {
+		await locateUser().then((res) => {
 			console.log("location", res);
 			this.setState({
 				location: `(${res.latitude}, ${res.longitude})`,
