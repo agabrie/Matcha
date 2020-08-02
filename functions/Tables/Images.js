@@ -85,10 +85,10 @@ const insertImages=async (login,data)=>{
 	if (user.error)
 		return { error: user.error };
 	const values = validateData(data);
-	console.log("vals => ",values)
+	// console.log("vals => ",values)
 	Images.delete.rank(login, data.rank, user);
 	let query = InsertRecord("Images", { ...values, ...{ userId: user.id } }, null);
-	console.log(query);
+	// console.log(query);
 	let results = await client.query(query.string,query.values)
 	.then(result => {
 		return result.rows;

@@ -57,7 +57,7 @@ const getImages = async () => {
 	imageNames.forEach(async (fileName) => {
 		let image = await getImage(fileName);
 		images.push(image);
-		console.log("images here -> ",images)
+		// console.log("images here -> ",images)
 		// resolve(images.push(image));
 	});
 	// return new Promise(function (resolve, reject) {
@@ -214,7 +214,7 @@ postAuths = async (users) => {
 	var responses = [];
 	for (element in users) {
 		let user = users[element];
-		console.log(element);
+		// console.log(element);
 		let url = `${env.url}/api/auth/${user.display_name}`;
 		let userResult = await axios
 			.put(url, user.auth)
@@ -242,7 +242,7 @@ postImages = async (users) => {
 	var responses = [];
 	for (element in users) {
 		let user = users[element];
-		console.log(element);
+		// console.log(element);
 		// let image = user.image;
 		// let b64 = Buffer.from(user.image, "binary").toString("base64");
 		// let imageData = user.image.split(",");
@@ -276,7 +276,7 @@ const generateUsers = async (num) => {
 	var images = [];
 	var users = [];
 	images = await getFileNames();
-	console.log("images => ", images);
+	// console.log("images => ", images);
 	console.log("######### generating users #########");
 	for (var i = 0; i < num; i++) {
 		let user = {};
@@ -300,8 +300,8 @@ const generateUsers = async (num) => {
 		user.image = await getImage(getItem(images));
 		user.nomail = true;
 		users.push(user);
-		console.log(user.display_name);
-		console.log(user);
+		// console.log(user.display_name);
+		// console.log(user);
 	}
 	let postedUsers = null;
 	let postedProfiles = null;

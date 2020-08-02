@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
 	cors({
-		origin: [process.env.ClientURL],
+		origin: [process.env.ClientURL, "http://192.168.8.100:3002"],
 		methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
 		credentials: true,
 	})

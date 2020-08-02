@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
+import { checkVerified,getFullProfile,getSearchResult,registerView } from "../../func";
+import InfoBar from "../InfoBar/InfoBar";
 
 class ProfileCard extends Component {
 	constructor(props) {
@@ -17,9 +19,10 @@ class ProfileCard extends Component {
 			images: props.user.images,
 			biography: props.user.profile.biography,
 			fame: props.user.profile.fame,
-
+			symbol: { Male: "♂️", Female: "♀" },
 			color: { Male: "cyan", Female: "pink", null: "grey" },
 		};
+		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
 		// this.registerView = this.registerView.bind(this);
 	}
@@ -35,33 +38,34 @@ class ProfileCard extends Component {
 		};
 	}
 	render() {
+		const { display_name, name, surname, images, gender, age, biography, fame } = this.state;
+		let symbol = this.symbol[gender];
 		return (
-			<div style={CenterStyle(0)}>
-				<div
-					style={{
-						backgroundColor: this.state.color[this.state.gender],
-						borderRadius: "10px",
-						padding:"20px"
-					}}
-				>
+			<div className="main-container">
+				<div>
+					{/* <p>{this.state.id}</p> */}
+					<div className="heading">{display_name}</div>
+					<InfoBar
+						type="text"
+						heading="Full Name"
+						value={`${name} ${surname}`}
+					/>
+					{images.map((elem, index) => (
+						<img
+							key={index}
+							src={`${elem.type},${elem.data}`}
+							width="100vw"
+							alt=""
+						/>
+					))}
 					<div>
-						<p>{this.state.id}</p>
-						<p>
-							{this.state.display_name} : {this.state.name} {this.state.surname}
-						</p>
-						{this.state.images.map((elem, index) => (
-							<img
-								key={index}
-								src={`${elem.type},${elem.data}`}
-								width="100vw"
-								alt=""
-							/>
-						))}
-						<div>
-							<p>age:{this.state.age}</p>
-							<p>biography:{this.state.biography}</p>
-							<p>fame:{this.state.fame}</p>
+						<div style={CenterStyle(0)}>
+							<InfoBar type="textarea" heading="age" value={age} />
+							<InfoBar type="textarea" heading="gender" value={symbol} />
 						</div>
+
+						<InfoBar type="textarea" heading="Biography" value={biography} />
+						<InfoBar type="bar" heading="Fame Rating" value={fame} />
 					</div>
 				</div>
 			</div>
@@ -81,15 +85,19 @@ class UserCard extends Component {
 			age: props.user.profile.age,
 			color: { Male: "cyan", Female: "pink", null: "grey" },
 		};
-		this.handleClick = this.handleClick.bind(this);
+		this.symbol = { Male: "♂️", Female: "♀" };
+			this.handleClick = this.handleClick.bind(this);
 	}
 	async handleClick(e) {
 		e.preventDefault();
 		console.log("clicked user");
+		let check = await checkVerified();
+		if (check)
+			return (window.location = check)
 		let { id, display_name, index } = this.state;
 		await this.props.registerView(id);
-		console.log("dn & index =>", display_name, index);
-		await this.props.getProfile(display_name, index);
+		
+		await this.props.getProfile( display_name,index);
 	}
 
 	componentDidMount() {
@@ -99,32 +107,27 @@ class UserCard extends Component {
 		};
 	}
 	render() {
+		const { display_name, images, age, gender } = this.state;
+		let symbol = this.symbol[gender];
 		return (
-			<div style={CenterStyle(0)}>
-				<div
-					onClick={this.handleClick}
-					style={{
-						backgroundColor: this.state.color[this.state.gender],
-						borderRadius: "10px",
-						padding:"20px"
-					}}
-				>
+			<div className="main-container" onClick={this.handleClick}>
+				<div>
+					<div className="heading">{display_name}</div>
+					{images.map((elem, index) => (
+						<img
+							key={index}
+							src={`${elem.type},${elem.data}`}
+							width="100vw"
+							alt=""
+						/>
+					))}
 					<div>
-						<p>{this.state.id}</p>
-						<p>
-							{this.state.display_name}
-						</p>
-						{this.state.images.map((elem, index) => (
-							<img
-								key={index}
-								src={`${elem.type},${elem.data}`}
-								width="100vw"
-								alt=""
-							/>
-						))}
-						<div>
-							<p>age:{this.state.age}</p>
+						<div style={CenterStyle(0)}>
+						<InfoBar type="textarea" heading="age" value={age} />
+						<InfoBar type="textarea" heading="gender" value={symbol} />
 						</div>
+						{"click to expand"}
+						<div className="hovering-symbol small">▼</div>
 					</div>
 				</div>
 			</div>
@@ -139,37 +142,22 @@ class Search extends Component {
 			users: [],
 			display_name: null,
 		};
-		this.registerView = this.registerView.bind(this);
+		this.clickView = this.clickView.bind(this);
 		this.getProfile = this.getProfile.bind(this);
 	}
-	async getProfile(display_name, index) {
-		await axios
-			.get(`http://localhost:8001/api/profiles/${display_name}/all`)
-			.then((results) => {
-				let { users } = this.state;
-				// console.log("users=>", users, index);
-				// console.log("profile before => ", users[index]);
-				let user = users[index];
-				let profile = user.profile;
-				results.data.profile = { ...profile, ...results.data.profile };
-				user = { ...user, ...results.data };
-				user.profile.active = true;
-				users[index] = user;
-				// console.log("profile after => ", users[index]);
-				return users;
-			})
-			.then((users) => {
-				console.log(users);
-				this.setState(users);
-			});
+	async getProfile(display_name,index) {
+		let { users } = this.state;
+		await getFullProfile(users,display_name,index).then((users) => {
+			console.log(users);
+			this.setState(users);
+		});
 	}
 
-	async registerView(id) {
-		let { display_name } = this.state;
+	async clickView(id) {
+		// let { display_name } = this.state;
 		let viewed = { viewed: id };
 		// console.log("viewed => ", viewed);
-		await axios
-			.post(`http://localhost:8001/api/views/${display_name}`, viewed)
+		await registerView(viewed)
 			.then((results) => {
 				console.log(results.data);
 			});
@@ -177,8 +165,7 @@ class Search extends Component {
 	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await axios
-			.get(`http://localhost:8001/api/search/unsorted`)
+		await getSearchResult()
 			.then((results) => {
 				this.setState({
 					users: results.data,
@@ -198,7 +185,7 @@ class Search extends Component {
 								<UserCard
 									index={index}
 									getProfile={this.getProfile}
-									registerView={this.registerView}
+									registerView={this.clickView}
 									user={user}
 								/>
 							) : (

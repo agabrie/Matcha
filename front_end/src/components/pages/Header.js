@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import "./Picture.css";
+import "./Picture.scss";
+import CenterStyle from "./CenterStyle";
 
 class Header extends Component {
 	constructor(props) {
@@ -17,6 +18,11 @@ class Header extends Component {
 		// this.setState({ loggedInUser: null });
 		return (window.location = "/");
 	};
+	gotoRegister = () => {
+		// sessionStorage.removeItem("id")
+		// this.setState({ loggedInUser: null });
+		return (window.location = "/Register");
+	};
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
 		this.setState({ loggedInUser: user });
@@ -24,7 +30,9 @@ class Header extends Component {
 	render() {
 		return (
 			<div className="mainheader">
-				<h1 className="text big">Matcha</h1>
+				<div style={CenterStyle(10)}>
+					<div className="text big">Matcha</div>
+				</div>
 				{this.state.loggedInUser ? (
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoSearch}>
@@ -35,6 +43,9 @@ class Header extends Component {
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoLogin}>
 							Login
+						</button>
+						<button className="btnContent" onClick={this.gotoRegister}>
+							Register
 						</button>
 					</div>
 				)}

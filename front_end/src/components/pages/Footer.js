@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Picture.css";
+import "./Picture.scss";
 
 class Footer extends Component {
 	constructor(props) {
@@ -7,14 +7,15 @@ class Footer extends Component {
 		this.state = {};
 	}
 	logout = () => {
-		sessionStorage.removeItem("id");
+		// sessionStorage.removeItem("id");
+		sessionStorage.clear();
 		this.setState({ loggedInUser: null });
 		return (window.location = "/");
 	};
-	gotoProfile = () => {
+	gotoEdit = () => {
 		// sessionStorage.removeItem("id")
 		// this.setState({ loggedInUser: null });
-		return (window.location = "/Profile");
+		return (window.location = "/Edit");
 	};
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
@@ -25,7 +26,7 @@ class Footer extends Component {
 			<div className="mainfooter">
 				{this.state.loggedInUser && (
 					<div className="footercontent right">
-						<button className="btnContent" onClick={this.gotoProfile}>
+						<button className="btnContent small" onClick={this.gotoEdit}>
 							Profile
 						</button>
 						<button className="btnContent" onClick={this.logout}>

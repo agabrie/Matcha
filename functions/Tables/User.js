@@ -232,6 +232,7 @@ const insertUser = async (data) => {
 
 const updateUser = async (login, data) => {
 	const values = validateUpdateData(data);
+	console.log(values);
 	let user = await Users.get.Single(login).then(async (user) => {
 		let query = await UpdateRecord("Users", values, { id: user.id });
 		let results = await client
@@ -279,6 +280,7 @@ const validateUpdateData = (data) => {
 	if (data.name) validData.name = data.name;
 	if (data.surname) validData.surname = data.surname;
 	if (data.display_name) validData.display_name = data.display_name;
+	if (data.email) validData.email = data.email;
 	if (data.password)
 		validData.password = Password.encode_password(data.password);
 	return validData;

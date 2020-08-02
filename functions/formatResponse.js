@@ -5,7 +5,7 @@ const SingleResponse = (data) => {
 	if (!Array.isArray(data))
 	// 	return data;
 	data = [data]
-	console.log("data before format => ", data);
+	// console.log("data before format => ", data);
 	let user = {};
 	let auth = {};
 	let profile = {};
@@ -29,12 +29,12 @@ const SingleResponse = (data) => {
 	if (!isEmpty(profile)) user.profile = profile;
 	if (!isEmpty(images)) user.images = images;
 	if (!isEmpty(views)) user.views = views;
-	console.log("data after format =>", user);
+	// console.log("data after format =>", user);
 	if (user.images) user.images = BufferB64.All.B64(user.images);
 	return user;
 };
 const MultipleResponse = (data) => {
-	console.log("data before format => ", data);
+	// console.log("data before format => ", data);
 	let users = [];
 	// let auth = {};
 	// let profile = {};
@@ -62,7 +62,7 @@ const MultipleResponse = (data) => {
 		users.push(user)
 	});
 	users = removeDups(users);
-	console.log("data after format =>", users);
+	// console.log("data after format =>", users);
 	return users;
 };
 const removeDups = (arr) => {

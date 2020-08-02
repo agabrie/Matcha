@@ -19,10 +19,12 @@ var ip2location = require('ip-to-location');
 /* get a single user's data with their profile */
 router.get('/users/:login/all', async function (req, res, next) {
 	console.log("fetch user data");
-
+	let user = await Users.get.Single(req.params.login);
 	let query = `SELECT * FROM USERS
-		INNER JOIN PROFILES ON USERS.ID = USERID
-		`;
+		INNER JOIN PROFILES ON USERS.ID = PROFILES.USERID
+		INNER JOIN AUTH ON USERS.ID = AUTH.USERID
+		WHERE USERS.id = ${user.id}
+		;`;
 	let results = await client.query(query)
 		.then(result => {
 			console.log(result.rows)
@@ -88,6 +90,7 @@ router.post("/users", async function (req, res, next) {
  ** requires at least one of {name, surname, display_name, password}
  */
 router.put("/users/:login", async function (req, res, next) {
+	console.log("update user ! ",req.body);
 	let result = await Users.update.Single(req.params.login, req.body);
 	result = formatResponse.User.Single(result);
 	res.send(result);
@@ -96,10 +99,10 @@ router.put("/users/:login", async function (req, res, next) {
 /***************************** PROFILES ***********************************/
 router.get("/profiles/:login/all", async (req, res, next) => {
 	let result = await Profiles.get.Entire(req.params.login);
-	console.log("user => ", result);
+	// console.log("user => ", result);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
-	console.log("result=>", result);
+	// console.log("result=>", result);
 	res.send(result);
 });
 /* gets all profiles */
@@ -143,14 +146,28 @@ router.post("/profiles/:login", async function (req, res, next) {
 });
 
 /***************************** AUTH *******************************/
+/* checks if user is verified */
+router.get("/auth/verify/:login", async function (req, res, next) {
+	console.log("testing user verification");
+	let result = await Auth.get.Single(req.params.login);
 
+	// if (result.token === req.body.token) {
+	result = await Auth.get.Single(result.display_name);
+	result = formatResponse.User.Single(result);
+	console.log(result);
+		if (!result) res.send({ error: "no such user in database" });
+		res.send(result);
+	// } else {
+		// res.send({ error: "verification token does not match" });
+	// }
+});
 /* verifies user token */
 router.post("/auth/verify", async function (req, res, next) {
-	console.log("verifying user");
-	let result = await Auth.get.Single(req.body.mail);
-
+	console.log("verifying user",req.body);
+	let result = await Auth.get.Single(req.body.login);
+	console.log(result)
 	if (result.token === req.body.token) {
-		let result = await Auth.update.Single(result.display_name, {
+		result = await Auth.update.Single(result.display_name, {
 			verified: true,
 		});
 		result = formatResponse.User.Single(result);
@@ -186,6 +203,7 @@ router.put("/auth/:login", async function (req, res, next) {
 	console.log("auth update");
 	// console.log("req.body => ", req.body);
 	let result = await Auth.update.Single(req.params.login, req.body);
+	console.log(result);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);
@@ -224,7 +242,7 @@ router.post("/images/:login", async function (req, res, next) {
 				message: "No file uploaded",
 			});
 		} else {
-			console.log(req.body);
+			// console.log(req.body);
 			let result = await Images.insert.Single(req.params.login, req.body);
 			// console.log("successfully uploaded : ",image);
 			result = formatResponse.User.Single(result);
@@ -289,6 +307,8 @@ router.post("/login", async function (req, res, next) {
 	);
 	if (result.user) {
 		result.user.password = null;
+	} else {
+		res.send(result)
 	}
 	console.log("success", result);
 	result = formatResponse.User.Single(result.user);
@@ -429,8 +449,10 @@ router.get("/search/unsorted/", async (req, res, next) => {
 	res.send(result);
 });
 
-router.get("/forgotpass", async(req, res, next) => {
+router.post("/forgotpass", async (req, res, next) => {
+	console.log(req.body);
 	let user = await Users.get.Single(req.body.login);
+	console.log("user->",user);
 	forgotPassEmail(user);
 	res.send(user);
 })
@@ -441,9 +463,11 @@ router.post("/resetpass/:login", async(req, res, next) => {
 	res.send(result);
 })
 
-router.get("/location", async(req, res, next) => {
+router.get("/location", async (req, res, next) => {
+	console.log("get Location!");
+	// console.log(req);
 	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
-	console.log(locationData);
+	console.log("location data!",locationData);
 	res.send(locationData);
 })
 

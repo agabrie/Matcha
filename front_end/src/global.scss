@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+
+$text-small : clamp(10px,2vw,16px);
+$text-regular : clamp(16px,3vw,22px);
+$text-big : clamp(22px,4vw,28px);
+$text-large : clamp(50px,15vw,150px);
+
+$image-small:clamp(50px,19vw,200px);
+
+$radius-tiny:5px;
+$radius-small:10px;
+$radius-regular:25px;
+$radius-large:50px;
+
+$transition-speed:all 200ms ease-in-out;
+$padding-tiny:clamp(2px,.5vw,5px);
+$padding-small:clamp(2px,2vw,10px);
+$padding-regular:clamp(10px,5vw,20px);
+$padding-large:clamp(20px,10vw,50px);
+
+$margin-tiny:.5vw;
+$margin-small:2vw;
+$margin-regular:5vw;
+$margin-large:10vw;
+$margin-huge:20vw;
+
+
+$color-primary:#966fd6;
+$color-secondary:#fff;
+$color-primary-text:#fff;
+$color-secondary-text:#966fd6;
+$font:"Open Sans", sans-serif;
+
+$header-size:10vh;
+$footer-size:6vh;
+$main-size:100vh;
+
+$shadow:0px 0px 12px 2px rgba(15, 15, 15, 0.2);

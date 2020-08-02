@@ -1,6 +1,8 @@
 import React from 'react';
+
 import loginLogo from './login_logo.jpg';
 import { login } from "../../func";
+// require("dotenv").config();
 
  export class Login extends React.Component{
     constructor(props) {
@@ -32,7 +34,7 @@ import { login } from "../../func";
                 return (window.location = '/imageUpload');
         });
     }
-    render() {
+     render() {
         return (
             <div className="base-container" ref={ this.props.containerRef }>
                 <div className="header">Login</div>
@@ -53,7 +55,7 @@ import { login } from "../../func";
 					</div>
                     <div className="button">
 						<button type="button" className="btn" onClick={this.submitHandler}>Login</button>
-						<a href="http://localhost:3001/ForgotPass">Forgot Password</a>
+						<a href="/ForgotPass">Forgot Password</a>
 					</div>
                 </div>
             </div>
