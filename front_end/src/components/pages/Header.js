@@ -13,6 +13,11 @@ class Header extends Component {
 		// this.setState({ loggedInUser: null });
 		return (window.location = "/search");
 	};
+	gotoLikes = () => {
+		// sessionStorage.removeItem("id")
+		// this.setState({ loggedInUser: null });
+		return (window.location = "/likes");
+	};
 	gotoLogin = () => {
 		// sessionStorage.removeItem("id")
 		// this.setState({ loggedInUser: null });
@@ -33,6 +38,13 @@ class Header extends Component {
 				<div style={CenterStyle(10)}>
 					<div className="text big">Matcha</div>
 				</div>
+				{this.state.loggedInUser && (
+					<div className="headercontent left">
+						<button className="btnContent" onClick={this.gotoLikes}>
+							Likes
+						</button>
+					</div>
+				)}
 				{this.state.loggedInUser ? (
 					<div className="headercontent right">
 						<button className="btnContent" onClick={this.gotoSearch}>

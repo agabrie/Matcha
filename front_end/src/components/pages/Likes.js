@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 // import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
-import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView, registerLike } from "../../func";
+import {
+	getFullLoggedProfile,
+	checkVerified,
+	getFullProfile,
+	getSearchResult,
+	getUnsortedSearchResults,
+	getAllLikes,
+	registerView,
+	registerLikeBack,
+} from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
 import Selector from "../Selector/Selector";
 
@@ -16,7 +25,7 @@ class Filters extends Component {
 			gender: this.props.gender,
 			location: this.props.location,
 			filter: "age_diff",
-			order:"ASC",
+			order: "ASC",
 			sortby: [
 				{ filter: "age_diff", direction: "ASC" },
 				{ filter: "gender", direction: "ASC" },
@@ -25,32 +34,39 @@ class Filters extends Component {
 				// { filter: "sexual_preference", direction: "ASC" },
 			],
 		};
-		this.changeHandler = this.changeHandler.bind(this)
+		this.changeHandler = this.changeHandler.bind(this);
 		this.submitHandler = this.submitHandler.bind(this);
 	}
 	changeHandler(e) {
 		this.setState({
-			[e.target.name]:e.target.value
-		})
+			[e.target.name]: e.target.value,
+		});
 	}
 	async componentDidMount() {
 		await getFullLoggedProfile().then((res) => {
 			// console.log("res",res.profile);
 			if (res.profile)
-				this.setState({age:res.profile.age,gender:res.profile.gender,sexual_preference:res.profile.sexual_preference,location:res.profile.location})
-		})
+				this.setState({
+					age: res.profile.age,
+					gender: res.profile.gender,
+					sexual_preference: res.profile.sexual_preference,
+					location: res.profile.location,
+				});
+		});
 	}
 	async submitHandler() {
 		// console.log(this.props);
-		let preferences = { sexual_preference: this.state.sexual_preference,age:{min:this.state.min,max:this.state.max }}
-		let { age, gender, location,filter,order }= this.state
-		let sortby = [{filter:filter,direction:order}]
-		let profile = {age:age,gender:gender,location:location}
+		let preferences = {
+			sexual_preference: this.state.sexual_preference,
+			age: { min: this.state.min, max: this.state.max },
+		};
+		let { age, gender, location, filter, order } = this.state;
+		let sortby = [{ filter: filter, direction: order }];
+		let profile = { age: age, gender: gender, location: location };
 		// console.log(preferences);
-		await getSearchResult({ profile,preferences,sortby })
-			.then((results) => {
-				this.props.search(results);
-			});
+		await getSearchResult({ profile, preferences, sortby }).then((results) => {
+			this.props.search(results);
+		});
 	}
 	render() {
 		return (
@@ -142,7 +158,7 @@ class ProfileCard extends Component {
 		};
 		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
-		this.handleLike = this.handleLike.bind(this);
+		this.handleLikeback = this.handleLikeback.bind(this);
 		this.gotoChat = this.gotoChat.bind(this);
 		// this.registerView = this.registerView.bind(this);
 	}
@@ -150,11 +166,9 @@ class ProfileCard extends Component {
 		e.preventDefault();
 		console.log("clicked profile");
 	}
-	async handleLike(e) {
+	async handleLikeback(e) {
 		e.preventDefault();
-		let data = { viewed: this.state.id, liked: true };
-		console.log("like!",data)
-		await registerLike(data)
+		await registerLikeBack({ viewed: this.state.id,liked:true, likedback: true });
 	}
 
 	componentDidMount() {
@@ -168,23 +182,28 @@ class ProfileCard extends Component {
 		let invited = this.state.display_name;
 		let room =
 			invited > inviter ? `${invited}_${inviter}` : `${inviter}_${invited}`;
-		return window.location = (`/chat?name=${inviter}&room=${room}`);
+		return (window.location = `/chat?name=${inviter}&room=${room}`);
 	}
 	render() {
-		const { display_name, name, surname, images, gender, age, biography, fame } = this.state;
+		const {
+			display_name,
+			name,
+			surname,
+			images,
+			gender,
+			age,
+			biography,
+			fame,
+		} = this.state;
 		let symbol = this.symbol[gender];
 		return (
 			<div className="main-container">
 				<div>
 					{/* <p>{this.state.id}</p> */}
 					<div className="heading">{display_name}</div>
-					<InfoBar
-						type="text"
-						heading="Name"
-						value={`${name} ${surname}`}
-					/>
+					<InfoBar type="text" heading="Name" value={`${name} ${surname}`} />
 					{images.map((elem, index) => (
-						<img 
+						<img
 							key={index}
 							src={`${elem.type},${elem.data}`}
 							width="20%"
@@ -195,12 +214,13 @@ class ProfileCard extends Component {
 						<div style={CenterStyle(0)}>
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
-							{/* <Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}> */}
-							{/* </Link> */}
-							
 						</div>
-						{/* <button className="btn mr-20" onClick={this.gotoChat}>Message</button> */}
-						<button className="btn pl-20" onClick={this.handleLike} >Like</button>
+						<button className="btn mr-20" onClick={this.gotoChat}>
+							Message
+						</button>
+						<button className="btn pl-20" onClick={this.handleLikeback}>
+							Like
+						</button>
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />
 					</div>
@@ -209,6 +229,7 @@ class ProfileCard extends Component {
 		);
 	}
 }
+
 class UserCard extends Component {
 	constructor(props) {
 		super(props);
@@ -223,18 +244,17 @@ class UserCard extends Component {
 			color: { Male: "cyan", Female: "pink", null: "grey" },
 		};
 		this.symbol = { Male: "♂️", Female: "♀" };
-			this.handleClick = this.handleClick.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 	}
 	async handleClick(e) {
 		e.preventDefault();
 		// console.log("clicked user");
 		let check = await checkVerified();
-		if (check)
-			return (window.location = check)
+		if (check) return (window.location = check);
 		let { id, display_name, index } = this.state;
 		await this.props.registerView(id);
-		
-		await this.props.getProfile( display_name,index);
+
+		await this.props.getProfile(display_name, index);
 	}
 
 	componentDidMount() {
@@ -250,18 +270,20 @@ class UserCard extends Component {
 			<div className="main-container" onClick={this.handleClick}>
 				<div>
 					<div className="heading">{display_name}</div>
+					<div>
+						<div style={CenterStyle(0)}>
 					{images.map((elem, index) => (
-						<img className="imgupload"
+						<img
+							// className="imgupload"
 							key={index}
 							src={`${elem.type},${elem.data}`}
-							width="100vw"
+							width="50vw"
+							height="50vw"
 							alt=""
 						/>
 					))}
-					<div>
-						<div style={CenterStyle(0)}>
-						<InfoBar type="textarea" heading="age" value={age} />
-						<InfoBar type="textarea" heading="gender" value={symbol} />
+							<InfoBar type="textarea" heading="age" value={age} />
+							<InfoBar type="textarea" heading="gender" value={symbol} />
 						</div>
 						{"click to expand"}
 						<div className="hovering-symbol small">▼</div>
@@ -272,20 +294,22 @@ class UserCard extends Component {
 	}
 }
 
-class Search extends Component {
+
+
+class Likes extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			users: [],
-			display_name: null
+			display_name: null,
 		};
 		this.clickView = this.clickView.bind(this);
 		this.getProfile = this.getProfile.bind(this);
 		this.search = this.search.bind(this);
 	}
-	async getProfile(display_name,index) {
+	async getProfile(display_name, index) {
 		let { users } = this.state;
-		await getFullProfile(users,display_name,index).then((users) => {
+		await getFullProfile(users, display_name, index).then((users) => {
 			// console.log(users);
 			this.setState(users);
 		});
@@ -295,27 +319,26 @@ class Search extends Component {
 		// let { display_name } = this.state;
 		let viewed = { viewed: id };
 		// console.log("viewed => ", viewed);
-		await registerView(viewed)
-			.then((results) => {
-				// console.log(results.data);
-			});
+		await registerView(viewed).then((results) => {
+			// console.log(results.data);
+		});
 		// this.props.getProfile(display_name, this.props.index);
 	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await getUnsortedSearchResults()
-			.then((results) => {
-				this.setState({
-					users: results,
-					display_name: display_name,
-				});
+		await getAllLikes().then((results) => {
+			this.setState({
+				users: results,
+				display_name: display_name,
 			});
+			console.log("all likes ->",results);
+		});
 	}
 	search(users) {
-		this.setState({users:users})
+		this.setState({ users: users });
 	}
 	render() {
-		const { users } = this.state
+		const { users } = this.state;
 		return (
 			<div>
 				{sessionStorage.id && <Filters search={this.search} />}
@@ -339,4 +362,4 @@ class Search extends Component {
 	}
 }
 
-export default Search;
+export default Likes;

@@ -315,16 +315,32 @@ const getUnsortedSearchResults = async () => {
 		return res.data;
 	});;
 };
+const getAllLikes = async () => {
+	let display_name = sessionStorage.display_name;
+	let results = await axios.get(`${api}/views/${display_name}/likes`).then((res) => { return res.data })
+	// console.log(results);
+	return (results);
+}
 const registerView = async (viewed) => {
 	return await axios
 			.post(`${api}/views/${sessionStorage.display_name}`, viewed)
 }
 const registerLike = async (liked) => {
+	console.log("register like!")
 	return await axios
 			.put(`${api}/views/${sessionStorage.display_name}`, liked).then((res) => {
+				console.log(res.data)
 				return res.data;
 			});
 }
+const registerLikeBack = async (liked) => {
+	console.log("likeback!");
+	return await axios
+		.put(`${api}/views/${sessionStorage.display_name}`, liked)
+		.then((res) => {
+			return res.data;
+		});
+};
 export {
 	login,
 	sendToken,
@@ -350,6 +366,8 @@ export {
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
 	registerLike,
+	getAllLikes,
+	registerLikeBack,
 };
 export default {
 	login,
@@ -376,5 +394,7 @@ export default {
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
 	registerLike,
+	getAllLikes,
+	registerLikeBack,
 };
 

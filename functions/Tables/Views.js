@@ -132,9 +132,12 @@ const updateView = async (login, data) => {
 	const values = validateData(data);
 	let user = await Views.get.Single(login)
 		.then(async (user) => {
-			let query = await UpdateRecord("views", values, { id: user[1].userid });
+			console.log(user)
+			let query = await UpdateRecord("views", values, { userid: user[0].userid });
+			console.log(query);
 			let results = await client.query(query.string, query.values)
 				.then(async result => {
+					console.log("here => ",result)
 					let results = await Views.get.Single(login);
 					return results;
 				})
@@ -158,6 +161,9 @@ const validateData = (data) => {
 	}
 	if (data.liked) {
 		valid.liked = data.liked;
+	}
+	if (data.likedback) {
+		valid.likedback = data.likedback;
 	}
 	if (data.userId)
 		valid.userId = data.userId;

@@ -262,7 +262,7 @@ router.delete("/images/:login", async function (req, res, next) {
 
 })
 /***************************** views *********************************/
-router.get("/views/:login/self", async function (req, res, next) {
+router.get("/views/:login/likes", async function (req, res, next) {
 	console.log("Views get on this user");
 
 	let result = await Users.get.ViewedBy.Others(req.params.login);
@@ -374,11 +374,11 @@ router.post("/search/", async (req, res, next) => {
 	if (req.body.preferences) preferences = req.body.preferences;
 	if (req.body.preferences)
 		preferences = req.body.preferences;
-	let conditions = [
+		let conditions = [
+		{ filter: "age", direction: "ASC" },
 		{ filter: "age_diff", direction: "ASC" },
 		{ filter: "gender", direction: "ASC" },
 		{ filter: "fame", direction: "DESC" },
-		{ filter: "age", direction: "ASC" },
 	];
 	if (req.body.sortby) conditions = req.body.sortby;
 	

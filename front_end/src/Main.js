@@ -14,6 +14,7 @@ import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
 import Join from './components/Join/Join';
 import Chat from './components/Chat/Chat';
+import Likes from './components/pages/Likes'
 // import { Login } from "./components/login/l"
 // import { Register } from "./components/login/register";
 
@@ -49,8 +50,8 @@ class App extends Component {
 							<Route path="/ProfileCarousel" component={ProfileCarousel} />
 							<Route path="/profiles/:id" component={ProfileView} />
 							<Route path="/Join" component={Join} />
-		  					<Route path="/Chat" component={Chat} />
-
+							<Route path="/Chat" component={Chat} />
+							<Route exact path="/likes" component={Likes} />
 						</div>
 						<Footer />
 					</div>

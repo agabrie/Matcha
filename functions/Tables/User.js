@@ -4,7 +4,7 @@ const { UpdateRecord } = require("../UpdateRecord");
 const { BufferB64 } = require("../BufferB64");
 
 const { Password } = require("../Password");
-getAllUsersViewsOnSelf = async (login) => {
+getAllUsersLikesOnSelf = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
 	console.log(user);
@@ -357,7 +357,7 @@ let Users = {
 		},
 		ViewedBy: {
 			Self: getAllUsersViewsOnOthers,
-			Others: getAllUsersViewsOnSelf,
+			Others: getAllUsersLikesOnSelf,
 		},
 		All: getAllUsersData,
 	},
