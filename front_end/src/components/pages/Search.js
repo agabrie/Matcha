@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { CenterStyle } from "./CenterStyle";
 import { checkVerified,getFullProfile,getSearchResult,registerView } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
+import { Link } from 'react-router-dom';
 
 class ProfileCard extends Component {
 	constructor(props) {
@@ -62,6 +63,9 @@ class ProfileCard extends Component {
 						<div style={CenterStyle(0)}>
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
+							<Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}>
+								<button className="button mt-20">Message</button>
+							</Link>
 						</div>
 
 						<InfoBar type="textarea" heading="Biography" value={biography} />

@@ -1,7 +1,7 @@
 import axios from "axios";
 const port = 8002;
-// const host = "localhost";
-const host = "192.168.8.100";
+const host = "localhost";
+// const host = "192.168.8.100";
 const api = `http://${host}:${port}/api`;
 
 // const api = `http://192.168.8.101:${port}/api/`;

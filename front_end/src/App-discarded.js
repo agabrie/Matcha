@@ -15,6 +15,8 @@ import ProfileView from "./components/ProfileView/ProfileView";
 import ForgotPass from "./components/pages/ForgotPass";
 import ResetPass from "./components/pages/ResetPass";
 import editProfile from "./components/editProfile/editProfile"
+import Join from './components/Join/Join';
+import Chat from './components/Chat/Chat';
 // import "./App.css";
 
 
@@ -35,6 +37,8 @@ class App extends Component {
 						<Route path="/ForgotPass" component={ForgotPass} />
 						<Route path="/ResetPass" component={ResetPass} />
 						<Route path="/editProfile" component={editProfile} />
+						<Route path="/Join" component={Join} />
+		  				<Route path="/Chat" component={Chat} />
 					</div>
 				</div>
 			</Router>

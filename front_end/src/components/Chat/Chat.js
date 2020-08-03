@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import io from 'socket.io-client';
 import './Chat.css';
 
-import InfoBar from "../InfoBar/InfoBar";
+import InfoBarChat from "../InfobarChat/InfobarChat";
 import Input from "../Input/Input";
 import Messages from "../Messages/Messages";
 
@@ -16,7 +16,7 @@ const Chat = () => {
 	const [room, setRoom] = useState('');
 	const [message, setMessage] = useState('');	
 	const [messages, setMessages] = useState([]);	
-	const ENDPOINT = 'localhost:4000';
+	const ENDPOINT = 'localhost:4001';
 
 	useEffect(() => {
 		const {name, room} = queryString.parse(window.location.search);
@@ -54,7 +54,7 @@ const Chat = () => {
     return(
         <div className="outerContainer">
 			<div className="container">
-				<InfoBar room={room}/>
+				<InfoBarChat room={room}/>
 				<Messages messages={messages} name={name}/>
 				<Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
 			</div>

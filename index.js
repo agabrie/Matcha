@@ -48,13 +48,13 @@ io.on('connection', (socket) => {
 	})
 });
 
-app.use(
-    cors({
-        origin: ["http://localhost:3000"],
-        methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
-        credentials: true
-    })
-);
+// app.use(
+//     cors({
+//         origin: ["http://localhost:3000"],
+//         methods: ["GET", "HEAD", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
+//         credentials: true
+//     })
+// );
 
 app.use(
 	cors({
@@ -97,7 +97,7 @@ app.listen(process.env.port || 4000, function () {
 		"now listening for requests on port: " + (process.env.port || 4000)
 	);
 });
-server.listen(process.env.port || 4000, function(){
+server.listen( 4001, function(){
     console.log('now listening for requests on port: '+(process.env.port||4000));
 });
 
