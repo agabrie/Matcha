@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
-import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView } from "../../func";
+import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView, registerLike } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
 import Selector from "../Selector/Selector";
 import { Link } from 'react-router-dom';
@@ -143,11 +143,17 @@ class ProfileCard extends Component {
 		};
 		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
+		this.handleLike = this.handleLike.bind(this);
 		// this.registerView = this.registerView.bind(this);
 	}
 	async handleClick(e) {
 		e.preventDefault();
 		console.log("clicked profile");
+	}
+	async handleLike(e) {
+		e.preventDefault();
+		await registerLike({"viewed": this.state.id, "liked": true})
+
 	}
 
 	componentDidMount() {
@@ -182,8 +188,9 @@ class ProfileCard extends Component {
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
 							<Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}>
-								<button className="button mt-20">Message</button>
+								<button className="btn mr-20">Message</button>
 							</Link>
+							<button className="btn pl-20" onClick={this.handleLike} >Like</button>
 						</div>
 
 						<InfoBar type="textarea" heading="Biography" value={biography} />

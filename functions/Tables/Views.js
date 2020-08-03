@@ -122,9 +122,9 @@ const insertView = async (login, data) => {
 
 const updateView = async (login, data) => {
 	const values = validateData(data);
-	let user = await View.get.Single(login)
+	let user = await Views.get.Single(login)
 		.then(async (user) => {
-			let query = await UpdateRecord("Views", values, { id: user.id });
+			let query = await UpdateRecord("views", values, { id: user[1].userid });
 			let results = await client.query(query.string, query.values)
 				.then(async result => {
 					let results = await Views.get.Single(login);

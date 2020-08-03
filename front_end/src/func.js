@@ -319,6 +319,12 @@ const registerView = async (viewed) => {
 	return await axios
 			.post(`${api}/views/${sessionStorage.display_name}`, viewed)
 }
+const registerLike = async (liked) => {
+	return await axios
+			.put(`${api}/views/${sessionStorage.display_name}`, liked).then((res) => {
+				return res.data;
+			});
+}
 export {
 	login,
 	sendToken,
@@ -343,6 +349,7 @@ export {
 	isVerified,
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
+	registerLike,
 };
 export default {
 	login,
@@ -368,5 +375,6 @@ export default {
 	isVerified,
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
+	registerLike,
 };
 
