@@ -334,12 +334,21 @@ const registerLike = async (liked) => {
 			});
 }
 const registerLikeBack = async (liked) => {
-	console.log("likeback!");
+	console.log("likeback!", liked);
+	// let a = liked;
+	// a.viewed = sessionStorage.id
+	// console.log("also",a)
+	// await axios
+	// 	.put(`${api}/views/${liked.viewed}`, a)
+	// 	.then((res) => {
+	// 		return res.data;
+	// 	});
 	return await axios
 		.put(`${api}/views/${sessionStorage.display_name}`, liked)
 		.then((res) => {
 			return res.data;
 		});
+	
 };
 export {
 	login,
