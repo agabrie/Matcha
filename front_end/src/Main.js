@@ -17,7 +17,7 @@ import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
 import Join from './components/Join/Join';
 import Chat from './components/Chat/Chat';
-import ChatMatches from './components/ChatMatches/ChatMatches';
+import ChatMatches from './components/Messages/Messages';
 // import { Login } from "./components/login/l"
 // import { Register } from "./components/login/register";
 
