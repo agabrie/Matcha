@@ -1,11 +1,16 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
+import ChatMatches from "../Messages/Messages";
 
 import './Join.css'
 
 const Join = () => {
 	const [name, setName] = useState('');
 	const [room, setRoom] = useState('');
+	const [user, setUser] = useState('');	
+	const [match, setmatch] = useState([]);	
+
+
 
     return(
     	<div className="joinOuterContainer">

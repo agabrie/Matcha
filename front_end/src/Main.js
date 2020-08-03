@@ -12,6 +12,22 @@ import Edit from "./components/pages/Edit";
 import ImageUpload from "./components/pages/ImageUpload";
 import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
+import Join from './components/Join/Join';
+import Chat from './components/Chat/Chat';
+// import { Login } from "./components/login/l"
+// import { Register } from "./components/login/register";
+
+// import  Register  from "./components/login/register"; 
+
+// import "./App.css";
+// class Home extends Component {
+// 	componentDidMount() {
+// 		return (window.location = "/login")
+// 	}
+// 	render() {
+// 		return(<div></div>)
+// 	}
+// }
 
 class App extends Component {
 	render() {
@@ -32,6 +48,9 @@ class App extends Component {
 							<Route path="/Edit" component={Edit} />
 							<Route path="/ProfileCarousel" component={ProfileCarousel} />
 							<Route path="/profiles/:id" component={ProfileView} />
+							<Route path="/Join" component={Join} />
+		  					<Route path="/Chat" component={Chat} />
+
 						</div>
 						<Footer />
 					</div>
