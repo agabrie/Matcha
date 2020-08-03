@@ -263,9 +263,18 @@ router.delete("/images/:login", async function (req, res, next) {
 })
 /***************************** views *********************************/
 router.get("/views/:login/likes", async function (req, res, next) {
-	console.log("Views get on this user");
+	console.log("likes get on this user");
 
 	let result = await Users.get.ViewedBy.Others(req.params.login);
+	result = formatResponse.User.Multiple(result);
+	// result = formatResponse.User.Single(result);
+	if (!result) res.send({ error: "no such user in database" });
+	res.send(result);
+});
+router.get("/views/:login/matches", async function (req, res, next) {
+	console.log("matches get on this user");
+
+	let result = await Users.get.Matches(req.params.login);
 	result = formatResponse.User.Multiple(result);
 	// result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
@@ -282,7 +291,6 @@ router.get("/views/:login", async function (req, res, next) {
 });
 router.post("/views/:login", async function (req, res, next) {
 	console.log("Views insert");
-
 	let result = await Views.insert.Single(req.params.login, req.body);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });

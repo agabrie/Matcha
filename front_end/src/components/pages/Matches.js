@@ -3,9 +3,8 @@ import { CenterStyle } from "./CenterStyle";
 import {
 	checkVerified,
 	getFullProfile,
-	getAllLikes,
-	registerView,
-	registerLikeBack,
+	getAllMatches,
+	// registerView,
 } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
 
@@ -30,17 +29,14 @@ class ProfileCard extends Component {
 		};
 		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
-		this.handleLikeback = this.handleLikeback.bind(this);
+		
 		this.gotoChat = this.gotoChat.bind(this);
 	}
 	async handleClick(e) {
 		e.preventDefault();
 		// console.log("clicked profile");
 	}
-	async handleLikeback(e) {
-		e.preventDefault();
-		await registerLikeBack({ viewed: this.state.id,liked:true, likedback: true });
-	}
+	
 
 	componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
@@ -86,12 +82,10 @@ class ProfileCard extends Component {
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
 						</div>
-						{/* <button className="btn mr-20" onClick={this.gotoChat}>
+						<button className="btn mr-20" onClick={this.gotoChat}>
 							Message
-						</button> */}
-						<button className="btn pl-20" onClick={this.handleLikeback}>
-							Like
 						</button>
+						
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />
 					</div>
@@ -123,7 +117,7 @@ class UserCard extends Component {
 		let check = await checkVerified();
 		if (check) return (window.location = check);
 		let { id, display_name, index } = this.state;
-		await this.props.registerView(id);
+		// await this.props.registerView(id);
 
 		await this.props.getProfile(display_name, index);
 	}
@@ -167,14 +161,14 @@ class UserCard extends Component {
 
 
 
-class Likes extends Component {
+class Matches extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			users: [],
 			display_name: null,
 		};
-		this.clickView = this.clickView.bind(this);
+		// this.clickView = this.clickView.bind(this);
 		this.getProfile = this.getProfile.bind(this);
 		this.search = this.search.bind(this);
 	}
@@ -185,16 +179,16 @@ class Likes extends Component {
 		});
 	}
 
-	async clickView(id) {
-		let viewed = { viewed: id };
-		console.log("viewed!",viewed)
-		await registerView(viewed).then((results) => {
-			console.log(results.data);
-		});
-	}
+	// async clickView(id) {
+	// 	let viewed = { viewed: id };
+	// 	console.log("viewed!",viewed)
+	// 	await registerView(viewed).then((results) => {
+	// 		console.log(results.data);
+	// 	});
+	// }
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await getAllLikes().then((results) => {
+		await getAllMatches().then((results) => {
 			this.setState({
 				users: results,
 				display_name: display_name,
@@ -217,7 +211,7 @@ class Likes extends Component {
 								<UserCard
 									index={user.id}
 									getProfile={this.getProfile}
-									registerView={this.clickView}
+									// registerView={this.clickView}
 									user={user}
 								/>
 							) : (
@@ -230,4 +224,4 @@ class Likes extends Component {
 	}
 }
 
-export default Likes;
+export default Matches;

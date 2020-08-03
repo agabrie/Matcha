@@ -195,9 +195,12 @@ const resetPassword = async (pass) => {
 		return result.error ? false : true;
 	} else return { error: "passwords don't match" };
 };
-const getUserData = async () => {
+const getUserData = async (userid) => {
+	let display_name = sessionStorage.display_name
+	if (userid)
+		display_name = userid
 	let data = await axios
-		.get(`${api}/users/${sessionStorage.display_name}`)
+		.get(`${api}/users/${display_name}`)
 		.then((res) => {
 			return res.data;
 		});
@@ -321,6 +324,16 @@ const getAllLikes = async () => {
 	// console.log(results);
 	return (results);
 }
+const getAllMatches = async () => {
+	let display_name = sessionStorage.display_name;
+	let results = await axios
+		.get(`${api}/views/${display_name}/matches`)
+		.then((res) => {
+			return res.data;
+		});
+	// console.log(results);
+	return results;
+};
 const registerView = async (viewed) => {
 	return await axios
 			.post(`${api}/views/${sessionStorage.display_name}`, viewed)
@@ -335,14 +348,17 @@ const registerLike = async (liked) => {
 }
 const registerLikeBack = async (liked) => {
 	console.log("likeback!", liked);
+	let user = await getUserData(liked.viewed)
+	let likeback = {liked:true,viewed:sessionStorage.id,likedback:true}
 	// let a = liked;
 	// a.viewed = sessionStorage.id
-	// console.log("also",a)
-	// await axios
-	// 	.put(`${api}/views/${liked.viewed}`, a)
-	// 	.then((res) => {
-	// 		return res.data;
-	// 	});
+	// console.log("also", a)
+	// console.log(user)
+	await axios
+		.put(`${api}/views/${user.display_name}`, likeback)
+		.then((res) => {
+			return res.data;
+		});
 	return await axios
 		.put(`${api}/views/${sessionStorage.display_name}`, liked)
 		.then((res) => {
@@ -377,6 +393,7 @@ export {
 	registerLike,
 	getAllLikes,
 	registerLikeBack,
+	getAllMatches,
 };
 export default {
 	login,
@@ -405,5 +422,6 @@ export default {
 	registerLike,
 	getAllLikes,
 	registerLikeBack,
+	getAllMatches,
 };
 

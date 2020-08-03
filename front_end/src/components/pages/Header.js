@@ -18,6 +18,11 @@ class Header extends Component {
 		// this.setState({ loggedInUser: null });
 		return (window.location = "/likes");
 	};
+	gotoMatches= () => {
+		// sessionStorage.removeItem("id")
+		// this.setState({ loggedInUser: null });
+		return (window.location = "/matches");
+	};
 	gotoLogin = () => {
 		// sessionStorage.removeItem("id")
 		// this.setState({ loggedInUser: null });
@@ -42,6 +47,9 @@ class Header extends Component {
 					<div className="headercontent left">
 						<button className="btnContent" onClick={this.gotoLikes}>
 							Likes
+						</button>
+						<button className="btnContent" onClick={this.gotoMatches}>
+							Matches
 						</button>
 					</div>
 				)}

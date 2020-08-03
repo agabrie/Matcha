@@ -4,6 +4,55 @@ const { UpdateRecord } = require("../UpdateRecord");
 const { BufferB64 } = require("../BufferB64");
 
 const { Password } = require("../Password");
+getAllUserMatches = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	console.log(user);
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWS
+	) as Views ON USERS.id = Views.by
+	WHERE IMAGES.rank = '1'
+	AND Views.viewed = ${user.id}
+	AND Views.liked = 'true'
+	AND Views.likedback = 'true'
+	;`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
 getAllUsersLikesOnSelf = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
@@ -36,7 +85,9 @@ getAllUsersLikesOnSelf = async (login) => {
 		FROM VIEWS
 	) as Views ON USERS.id = Views.by
 	WHERE IMAGES.rank = '1'
-	AND Views.viewed = ${user.id};`;
+	AND Views.viewed = ${user.id}
+	AND Views.liked = 'true'
+	;`;
 	let result = await client
 		.query(query)
 		.then((result) => {
@@ -359,6 +410,8 @@ let Users = {
 			Self: getAllUsersViewsOnOthers,
 			Others: getAllUsersLikesOnSelf,
 		},
+		Matches:getAllUserMatches
+		,
 		All: getAllUsersData,
 	},
 	validate: {
