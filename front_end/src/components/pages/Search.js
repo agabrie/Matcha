@@ -1,9 +1,127 @@
 import React, { Component } from "react";
 // import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
-import { checkVerified,getFullProfile,getSearchResult,registerView } from "../../func";
+import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
+import Selector from "../Selector/Selector";
 
+class Filters extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			sexual_preference: this.props.sexual_preference,
+			min: 18,
+			max: 68,
+			age: this.props.age,
+			gender: this.props.gender,
+			location: this.props.location,
+			filter: "age_diff",
+			order:"ASC",
+			sortby: [
+				{ filter: "age_diff", direction: "ASC" },
+				{ filter: "gender", direction: "ASC" },
+				{ filter: "fame", direction: "DESC" },
+				{ filter: "age", direction: "ASC" },
+				// { filter: "sexual_preference", direction: "ASC" },
+			],
+		};
+		this.changeHandler = this.changeHandler.bind(this)
+		this.submitHandler = this.submitHandler.bind(this);
+	}
+	changeHandler(e) {
+		this.setState({
+			[e.target.name]:e.target.value
+		})
+	}
+	async componentDidMount() {
+		await getFullLoggedProfile().then((res) => {
+			// console.log("res",res.profile);
+			if (res.profile)
+				this.setState({age:res.profile.age,gender:res.profile.gender,sexual_preference:res.profile.sexual_preference,location:res.profile.location})
+		})
+	}
+	async submitHandler() {
+		// console.log(this.props);
+		let preferences = { sexual_preference: this.state.sexual_preference,age:{min:this.state.min,max:this.state.max }}
+		let { age, gender, location,filter,order }= this.state
+		let sortby = [{filter:filter,direction:order}]
+		let profile = {age:age,gender:gender,location:location}
+		// console.log(preferences);
+		await getSearchResult({ profile,preferences,sortby })
+			.then((results) => {
+				this.props.search(results);
+			});
+	}
+	render() {
+		return (
+			<div className="aside">
+				<div className="heading">Search filters</div>
+				<label htmlFor="sexual_preference" className="tiny">
+					Sexual Preference
+				</label>
+				<br />
+				<Selector
+					size="small"
+					name="sexual_preference"
+					text={["⚥", "♂️", "♀"]}
+					values={["Both", "Male", "Female"]}
+					value={this.state.sexual_preference}
+					onClick={this.changeHandler}
+				/>
+				<br />
+				<label htmlFor="max" className="tiny">
+					Age
+				</label>
+				<br />
+				<input
+					type="number"
+					name="min"
+					min="18"
+					max={this.state.max}
+					defaultValue={this.state.min}
+					onChange={this.changeHandler}
+				/>
+				to
+				<input
+					type="number"
+					name="max"
+					min={this.state.min}
+					max="68"
+					defaultValue={this.state.max}
+					onChange={this.changeHandler}
+				/>
+				<br />
+				<label htmlFor="filter" className="tiny">
+					Sort By
+				</label>
+				<br />
+				<Selector
+					size="tiny"
+					name="filter"
+					text={["age diff", "fame", "age", "gender"]}
+					values={["age_diff", "fame", "age", "gender"]}
+					value={this.state.sexual_preference}
+					onClick={this.changeHandler}
+				/>
+				<label htmlFor="order" className="tiny">
+					ordered by
+				</label>
+				<br />
+				<Selector
+					size="small"
+					name="order"
+					text={["↑", "↓"]}
+					values={["ASC", "DESC"]}
+					value={this.state.sexual_preference}
+					onClick={this.changeHandler}
+				/>
+				<button className="btnContent" onClick={this.submitHandler}>
+					✓
+				</button>
+			</div>
+		);
+	}
+}
 class ProfileCard extends Component {
 	constructor(props) {
 		super(props);
@@ -90,7 +208,7 @@ class UserCard extends Component {
 	}
 	async handleClick(e) {
 		e.preventDefault();
-		console.log("clicked user");
+		// console.log("clicked user");
 		let check = await checkVerified();
 		if (check)
 			return (window.location = check)
@@ -140,15 +258,16 @@ class Search extends Component {
 		super(props);
 		this.state = {
 			users: [],
-			display_name: null,
+			display_name: null
 		};
 		this.clickView = this.clickView.bind(this);
 		this.getProfile = this.getProfile.bind(this);
+		this.search = this.search.bind(this);
 	}
 	async getProfile(display_name,index) {
 		let { users } = this.state;
 		await getFullProfile(users,display_name,index).then((users) => {
-			console.log(users);
+			// console.log(users);
 			this.setState(users);
 		});
 	}
@@ -159,37 +278,40 @@ class Search extends Component {
 		// console.log("viewed => ", viewed);
 		await registerView(viewed)
 			.then((results) => {
-				console.log(results.data);
+				// console.log(results.data);
 			});
 		// this.props.getProfile(display_name, this.props.index);
 	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await getSearchResult()
+		await getUnsortedSearchResults()
 			.then((results) => {
 				this.setState({
-					users: results.data,
+					users: results,
 					display_name: display_name,
 				});
 			});
 	}
-
+	search(users) {
+		this.setState({users:users})
+	}
 	render() {
+		const { users } = this.state
 		return (
 			<div>
-				{console.log(this.state.users)}
-				{this.state.users &&
-					this.state.users.map((user, index) => (
-						<div key={index}>
+				{sessionStorage.id && <Filters search={this.search} />}
+				{users &&
+					users.map((user, index) => (
+						<div key={user.id}>
 							{!user.profile.active ? (
 								<UserCard
-									index={index}
+									index={user.id}
 									getProfile={this.getProfile}
 									registerView={this.clickView}
 									user={user}
 								/>
 							) : (
-								<ProfileCard index={index} user={user} />
+								<ProfileCard index={user.id} user={user} />
 							)}
 						</div>
 					))}

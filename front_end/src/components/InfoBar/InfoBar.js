@@ -16,7 +16,7 @@ class InfoBar extends Component {
 	render() {
 		const { heading, type, value } = this.state;
 		let direction = this.detail[type];
-		console.log(direction);
+		// console.log(direction);
 		return (
 			<div className="infobar">
 				<div className={`infobar-heading ${direction}`}>{heading}</div>
