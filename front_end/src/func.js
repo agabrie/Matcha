@@ -24,14 +24,15 @@ const login = async (user) => {
 	return result;
 };
 const isVerified = async (user) => {
-	// console.log("check images");
+	console.log("is verified");
 	let isVerified = sessionStorage.getItem("vVerified");
 	// console.log("has image? => ", hasImage);
-
+	console.log(isVerified)
 	if (!isVerified) {
-		let res = await axios.get(`${api}/images/${user}`);
-		console.log(res.data);
-		if (res.data && res.data.images && res.data.images.length) {
+		let res = await axios.get(`${api}/auth/${sessionStorage.display_name}`);
+		console.log("vv", res.data);
+		let auth = res.data.auth;
+		if (auth.verified) {
 			sessionStorage.setItem("vVerified", true);
 			return true;
 		}

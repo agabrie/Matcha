@@ -191,8 +191,8 @@ router.get("/auth/", async function (req, res, next) {
 
 /* gets a single user's auth info */
 router.get("/auth/:login", async function (req, res, next) {
-	console.log("auth get single");
-
+	console.log("auth get single",req.params);
+	// let user = await Users.get.Single(req.params.login)
 	let result = await Auth.get.Single(req.params.login);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });

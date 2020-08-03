@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Picture.scss";
 import CenterStyle from "./CenterStyle";
+import { isVerified } from "../../func";
 
 class Header extends Component {
 	constructor(props) {
@@ -36,6 +37,7 @@ class Header extends Component {
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
 		this.setState({ loggedInUser: user });
+		isVerified()
 	}
 	render() {
 		return (

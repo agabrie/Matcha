@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import axios from "axios";
 import { CenterStyle } from "./CenterStyle";
-import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView, registerLike } from "../../func";
+import { getFullLoggedProfile,checkVerified,getFullProfile,getSearchResult,getUnsortedSearchResults,registerView, registerLike, isVerified } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
 import Selector from "../Selector/Selector";
 
@@ -303,6 +303,11 @@ class Search extends Component {
 		// this.props.getProfile(display_name, this.props.index);
 	}
 	async componentDidMount() {
+		// console.log("ver", isVerified())
+		let verified = await isVerified()
+		if (!verified) {
+			this.setState({error:"please verify your account"})
+		}
 		let display_name = sessionStorage.getItem("display_name");
 		console.log("nananan")
 		await getUnsortedSearchResults()
@@ -317,13 +322,15 @@ class Search extends Component {
 		this.setState({users:users})
 	}
 	render() {
-		const { users } = this.state
+		const { users,error } = this.state
 		return (
 			<div>
 				{sessionStorage.id && <Filters search={this.search} />}
 				{users &&
 					users.map((user, index) => (
 						<div key={user.id}>
+							{error && <div className="main-container" style={{ color: "red" }}>{error}</div>}
+
 							{!user.profile.active ? (
 								<UserCard
 									index={user.id}
