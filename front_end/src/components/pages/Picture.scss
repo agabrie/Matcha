@@ -322,3 +322,18 @@ textarea {
 		background-color: $color-primary;
 	}
 }
+
+.aside{
+	position: fixed;
+	left:0;
+	background-color: $color-secondary;
+	color: $color-secondary-text;
+	padding: $padding-tiny;
+	border-radius: $radius-small;
+	font-size: $text-tiny;
+	box-shadow: $shadow;
+	width:15vw;
+	input{
+		width:4vw;
+	}
+}

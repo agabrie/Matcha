@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
-
-$text-small : clamp(10px,2vw,16px);
+$text-tiny : clamp(10px,1vw,13px);
+$text-small : clamp(13px,2vw,16px);
 $text-regular : clamp(16px,3vw,22px);
 $text-big : clamp(22px,4vw,28px);
 $text-large : clamp(50px,15vw,150px);
@@ -30,7 +30,7 @@ $color-secondary:#fff;
 $color-primary-text:#fff;
 $color-secondary-text:#966fd6;
 $font:"Open Sans", sans-serif;
-
+$color-backdrop: grey;
 $header-size:10vh;
 $footer-size:6vh;
 $main-size:100vh;

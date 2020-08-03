@@ -50,7 +50,52 @@ getAllUsersViewsOnSelf = async (login) => {
 		});
 	return result;
 }
-
+getAllUsersViewsOnOthers = async (login) => {
+	console.log("login =>", login);
+	let user = await Users.get.Single(login);
+	console.log(user);
+	let query = `SELECT
+		USERS.id,
+		USERS.display_name,
+		IMAGES.type,
+		IMAGES.data,
+		PROFILES.gender,
+		PROFILES.date_of_birth,
+		PROFILES.fame,
+		PROFILES.age,
+		PROFILES.gender,
+		Views.*
+	FROM USERS
+	INNER JOIN AUTH ON USERS.id = AUTH.userId
+	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
+	INNER JOIN (
+		SELECT *, 
+		EXTRACT(YEAR from AGE(date_of_birth)) as "age"
+		FROM PROFILES
+	) as PROFILES ON USERS.id = PROFILES.userId
+	INNER JOIN (
+		SELECT
+			VIEWS.userId as "by",
+			VIEWS.viewed,
+			VIEWS.liked,
+			VIEWS.likedback
+		FROM VIEWS
+	) as Views ON USERS.id = Views.viewed
+	WHERE IMAGES.rank = '1'
+	AND Views.by = ${user.id};`;
+	let result = await client
+		.query(query)
+		.then((result) => {
+			// return BufferB64.All.B64(result.rows);
+			return result.rows;
+		})
+		.catch((error) => {
+			console.log(error);
+			if (error.detail) return { error: error.detail };
+			return { error: error };
+		});
+	return result;
+};
 const getAllUserInfo = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
@@ -307,10 +352,13 @@ let Users = {
 		Single: getUserFromLogin,
 		Entire: getAllUserInfo,
 		Verified: {
-			sorted: { age:getAllVerifiedUsersSortedByAge },
+			sorted: { age: getAllVerifiedUsersSortedByAge },
 			unsorted: getAllVerifiedUsers,
 		},
-		ViewedBy: {Self:null,Others:getAllUsersViewsOnSelf},
+		ViewedBy: {
+			Self: getAllUsersViewsOnOthers,
+			Others: getAllUsersViewsOnSelf,
+		},
 		All: getAllUsersData,
 	},
 	validate: {

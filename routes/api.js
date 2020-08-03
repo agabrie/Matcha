@@ -263,7 +263,7 @@ router.delete("/images/:login", async function (req, res, next) {
 })
 /***************************** views *********************************/
 router.get("/views/:login/self", async function (req, res, next) {
-	console.log("Views insert");
+	console.log("Views get on this user");
 
 	let result = await Users.get.ViewedBy.Others(req.params.login);
 	result = formatResponse.User.Multiple(result);
@@ -271,7 +271,15 @@ router.get("/views/:login/self", async function (req, res, next) {
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);
 });
+router.get("/views/:login", async function (req, res, next) {
+	console.log("Views get by user");
 
+	let result = await Users.get.ViewedBy.Self(req.params.login);
+	result = formatResponse.User.Multiple(result);
+	// result = formatResponse.User.Single(result);
+	if (!result) res.send({ error: "no such user in database" });
+	res.send(result);
+});
 router.post("/views/:login", async function (req, res, next) {
 	console.log("Views insert");
 
@@ -353,8 +361,8 @@ router.get("/login", async (req, res, next) => {
  **	}
  */
 
-router.get("/search/", async (req, res, next) => {
-	console.log("search");
+router.post("/search/", async (req, res, next) => {
+	console.log("search",req.body);
 	// let age = 20;
 	// if (req.body.profiles == null)res.send({ error: "no user profile" })
 	// if (req.body.preferences == null) res.send({ error: "no user preferences" });
@@ -363,6 +371,7 @@ router.get("/search/", async (req, res, next) => {
 	if (req.body.profile)
 		profile = req.body.profile;
 	let preferences = { sexual_preference: "Both", age: { min: 18, max: 68 } };
+	if (req.body.preferences) preferences = req.body.preferences;
 	if (req.body.preferences)
 		preferences = req.body.preferences;
 	let conditions = [

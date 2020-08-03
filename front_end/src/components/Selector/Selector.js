@@ -11,6 +11,7 @@ class Selector extends Component {
 			// colors: this.props.colors ? this.props.colors : [],
 			images: this.props.images ? this.props.images : [],
 			selected: '0',
+			size: this.props.size
 		};
 		this.onClickHandler = this.onClickHandler.bind(this);
 		this.onClick = this.props.onClick;
@@ -24,7 +25,7 @@ class Selector extends Component {
 		this.onClick(e);
 	}
 	render() {
-		const { text, selected, values } = this.state;
+		const { text, selected, values,size } = this.state;
 		return (
 			<div>
 				{text.map((option, index) => (
@@ -33,9 +34,9 @@ class Selector extends Component {
 						key={index}
 						index={index}
 						// data-color={this.state.colors[index]}
-						className={
+						className={`${
 							// eslint-disable-next-line
-							selected == index ? "selector selected" : "selector"
+							selected == index ? "selector selected" : "selector"} ${size}`
 						}
 						value={values[index]}
 						onClick={this.onClickHandler}

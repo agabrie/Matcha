@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.scss";
-// import Header from "./components/layout/Header";
-/*just loads in the correct front end*/
-// import Home from "./App";
 import Login from "./components/pages/Login/Login";
 import Register from "./components/pages/Register/Register";
 import Header from "./components/pages/Header";
@@ -15,20 +12,6 @@ import Edit from "./components/pages/Edit";
 import ImageUpload from "./components/pages/ImageUpload";
 import ProfileCarousel from "./components/ProfileCarousel/ProfileCarousel";
 import ProfileView from "./components/ProfileView/ProfileView";
-// import { Login } from "./components/login/l"
-// import { Register } from "./components/login/register";
-
-// import  Register  from "./components/login/register"; 
-
-// import "./App.css";
-// class Home extends Component {
-// 	componentDidMount() {
-// 		return (window.location = "/login")
-// 	}
-// 	render() {
-// 		return(<div></div>)
-// 	}
-// }
 
 class App extends Component {
 	render() {

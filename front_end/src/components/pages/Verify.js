@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import queryString from "query-string";
 // import axios from 'axios';
-import { sendToken, login } from "../../func";
+import { sendToken} from "../../func";
 
 class Verify extends Component {
 	constructor(props) {

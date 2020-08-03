@@ -28,3 +28,18 @@
 	cursor:not-allowed;
 	transition: $transition-speed;
 }
+.tiny{
+	font-size: $text-tiny;
+}
+.small{
+	font-size: $text-small;
+}
+.regular{
+	font-size: $text-regular;
+}
+.big{
+	font-size: $text-big;
+}
+.large{
+	font-size: $text-large;
+}

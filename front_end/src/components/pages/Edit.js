@@ -53,7 +53,7 @@ class User extends Component {
 			}
 		}
 		await updateUser(this.state).then((res) => {
-			console.log(res);
+			// console.log(res);
 			if (res.error) {
 				this.setState({ error: formatError(res.error) });
 			} else {
@@ -75,7 +75,7 @@ class User extends Component {
 		// return data
 	}
 	render() {
-		console.log(this.state);
+		// console.log(this.state);
 		return (
 			<div className="main-container">
 				<p>User</p>
@@ -206,7 +206,7 @@ class Profile extends Component {
 		// token: queryString.parse(window.location.search).token
 		let data = await getProfileData();
 		if (!data.error) {
-			console.log(data);
+			// console.log(data);
 			this.setState({
 				gender: data.profile.gender,
 				sexual_preference: data.profile.sexual_preference,
@@ -215,7 +215,7 @@ class Profile extends Component {
 			});
 		}
 		await locateUser().then((res) => {
-			console.log("location", res);
+			// console.log("location", res);
 			this.setState({
 				location: `(${res.latitude}, ${res.longitude})`,
 			});

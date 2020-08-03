@@ -38,14 +38,14 @@ class Picture extends Component {
 	
 	submit = async () => {
 		let result = await uploadImage(this.state);
-		console.log(result)
+		// console.log(result)
 	};
 	
 	delete = async () => {
 		let result = await deleteImage(this.state).then(res => {
 			this.setState({ data: null,type:null});
 		})
-		console.log(result);
+		// console.log(result);
 	 }
 	render() {
 		return (
