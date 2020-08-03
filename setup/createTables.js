@@ -139,6 +139,56 @@ const createViewsTable = async () => {
 	return result;
 };
 
+const createTagsTable = async () => {
+	// const query = createTable(Profile);
+	const query =
+		`CREATE TABLE IF NOT EXISTS
+	Tags
+	(
+		id SERIAL NOT NULL PRIMARY KEY,
+		tag VARCHAR (12) NOT NULL DEFAULT 'PEOPLE',
+	);`;
+	// console.log(User);
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "tags table created successfully" };
+			// console.log(result.rows)
+			// res.send(result.rows);
+		})
+		.catch(err => {
+			return { error: err };
+			// console.log({"sql error":err});
+			// res.send({error:err})
+		});
+	return result;
+};
+
+const createProfileTagsTable = async () => {
+	// const query = createTable(Profile);
+	const query =
+		`CREATE TABLE IF NOT EXISTS
+	ProfileTags
+	(
+		id SERIAL NOT NULL PRIMARY KEY,
+		tagId INT REFERENCES Tags(id),
+		userId INT REFERENCES Users(id),
+        profileId INT REFERENCES Profiles(id),
+	);`;
+	// console.log(User);
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "tags table created successfully" };
+			// console.log(result.rows)
+			// res.send(result.rows);
+		})
+		.catch(err => {
+			return { error: err };
+			// console.log({"sql error":err});
+			// res.send({error:err})
+		});
+	return result;
+};
+
 const createInterestsTable = async () => {
 	// const query = createTable(Profile);
 	const query =
@@ -174,6 +224,8 @@ const createAllTables = async () => {
 	output.interests = await create.Interests();
 	output.images = await create.Images();
 	output.views = await create.Views();
+	output.tags  = await create.Tags();
+	output.Profiletags  = await create.Profiletags();
 	return output;
 	// }
 	// catch{
@@ -188,6 +240,8 @@ const create = {
 	Interests: createInterestsTable,
 	Views: createViewsTable,
 	Auth: createAuthTable,
+	Tags: createTagsTable,
+	Profiletags: createProfileTagsTable,
 	All: createAllTables
 }
 

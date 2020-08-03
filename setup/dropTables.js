@@ -69,6 +69,30 @@ const dropInterestsTable = async () => {
 		});
 	return result;
 }
+const dropTagsTable = async () => {
+	const query = "DROP TABLE TAGS;"
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "interests table dropped successfully" };
+
+		})
+		.catch(err => {
+			return { error: err };
+		});
+	return result;
+}
+const dropProfileTagsTable = async () => {
+	const query = "DROP TABLE PROFILETAGS;"
+	let result = await client.query(query)
+		.then(result => {
+			return { result: "interests table dropped successfully" };
+
+		})
+		.catch(err => {
+			return { error: err };
+		});
+	return result;
+}
 const dropAllTables = async () => {
 	let output = {};
 	// try{
@@ -83,6 +107,8 @@ const dropAllTables = async () => {
 	console.log("auth dropped");
 	output.profiles = await drop.Profiles();
 	output.users = await drop.Users();
+	output.tags = await drop.Tags();
+	output.profiletags = await drop.ProfileTags();
 	return output;
 	// }
 	// catch{
@@ -96,6 +122,8 @@ const drop = {
 	Views: dropViewsTable,
 	Interests: dropInterestsTable,
 	Auth: dropAuthTable,
+	Tags: dropTagsTable,
+	ProfileTags: dropProfileTagsTable,
 	All: dropAllTables
 }
 module.exports = { drop };
