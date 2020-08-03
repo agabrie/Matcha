@@ -2,6 +2,7 @@ const { sendMail } = require('./sendMail');
 require('dotenv').config();
 
 const forgotPassEmail = async (user) => {
+	console.log(user)
 	const frontend = {
 		host: process.env.ClientHost,
 		port: process.env.ClientPort

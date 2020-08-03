@@ -74,16 +74,24 @@ const getAllViewsData = async () => {
 	return result;
 }
 const checkViewed = (viewed,views) => {
+	let a;
 	views.forEach((view) => {
-		if (view.viewed == viewed);
-			return view;
+		// console.log("checking here!",view.viewed,viewed)
+		if (view.viewed == viewed) {
+			a = view;
+		}
 	})
-	return null;
+	return a;
+}
+const cv = (viewed) => {
+
 }
 const insertView = async (login, data) => {
-	console.log("view data =>",login,data)
+	// console.log("view data =>",login,data)
 	let user = await Users.get.Single(login)
 	let views = await Views.get.Single(login)
+	// console.log("views => ", views);
+	// console.log("data => ",data);
 	// .then((res) => {
 		// 	if (res.id)
 		// 		return res
@@ -91,17 +99,19 @@ const insertView = async (login, data) => {
 		// 		throw { error: "no id" }
 		// })
 		// .catch((err) => { return { error: err }; })
-		console.log("user =>", user);
+		// console.log("user =>", views);
 		if (user.error)
 		return { error: user.error };
-		console.log("data => ", data);
+		// console.log("data => ", data);
 		const values = validateData(data);
-		console.log("values =>",values);
-	if (checkViewed(values.viewed,views)) {
-		return checkViewed(values.viewed,views);
+	// console.log("values =>", values);
+	let cv = checkViewed(values.viewed, views);
+	// console.log("checkviewed ",cv);
+	if (cv) {
+		return cv;
 	}
 	const query = InsertRecord("Views", { ...values, ...{ userId: user.id } }, null);
-	console.log("query =>",query);
+	// console.log("query =>",query);
 	if (query.errors) {
 		res.send({ "query error": query.errors });
 		throw query.errors;
@@ -122,11 +132,14 @@ const insertView = async (login, data) => {
 
 const updateView = async (login, data) => {
 	const values = validateData(data);
-	let user = await View.get.Single(login)
+	let user = await Views.get.Single(login)
 		.then(async (user) => {
-			let query = await UpdateRecord("Views", values, { id: user.id });
+			console.log(user)
+			let query = await UpdateRecord("views", values, { userid: user[0].userid });
+			console.log(query);
 			let results = await client.query(query.string, query.values)
 				.then(async result => {
+					console.log("here => ",result)
 					let results = await Views.get.Single(login);
 					return results;
 				})
@@ -150,6 +163,9 @@ const validateData = (data) => {
 	}
 	if (data.liked) {
 		valid.liked = data.liked;
+	}
+	if (data.likedback) {
+		valid.likedback = data.likedback;
 	}
 	if (data.userId)
 		valid.userId = data.userId;

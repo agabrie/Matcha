@@ -9,14 +9,14 @@ const Buff_2_B64 = (buffer) => {
 };
 const All_Buff_2_B64 = (images) => {
 	images.forEach((image) => {
-		console.log(image.data);
+		// console.log(image.data);
 		image.data = Buff_2_B64(image.data);
 	});
 	return images;
 };
 const All_B64_2Buff = (images) => {
 	images.forEach((image) => {
-		console.log(image.data);
+		// console.log(image.data);
 		image.data = B64_2_Buff(image.data);
 	});
 	return images;

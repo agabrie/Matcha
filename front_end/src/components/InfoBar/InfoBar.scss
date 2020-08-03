@@ -1,0 +1,34 @@
+@import "../../global.scss";
+.infobar{
+	border:solid 2px $color-secondary-text;
+	border-radius: $radius-small;
+	font-size: $text-small;
+	margin: $margin-small;
+}
+.infobar-heading{
+	color:$color-primary-text;
+	background-color:$color-primary;
+	// border:solid 1px $color-secondary-text;
+	padding: 0 $padding-small;
+	justify-content: space-evenly;
+	transition: $transition-speed;
+}
+.detail-left{
+	float: right;
+	width: 30%;
+	border-radius: $radius-small $radius-small $radius-small $radius-small;
+}
+.detail-right{
+	float: left;
+	width: 30%;
+	// border:solid 1px $color-secondary-text;
+	// top:-10px;
+	// left:-1px;
+	border-radius: $radius-tiny 0 0 $radius-tiny;
+}
+.detail-right:hover{
+	width:50%;
+}
+.detail-bottom{
+	border-radius: $radius-tiny $radius-tiny 0 0;
+}

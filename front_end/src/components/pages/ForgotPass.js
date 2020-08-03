@@ -5,7 +5,7 @@ class ForgotPass extends Component{
 	constructor(props) {
 	super(props);
 	this.state={
-		display_name:'',
+		login:'',
 		success: false,
 		error: null
 	};
@@ -15,12 +15,13 @@ class ForgotPass extends Component{
 
 	changeHandler(e) {
         this.setState({
-            display_name : e.target.value
+            login : e.target.value
         });
 	}
 	
 	async submitHandler(e) {
         e.preventDefault();
+        console.log(this.state)
 		let result = await forgotPassword(this.state);
         if(result.error){
             this.setState({error:result.error})
@@ -32,13 +33,13 @@ class ForgotPass extends Component{
 
     render() {
         return (
-            <div>
+            <div className="main-container">
 				{this.state.success && <p>{this.state.success}</p>}
        			{this.state.error && <p>{this.state.error}</p>}
-                <form onSubmit={this.submitHandler}>
-                    <input type="display_name" name="display_name" onChange={this.changeHandler} placeholder="display_name"/><br/>
-                    <button type="submit"> Submit </button>
-                </form>
+                {/* <form onSubmit={this.submitHandler}> */}
+                    <input type="text" name="login" onChange={this.changeHandler} placeholder="email or display_name"/><br/>
+                <button className="btn" onClick={this.submitHandler}> Submit </button>
+                {/* </form> */}
                 <br/>
             </div>
         );
