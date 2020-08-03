@@ -144,6 +144,7 @@ class ProfileCard extends Component {
 		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
 		this.handleLike = this.handleLike.bind(this);
+		this.gotoChat = this.gotoChat.bind(this);
 		// this.registerView = this.registerView.bind(this);
 	}
 	async handleClick(e) {
@@ -162,6 +163,13 @@ class ProfileCard extends Component {
 			user: display_name,
 		};
 	}
+	gotoChat() {
+		let inviter = sessionStorage.display_name;
+		let invited = this.state.display_name;
+		let room =
+			invited > inviter ? `${invited}_${inviter}` : `${inviter}_${invited}`;
+		return window.location = (`/chat?name=${inviter}&room=${room}`);
+	}
 	render() {
 		const { display_name, name, surname, images, gender, age, biography, fame } = this.state;
 		let symbol = this.symbol[gender];
@@ -172,14 +180,14 @@ class ProfileCard extends Component {
 					<div className="heading">{display_name}</div>
 					<InfoBar
 						type="text"
-						heading="Full Name"
+						heading="Name"
 						value={`${name} ${surname}`}
 					/>
 					{images.map((elem, index) => (
-						<img
+						<img 
 							key={index}
 							src={`${elem.type},${elem.data}`}
-							width="100vw"
+							width="20%"
 							alt=""
 						/>
 					))}
@@ -187,12 +195,12 @@ class ProfileCard extends Component {
 						<div style={CenterStyle(0)}>
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
-							<Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}>
-								<button className="btn mr-20">Message</button>
-							</Link>
-							<button className="btn pl-20" onClick={this.handleLike} >Like</button>
+							{/* <Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}> */}
+							{/* </Link> */}
+							
 						</div>
-
+						<button className="btn mr-20" onClick={this.gotoChat}>Message</button>
+						<button className="btn pl-20" onClick={this.handleLike} >Like</button>
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />
 					</div>
@@ -243,7 +251,7 @@ class UserCard extends Component {
 				<div>
 					<div className="heading">{display_name}</div>
 					{images.map((elem, index) => (
-						<img
+						<img className="imgupload"
 							key={index}
 							src={`${elem.type},${elem.data}`}
 							width="100vw"

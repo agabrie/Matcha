@@ -9,7 +9,8 @@
 	color:$color-primary-text;
 	background-color:$color-primary;
 	// border:solid 1px $color-secondary-text;
-	padding: 0 $padding-regular;
+	padding: 0 $padding-small;
+	justify-content: space-evenly;
 	transition: $transition-speed;
 }
 .detail-left{
