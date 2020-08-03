@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./Picture.scss";
-
+import {
+	logOut
+} from "../../func";
 class Footer extends Component {
 	constructor(props) {
 		super(props);
@@ -8,8 +10,9 @@ class Footer extends Component {
 	}
 	logout = () => {
 		// sessionStorage.removeItem("id");
-		sessionStorage.clear();
-		this.setState({ loggedInUser: null });
+		// sessionStorage.clear();
+		logOut()
+		this.setState({ loggedInUser: null })
 		return (window.location = "/");
 	};
 	gotoEdit = () => {

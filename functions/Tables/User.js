@@ -7,10 +7,11 @@ const { Password } = require("../Password");
 getAllUserMatches = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
-	console.log(user);
+	console.log("mathes! ",user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
+		Auth.loggedIn,
 		IMAGES.type,
 		IMAGES.data,
 		PROFILES.gender,
@@ -32,18 +33,23 @@ getAllUserMatches = async (login) => {
 			VIEWS.userId as "by",
 			VIEWS.viewed,
 			VIEWS.liked,
-			VIEWS.likedback
+			VIEWS.likedback,
+			Views.blocked
 		FROM VIEWS
 	) as Views ON USERS.id = Views.by
 	WHERE IMAGES.rank = '1'
+	AND AUTH.verified = 'true'
 	AND Views.viewed = ${user.id}
 	AND Views.liked = 'true'
+	AND Views.blocked = 'false'
 	AND Views.likedback = 'true'
 	;`;
+	console.log(query);
 	let result = await client
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
+			console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {
@@ -81,10 +87,13 @@ getAllUsersLikesOnSelf = async (login) => {
 			VIEWS.userId as "by",
 			VIEWS.viewed,
 			VIEWS.liked,
-			VIEWS.likedback
+			VIEWS.likedback,
+			VIEWS.blocked
 		FROM VIEWS
 	) as Views ON USERS.id = Views.by
 	WHERE IMAGES.rank = '1'
+	AND AUTH.verified = 'true'
+	AND Views.blocked = 'false'
 	AND Views.viewed = ${user.id}
 	AND Views.liked = 'true'
 	;`;
@@ -129,10 +138,13 @@ getAllUsersViewsOnOthers = async (login) => {
 			VIEWS.userId as "by",
 			VIEWS.viewed,
 			VIEWS.liked,
-			VIEWS.likedback
+			VIEWS.likedback,
+			VIEWS.blocked
 		FROM VIEWS
 	) as Views ON USERS.id = Views.viewed
 	WHERE IMAGES.rank = '1'
+	AND AUTH.verified = 'true'
+	AND Views.blocked = 'false'
 	AND Views.by = ${user.id};`;
 	let result = await client
 		.query(query)
@@ -234,7 +246,7 @@ const getAllVerifiedUsersSortedByAge = async () => {
 		});
 	return result;
 };
-const getAllVerifiedUsers = async () => {
+const getAllVerifiedUsers = async (username) => {
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -254,7 +266,8 @@ const getAllVerifiedUsers = async () => {
 			EXTRACT(YEAR from AGE(date_of_birth)) as "age"
 		FROM PROFILES
 	) as PROFILES ON USERS.id = PROFILES.userId
-	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1'`;
+	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1' AND USERS.display_name != '${username}';`;
+	console.log(query)
 	let result = await client
 		.query(query)
 		.then((result) => {

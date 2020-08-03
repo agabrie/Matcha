@@ -124,6 +124,7 @@ const formatProfile = (data) => {
 	return valid;
 };
 const formatAuth = (data) => {
+	console.log("auth data",data)
 	let valid = {};
 	if (data.verified != null) valid.verified = data.verified;
 	if (data.notifications != null) valid.notifications = data.notifications;

@@ -161,11 +161,14 @@ const validateData = (data) => {
 	if (data.viewed) {
 		valid.viewed = data.viewed;
 	}
-	if (data.liked) {
+	if (data.liked != null) {
 		valid.liked = data.liked;
 	}
-	if (data.likedback) {
+	if (data.likedback != null) {
 		valid.likedback = data.likedback;
+	}
+	if (data.blocked != null) {
+		valid.blocked = data.blocked;
 	}
 	if (data.userId)
 		valid.userId = data.userId;

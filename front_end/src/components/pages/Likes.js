@@ -6,6 +6,8 @@ import {
 	getAllLikes,
 	registerView,
 	registerLikeBack,
+	registerBlock,
+	registerReport
 } from "../../func";
 import InfoBar from "../InfoBar/InfoBar";
 
@@ -30,6 +32,8 @@ class ProfileCard extends Component {
 		};
 		this.symbol = { Male: "♂️", Female: "♀" };
 		this.handleClick = this.handleClick.bind(this);
+		this.report = this.report.bind(this);
+		this.block = this.block.bind(this);
 		this.handleLikeback = this.handleLikeback.bind(this);
 		this.gotoChat = this.gotoChat.bind(this);
 	}
@@ -47,6 +51,13 @@ class ProfileCard extends Component {
 		this.setState = {
 			user: display_name,
 		};
+	}
+	async report() {
+		let { display_name } = this.state
+		await registerReport(display_name);
+	}
+	async block() {
+		await registerBlock({ viewed: this.state.id,blocked:true });
 	}
 	gotoChat() {
 		let inviter = sessionStorage.display_name;
@@ -95,6 +106,8 @@ class ProfileCard extends Component {
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />
 					</div>
+					<button className="btnImage" onClick={this.report}>report</button>
+					<button className="btnImage" onClick={this.block}>block</button>
 				</div>
 			</div>
 		);

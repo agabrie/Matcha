@@ -16,6 +16,7 @@ class ProfileCard extends Component {
 			index: props.index,
 			user: props.user,
 			id: props.user.id,
+			loggedin:props.user.auth.loggedin,
 			display_name: props.user.display_name,
 			name: props.user.name,
 			surname: props.user.surname,
@@ -43,6 +44,7 @@ class ProfileCard extends Component {
 		this.setState = {
 			user: display_name,
 		};
+		console.log("props => ",this.props.user);
 	}
 	gotoChat() {
 		let inviter = sessionStorage.display_name;
@@ -60,7 +62,7 @@ class ProfileCard extends Component {
 			gender,
 			age,
 			biography,
-			fame,
+			fame,loggedin
 		} = this.state;
 		let symbol = this.symbol[gender];
 		return (
@@ -82,9 +84,9 @@ class ProfileCard extends Component {
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
 						</div>
-						<button className="btn mr-20" onClick={this.gotoChat}>
+						{loggedin ? <button className="btn mr-20" onClick={this.gotoChat}>
 							Message
-						</button>
+						</button> : <p style={{color:'red'}}>this user is currently offline</p>}
 						
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />

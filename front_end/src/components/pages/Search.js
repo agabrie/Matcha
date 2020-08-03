@@ -42,6 +42,7 @@ class Filters extends Component {
 	}
 	async submitHandler() {
 		// console.log(this.props);
+		console.log("click!")
 		let preferences = { sexual_preference: this.state.sexual_preference,age:{min:this.state.min,max:this.state.max }}
 		let { age, gender, location,filter,order }= this.state
 		let sortby = [{filter:filter,direction:order}]
@@ -303,6 +304,7 @@ class Search extends Component {
 	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
+		console.log("nananan")
 		await getUnsortedSearchResults()
 			.then((results) => {
 				this.setState({

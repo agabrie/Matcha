@@ -166,6 +166,7 @@ router.post("/auth/verify", async function (req, res, next) {
 	console.log("verifying user",req.body);
 	let result = await Auth.get.Single(req.body.login);
 	console.log(result)
+	console.log(result.token,req.body.token)
 	if (result.token === req.body.token) {
 		result = await Auth.update.Single(result.display_name, {
 			verified: true,
@@ -326,12 +327,22 @@ router.post("/login", async function (req, res, next) {
 	} else {
 		res.send(result)
 	}
+	await Auth.update.Single(login, {loggedin:true});
 	console.log("success", result);
 	result = formatResponse.User.Single(result.user);
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);
 });
-
+router.post("/logout", async function (req, res, next) {
+	let login = req.body.login;
+	console.log("logout user");
+	await Auth.update.Single(login, {loggedin:false});
+})
+router.post("/report", async function (req, res, next) {
+	let login = req.body.login;
+	console.log("report user");
+	await Auth.update.Single(login, { verified: false });
+});
 /*
  ** returns the current user logged in
  */
@@ -370,6 +381,12 @@ router.get("/login", async (req, res, next) => {
  */
 
 router.post("/search/", async (req, res, next) => {
+	console.log("Search Time!");
+	// if (req.body.display_name) {
+		// console.log("req.body!",req.body);
+		// res.send({});
+		// return;
+	// }
 	console.log("search",req.body);
 	// let age = 20;
 	// if (req.body.profiles == null)res.send({ error: "no user profile" })
@@ -378,6 +395,7 @@ router.post("/search/", async (req, res, next) => {
 	let profile = { age: 30, gender: "Male", location: "(0,0)" };
 	if (req.body.profile)
 		profile = req.body.profile;
+	let { display_name } = req.body
 	let preferences = { sexual_preference: "Both", age: { min: 18, max: 68 } };
 	if (req.body.preferences) preferences = req.body.preferences;
 	if (req.body.preferences)
@@ -439,7 +457,9 @@ router.post("/search/", async (req, res, next) => {
 	${agefilter}
 	${sexfilter}
 	${genderfilter}
+	AND Views.blocked = 'false'
 	AND AUTH.verified = 'TRUE' AND IMAGES.rank = '1'
+	AND Users.display_name != '${display_name}'
 	${sortby}
 	`;
 	// ORDER BY age_diff ASC, fame DESC, age ASC;
@@ -459,8 +479,9 @@ router.post("/search/", async (req, res, next) => {
 	res.send(result);
 });
 
-router.get("/search/unsorted/", async (req, res, next) => {
-	let result = await Users.get.Verified.unsorted();
+router.get("/search/:login/unsorted", async (req, res, next) => {
+	// console.log("unsorted!",req)
+	let result = await Users.get.Verified.unsorted(req.params.login);
 	result = formatResponse.User.Multiple(result);
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);

@@ -311,10 +311,13 @@ const getuserindex=(users, index)=>
 	return res;
 }
 const getSearchResult = async (preferences) => {
-	return await axios.post(`${api}/search/`, preferences).then((res) => { return res.data });
+	let display_name = sessionStorage.display_name
+	preferences.display_name = display_name
+	return await axios.post(`${api}/search/`, preferences ).then((res) => { return res.data });
 }
 const getUnsortedSearchResults = async () => {
-	return await axios.get(`${api}/search/unsorted`).then((res) => {
+	console.log("unsorted")
+	return await axios.get(`${api}/search/${sessionStorage.display_name}/unsorted`).then((res) => {
 		return res.data;
 	});;
 };
@@ -346,6 +349,17 @@ const registerLike = async (liked) => {
 				return res.data;
 			});
 }
+const registerBlock = async (liked) => {
+	console.log("register block!");
+	let user = await getUserData(liked.viewed);
+	let likeback = { viewed: sessionStorage.id, blocked:true};
+	return await axios
+		.put(`${api}/views/${user.display_name}`, likeback)
+		.then((res) => {
+			console.log(res.data);
+			return res.data;
+		});
+};
 const registerLikeBack = async (liked) => {
 	console.log("likeback!", liked);
 	let user = await getUserData(liked.viewed)
@@ -366,6 +380,15 @@ const registerLikeBack = async (liked) => {
 		});
 	
 };
+const logOut = async () => {
+	let display_name = sessionStorage.display_name;
+	sessionStorage.clear()
+	await axios
+		.post(`${api}/logout`, {login:display_name});
+}
+const registerReport = async (login) => {
+	await axios.post(`${api}/report`, { login });
+}
 export {
 	login,
 	sendToken,
@@ -394,6 +417,9 @@ export {
 	getAllLikes,
 	registerLikeBack,
 	getAllMatches,
+	logOut,
+	registerReport,
+	registerBlock
 };
 export default {
 	login,
@@ -423,5 +449,8 @@ export default {
 	getAllLikes,
 	registerLikeBack,
 	getAllMatches,
+	logOut,
+	registerReport,
+	registerBlock,
 };
 

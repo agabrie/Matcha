@@ -122,7 +122,8 @@ const createViewsTable = async () => {
 		userId INT REFERENCES Users(id),
 		viewed INT references users(id),
 		liked BOOLEAN NOT NULL DEFAULT 'FALSE',
-        likedback BOOLEAN NOT NULL DEFAULT 'FALSE'
+		likedback BOOLEAN NOT NULL DEFAULT 'FALSE',
+		blocked BOOLEAN NOT NULL DEFAULT 'FALSE'
 	);`;
 	// console.log(User);
 	let result = await client.query(query)
