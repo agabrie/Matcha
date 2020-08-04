@@ -457,7 +457,6 @@ router.post("/search/", async (req, res, next) => {
 	${agefilter}
 	${sexfilter}
 	${genderfilter}
-	AND Views.blocked = 'false'
 	AND AUTH.verified = 'TRUE' AND IMAGES.rank = '1'
 	AND Users.display_name != '${display_name}'
 	${sortby}
@@ -471,7 +470,7 @@ router.post("/search/", async (req, res, next) => {
 			return result.rows;
 		})
 		.catch((err) => {
-			console.log({ "sql error": err });
+			console.log({ "sql error here": err });
 			return { error: err.detail };
 		});
 	result = formatResponse.User.Multiple(result);

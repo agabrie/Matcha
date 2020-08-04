@@ -37,7 +37,6 @@ class Header extends Component {
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
 		this.setState({ loggedInUser: user });
-		isVerified()
 	}
 	render() {
 		return (
