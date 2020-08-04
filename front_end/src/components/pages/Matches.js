@@ -118,7 +118,7 @@ class UserCard extends Component {
 		// console.log("clicked user");
 		let check = await checkVerified();
 		if (check) return (window.location = check);
-		let { id, display_name, index } = this.state;
+		let { display_name, index } = this.state;
 		// await this.props.registerView(id);
 
 		await this.props.getProfile(display_name, index);
