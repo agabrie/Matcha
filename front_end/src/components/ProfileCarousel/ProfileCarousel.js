@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
-import axios from 'axios';
 import './ProfileCarousel.css';
 import ProfileCard from '../ProfileCard/ProfileCard';
+import {getUnsortedSearchResults } from "../../func";
 
 function ProfileCarousel () {
     useEffect(() => {
@@ -12,9 +12,9 @@ function ProfileCarousel () {
     const [currentIndex, setIndex] = useState(0)
     
    const fetchProfiles = async() => {
-       const response = await axios.get('http://localhost:8001/api/search/unsorted')
-       console.log(response.data)
-        setProfiles(response.data);
+       const response = await getUnsortedSearchResults();
+       console.log(response);
+        setProfiles(response);
     }
 
     const navigate = (direction) => {

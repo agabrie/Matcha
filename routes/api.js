@@ -445,14 +445,20 @@ router.post("/search/", async (req, res, next) => {
 		PROFILES.age,
 		PROFILES.gender,
 		PROFILES.sexual_preference,
-		PROFILES.age_diff
+		PROFILES.age_diff,
+		PROFILES.distance
 	FROM USERS
 	INNER JOIN AUTH ON USERS.id = AUTH.userId
 	INNER JOIN IMAGES ON USERS.id = IMAGES.userId
 	INNER JOIN (
 		SELECT *, 
 		EXTRACT(YEAR from AGE(date_of_birth)) as "age",
-		ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${profile.age}) as "age_diff" FROM PROFILES
+		ABS(EXTRACT(YEAR from AGE(date_of_birth)) - ${profile.age}) as "age_diff",
+		111.045* DEGREES(ACOS(LEAST(1.0, COS(RADIANS(${profile.location.x}))
+                 * COS(RADIANS(location[0]))
+                 * COS(RADIANS(${profile.location.y}) - RADIANS(location[1]))
+                 + SIN(RADIANS(${profile.location.x}))
+                 * SIN(RADIANS(location[0]))))) AS "distance" FROM PROFILES
 	) as PROFILES ON USERS.id = PROFILES.userId
 	${agefilter}
 	${sexfilter}

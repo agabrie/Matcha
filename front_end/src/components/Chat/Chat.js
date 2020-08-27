@@ -27,11 +27,11 @@ const Chat = () => {
 		setRoom(room);
 
 		socket.emit('join', { name, room }, () => {
-
 		});
 
 		return () => {
 			socket.emit('disconnect');
+			
 			socket.off();
 		}
 	}, [ENDPOINT]);
@@ -45,12 +45,12 @@ const Chat = () => {
 	const sendMessage = (event) => {
 		event.preventDefault();
 		if(message) {
-			socket.emit('sendMessage', message, () => setMessage(''));
+			socket.emit('sendMessage', message, () => {
+				setMessage('')
+			});
 		}
 	}
-
-	console.log(message, messages);
-
+	
     return(
         <div className="outerContainer">
 			<div className="container">

@@ -196,6 +196,7 @@ class Profile extends Component {
 		// console.log(this.state);
 		await uploadProfile(this.state).then((res) => {
 			if (res.error) {
+				console.log("error updating!")
 				return this.setState({ error: formatError(res.error) });
 			} else {
 				this.setState({ success: "User Profile Updated!" });
@@ -215,10 +216,11 @@ class Profile extends Component {
 			});
 		}
 		await locateUser().then((res) => {
-			// console.log("location", res);
+			 console.log("location", res);
 			this.setState({
 				location: `(${res.latitude}, ${res.longitude})`,
 			});
+			console.log("the state is now:", this.state)
 		});
 	}
 	render() {

@@ -24,10 +24,8 @@ const login = async (user) => {
 	return result;
 };
 const isVerified = async (user) => {
-	console.log("is verified");
 	let isVerified = sessionStorage.getItem("vVerified");
 	// console.log("has image? => ", hasImage);
-	console.log(isVerified)
 	if (!isVerified) {
 		let res = await axios.get(`${api}/auth/${sessionStorage.display_name}`);
 		console.log("vv", res.data);
@@ -227,7 +225,7 @@ const getProfileData = async () => {
 	} else return data;
 };
 const locateUser = async () => {
-	// console.log("locateUser!");
+	console.log("locateUser!");
 	let result = await axios.get(`${api}/location`).then((res) => {
 		// console.log(res.data);
 		if (res.data.error) {
@@ -235,11 +233,18 @@ const locateUser = async () => {
 		}
 		return res.data;
 	});
+
+	// let result = {
+	// 	latitude: -33.9321,
+	// 	longitude: 18.8602
+	// }
+	
 	return result;
 };
 
 const uploadProfile = async (user) => {
 	let result;
+	console.log("user info received:", user)
 	if (!sessionStorage.ppVerified)
 	result = await axios
 		.post(`${api}/profiles/${sessionStorage.display_name}`, user)
@@ -258,11 +263,11 @@ const uploadProfile = async (user) => {
 				}
 				return res.data;
 			});
-	// console.log(result);
+	console.log("the result is:", result);
 	return result;
 };
-const getFullLoggedProfile = async () => {
-	let display_name = sessionStorage.display_name
+const getFullLoggedProfile = async (display_name) => {
+	
 	return await axios
 		.get(`${api}/profiles/${display_name}/all`)
 		.then((results) => {
@@ -311,44 +316,119 @@ const getuserindex=(users, index)=>
 	}
 	return res;
 }
+
 const getSearchResult = async (preferences) => {
 	let display_name = sessionStorage.display_name
+	console.log("getSearchResult profile:", preferences.profile)
 	preferences.display_name = display_name
-	return await axios.post(`${api}/search/`, preferences ).then((res) => { return res.data });
+	return await axios.post(`${api}/search/`, preferences ).then((res) => { 
+		
+		return res.data });
 }
 const getUnsortedSearchResults = async () => {
-	console.log("unsorted")
 	return await axios.get(`${api}/search/${sessionStorage.display_name}/unsorted`).then((res) => {
+		console.log("this data is returned:",res.data)
 		return res.data;
 	});;
 };
-const getAllLikes = async () => {
-	let display_name = sessionStorage.display_name;
+const getAllLikes = async (display_name) => {
+	
 	let results = await axios.get(`${api}/views/${display_name}/likes`).then((res) => { return res.data })
-	// console.log(results);
 	return (results);
 }
-const getAllMatches = async () => {
-	let display_name = sessionStorage.display_name;
+const getAllMatches = async (display_name) => {
 	let results = await axios
 		.get(`${api}/views/${display_name}/matches`)
 		.then((res) => {
 			return res.data;
 		});
-	// console.log(results);
+	 console.log(results);
 	return results;
 };
+
+const checkMatch = (users, name) => {
+	let i = 0
+		while(users[i]){
+			if(users[i].display_name === name) {
+				//updateFame(sessionStorage.display_name, 'match')
+				//updateFame(name, 'match')
+				
+				return true
+			}
+			i++
+		}
+		return false
+}
+
+const alreadyLiked = (name) => {
+	let likes = getAllLikes(name)
+	let i = 0
+	while (likes[i]){
+	if (likes[i].display_name === sessionStorage.display_name) {
+		return true
+	}
+		i++
+	}
+	return false
+}
+
 const registerView = async (viewed) => {
 	return await axios
 			.post(`${api}/views/${sessionStorage.display_name}`, viewed)
 }
-const registerLike = async (liked) => {
-	console.log("register like!")
-	return await axios
-			.put(`${api}/views/${sessionStorage.display_name}`, liked).then((res) => {
-				console.log(res.data)
-				return res.data;
-			});
+const registerLike = async (id, profileName) => {
+	await getAllLikes(sessionStorage.display_name)
+	.then(res => {
+		let likedback = checkMatch(res, profileName)
+		if (likedback === true){
+			axios.put(`${api}/views/${sessionStorage.display_name}`, {viewed : id, liked: true, likedback: true})
+			axios.put(`${api}/views/${profileName}`, {viewed : sessionStorage.id, liked: true, likedback: true})
+		}
+		axios.put(`${api}/views/${sessionStorage.display_name}`, {viewed : id, liked: true,})
+	}) 
+}
+
+const unLike = async (id, profileName) => {
+	await getAllLikes(sessionStorage.display_name)
+	.then(res => {
+		let likedback = checkMatch(res, profileName)
+		if (likedback === true){
+			axios.put(`${api}/views/${profileName}`, {viewed : sessionStorage.id, likedback: false})
+		} 
+		axios.put(`${api}/views/${sessionStorage.display_name}`, {viewed : id, liked: false})
+	})
+}
+
+
+const updateFame = async (profile, eventType) => {
+			let newFame = 0
+		if (eventType === 'like') {
+				console.log(`10 fame points to ${profile.display_name} for a like!`)
+				newFame = 10
+		} 
+		if (eventType === 'unlike') {
+			console.log(`-10 fame points from ${profile.display_name} for an unlike!`)
+			newFame = -10
+		} 	
+		if (eventType === 'view') {
+			console.log(`5 fame points to ${profile.display_name} for a view!`)
+			newFame = 5
+		}
+		if (eventType === 'match') {
+			console.log(`100 fame points to ${profile.display_name} for a match!`)
+			newFame = 100
+		}
+		if (eventType === 'unmatch') {
+			console.log(`-100 fame points from ${profile.display_name} for an unmatch!`)
+			newFame = -100
+		}
+		profile.fame = profile.fame + newFame
+		return await axios.put(`${api}/profiles/${profile.display_name}`, profile)
+		.then(()=> {
+			return profile.fame
+		})
+
+		
 }
 const registerBlock = async (liked) => {
 	console.log("register block!");
@@ -390,6 +470,29 @@ const logOut = async () => {
 const registerReport = async (login) => {
 	await axios.post(`${api}/report`, { login });
 }
+
+function findDistance(lat1, lon1, lat2, lon2) {
+	if ((lat1 === lat2) && (lon1 === lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		dist = dist * 1.609344
+		
+		return Math.round(dist);
+	}
+}
+
 export {
 	login,
 	sendToken,
@@ -415,12 +518,17 @@ export {
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
 	registerLike,
+	updateFame,
 	getAllLikes,
 	registerLikeBack,
 	getAllMatches,
 	logOut,
 	registerReport,
-	registerBlock
+	registerBlock,
+	checkMatch,
+	alreadyLiked,
+	unLike,
+	findDistance
 };
 export default {
 	login,
@@ -447,11 +555,16 @@ export default {
 	getUnsortedSearchResults,
 	getFullLoggedProfile,
 	registerLike,
+	updateFame,
 	getAllLikes,
 	registerLikeBack,
 	getAllMatches,
 	logOut,
 	registerReport,
 	registerBlock,
+	checkMatch,
+	alreadyLiked,
+	unLike,
+	findDistance
 };
 

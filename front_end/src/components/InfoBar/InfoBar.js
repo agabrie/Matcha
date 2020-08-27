@@ -14,13 +14,13 @@ class InfoBar extends Component {
 		};
 	}
 	render() {
-		const { heading, type, value } = this.state;
+		const { heading, type } = this.state;
 		let direction = this.detail[type];
 		// console.log(direction);
 		return (
 			<div className="infobar">
 				<div className={`infobar-heading ${direction}`}>{heading}</div>
-				<div className="infobar-value">{value}</div>
+				<div className="infobar-value">{this.props.value}</div>
 			</div>
 
 		);

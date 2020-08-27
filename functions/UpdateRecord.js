@@ -33,7 +33,6 @@ const UpdateRecord = (tableName, fields, conditions) => {
 	// if(conditions)
 	// 	logic = `WHERE ${c[0]}=${c[1]}`;
 	let query = `UPDATE ${tableName} SET ${vals} ${logic} RETURNING *;`;
-	// console.log(query);
 	let data = objToArray({ ...fields, ...conditions });
 	// console.log("data => ",data)
 	if (data.error) {

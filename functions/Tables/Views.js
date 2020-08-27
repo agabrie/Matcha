@@ -136,6 +136,7 @@ const updateView = async (login, data) => {
 		.then(async (user) => {
 			console.log(user)
 			let query = await UpdateRecord("views", values, { userid: user[0].userid });
+			console.log("updating here!")
 			console.log(query);
 			let results = await client.query(query.string, query.values)
 				.then(async result => {

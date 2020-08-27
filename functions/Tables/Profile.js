@@ -2,6 +2,8 @@ const { client } = require('../../dbConnection');
 const { InsertRecord } = require('../InsertRecord');
 const { UpdateRecord } = require('../UpdateRecord');
 const { Users } = require('./User');
+
+
 const getFullUserProfile = async(login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
@@ -119,6 +121,7 @@ const insertProfile = async (login, data) => {
 		})
 		.catch(error => {
 			console.log(error);
+			console.log("problem here")
 			if (error.detail)
 				return ({ error: error.detail });
 			return ({ error: error });

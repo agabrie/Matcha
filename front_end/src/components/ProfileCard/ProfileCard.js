@@ -17,14 +17,14 @@ function ProfileCard(props) {
     <div>
        <div className="upper-container">
           <div className="image-container">
-              
+          {<img src={`${props.user.images[0].type},${props.user.images[0].data}`}alt=""/>}
           </div>
        </div>
        <div className="lower-container">
           <div>
             <h3>{props.user.display_name}</h3>
           </div>
-         {/*<img src={props.user.profile.images[0]} alt=""/>*/}
+         
           <div className="flex-parent">
           <div className="child">
                   Age:  {props.user.profile.age}

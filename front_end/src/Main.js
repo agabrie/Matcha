@@ -6,7 +6,7 @@ import Register from "./components/pages/Register/Register";
 import Header from "./components/pages/Header";
 import Footer from "./components/pages/Footer";
 import ForgotPass from "./components/pages/ForgotPass";
-import Search from "./components/pages/Search";
+import Search from "./components/pages/Search/Search";
 import Verify from "./components/pages/Verify";
 import Edit from "./components/pages/Edit";
 import ImageUpload from "./components/pages/ImageUpload";

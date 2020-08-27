@@ -8,9 +8,9 @@ function ProfileView({match}) {
     useEffect(() => {
         async function fetchProfile() {
             console.log("user -> ",match.params.id)
-            const profile = await axios.get(`http://localhost:8001/api/profiles/${match.params.id}/all`)
+            const profile = await axios.get(`http://localhost:8002/api/profiles/${match.params.id}/all`)
             const images = await axios.get(
-                `http://localhost:8001/api/images/${match.params.id}`
+                `http://localhost:8002/api/images/${match.params.id}`
             );
             console.log(profile)
             console.log(images);
@@ -55,7 +55,7 @@ function ProfileView({match}) {
 						</div>
 						<div className="column">
 							<div className="right-panel">
-								<h3> </h3>
+								
 								<button name="like-btn">
 									<i className="fa fa-heart" aria-hidden="true"></i>
 								</button>
@@ -66,6 +66,8 @@ function ProfileView({match}) {
 						<div className="details">
 							<h3>Biography</h3>
 							<p>{profile.biography}</p>
+							<h3>Fame</h3>
+							<p>{profile.fame}</p>
 						</div>
 					</div>
 				</div>

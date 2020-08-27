@@ -5,7 +5,8 @@ import CenterStyle from "./CenterStyle";
 class Header extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { loggedInUser: null };
+		this.state = { loggedInUser: null,
+		username: null };
 	}
 
 	gotoSearch = () => {
@@ -35,7 +36,9 @@ class Header extends Component {
 	};
 	componentDidMount() {
 		let user = sessionStorage.getItem("id");
-		this.setState({ loggedInUser: user });
+		let username = sessionStorage.getItem("display_name");
+		this.setState({ loggedInUser: user,
+		username: username });
 	}
 	render() {
 		return (
@@ -55,6 +58,7 @@ class Header extends Component {
 				)}
 				{this.state.loggedInUser ? (
 					<div className="headercontent right">
+						<p>{sessionStorage.getItem("display_name")}</p>
 						<button className="btnContent" onClick={this.gotoSearch}>
 							Search
 						</button>
