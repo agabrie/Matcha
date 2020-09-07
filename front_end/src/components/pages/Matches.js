@@ -190,7 +190,8 @@ class Matches extends Component {
 	// }
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await getAllMatches().then((results) => {
+		console.log("matches mounted for", display_name)
+		await getAllMatches(display_name).then((results) => {
 			this.setState({
 				users: results,
 				display_name: display_name,

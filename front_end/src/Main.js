@@ -16,6 +16,8 @@ import Join from './components/Join/Join';
 import Chat from './components/Chat/Chat';
 import Likes from './components/pages/Likes';
 import Matches from "./components/pages/Matches";
+import io from 'socket.io-client';
+import queryString from 'query-string';
 // import { Login } from "./components/login/l"
 // import { Register } from "./components/login/register";
 
@@ -31,7 +33,25 @@ import Matches from "./components/pages/Matches";
 // 	}
 // }
 
+let socket;
+const ENDPOINT = 'localhost:4001';
+
 class App extends Component {
+	componentDidMount() {
+		socket = io.connect(ENDPOINT);
+		console.log("query:", queryString.parse(window.location.search))
+		socket.on('chat', (message) => {
+			console.log("receiving message:")
+			console.log("message is:", message.text)
+			if (message.user !== 'admin'){
+				sessionStorage.setItem('newMessage', message.text);
+			sessionStorage.setItem('newMessageSender', message.user);
+			console.log("sessionStoraget is now:", sessionStorage)
+			}
+	
+		})
+	}
+	
 	render() {
 		return (
 			<Router>

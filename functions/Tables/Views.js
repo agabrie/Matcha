@@ -134,13 +134,13 @@ const updateView = async (login, data) => {
 	const values = validateData(data);
 	let user = await Views.get.Single(login)
 		.then(async (user) => {
-			console.log(user)
+		//	console.log(user)
 			let query = await UpdateRecord("views", values, { userid: user[0].userid });
 			console.log("updating here!")
-			console.log(query);
+		//	console.log(query);
 			let results = await client.query(query.string, query.values)
 				.then(async result => {
-					console.log("here => ",result)
+				//	console.log("here => ",result)
 					let results = await Views.get.Single(login);
 					return results;
 				})

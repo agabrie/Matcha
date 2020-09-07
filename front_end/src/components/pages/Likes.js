@@ -207,7 +207,7 @@ class Likes extends Component {
 	}
 	async componentDidMount() {
 		let display_name = sessionStorage.getItem("display_name");
-		await getAllLikes().then((results) => {
+		await getAllLikes(display_name).then((results) => {
 			this.setState({
 				users: results,
 				display_name: display_name,

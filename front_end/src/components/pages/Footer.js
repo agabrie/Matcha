@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import "./Picture.scss";
 import {
 	logOut
@@ -13,6 +14,7 @@ class Footer extends Component {
 		// sessionStorage.clear();
 		logOut()
 		this.setState({ loggedInUser: null })
+		
 		return (window.location = "/");
 	};
 	gotoEdit = () => {

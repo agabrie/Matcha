@@ -7,22 +7,24 @@ const api = `http://${host}:${port}/api`;
 // const api = `http://192.168.8.101:${port}/api/`;
 const login = async (user) => {
 	console.log("login click!");
+	console.log("user:", user)
 	let result = await axios
 		.post(`${api}/login`, user)
 		.then((res) => {
-			console.log(res);
 			if (res.data.error) {
 				return { error: res.data.error };
 			}
 			return res;
 		});
-	console.log(result);
 	if (!result.error) {
 		sessionStorage.setItem("id", result.data.id);
 		sessionStorage.setItem("display_name", result.data.display_name);
+		await axios.put(`${api}/auth/${result.data.display_name}`, {"loggedin":true})
 	}
+	
 	return result;
 };
+
 const isVerified = async (user) => {
 	let isVerified = sessionStorage.getItem("vVerified");
 	// console.log("has image? => ", hasImage);
@@ -226,18 +228,18 @@ const getProfileData = async () => {
 };
 const locateUser = async () => {
 	console.log("locateUser!");
-	let result = await axios.get(`${api}/location`).then((res) => {
-		// console.log(res.data);
-		if (res.data.error) {
-			return { error: res.data.error };
-		}
-		return res.data;
-	});
+	// let result = await axios.get(`${api}/location`).then((res) => {
+	// 	// console.log(res.data);
+	// 	if (res.data.error) {
+	// 		return { error: res.data.error };
+	// 	}
+	// 	return res.data;
+	// });
 
-	// let result = {
-	// 	latitude: -33.9321,
-	// 	longitude: 18.8602
-	// }
+	let result = {
+		latitude: -34.4092,
+		longitude: 19.2504
+	}
 	
 	return result;
 };
@@ -342,7 +344,8 @@ const getAllMatches = async (display_name) => {
 		.then((res) => {
 			return res.data;
 		});
-	 console.log(results);
+		console.log("finding matches for:", display_name)
+	 console.log("results are",results);
 	return results;
 };
 
@@ -466,6 +469,7 @@ const logOut = async () => {
 	sessionStorage.clear()
 	await axios
 		.post(`${api}/logout`, {login:display_name});
+	await axios.put(`${api}/auth/${display_name}`, {"loggedin":false})
 }
 const registerReport = async (login) => {
 	await axios.post(`${api}/report`, { login });

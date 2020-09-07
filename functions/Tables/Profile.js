@@ -9,7 +9,7 @@ const getFullUserProfile = async(login) => {
 	let user = await Users.get.Single(login);
 	if (!user)
 		return {error:"no such user"}
-	console.log("user", user);
+	//console.log("user", user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -37,7 +37,7 @@ const getFullUserProfile = async(login) => {
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
-			console.log(result.rows)
+		//	console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {
@@ -71,7 +71,7 @@ const getProfileFromLogin = async (login) => {
 				return ({ error: error.detail });
 			return ({ error: error });
 		});
-	console.log(result);
+//	console.log(result);
 	return result;
 };
 

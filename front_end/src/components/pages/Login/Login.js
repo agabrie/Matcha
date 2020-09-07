@@ -21,13 +21,11 @@ class Login extends Component {
 	}
 	async submitHandler(e) {
 		e.preventDefault();
-		console.log(this.state);
 		await login(this.state).then((res) => {
 			if (res.error) {
 				return this.setState({ error: formatError( res.error) });
 			}
 			// return (window.location = '/mainpage');
-			
 			return (window.location = "/Search");
 		});
 	}

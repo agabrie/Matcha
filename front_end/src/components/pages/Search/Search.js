@@ -3,7 +3,7 @@ import Filters from "./Filters"
 import ProfileCard from "./ProfileCard"
 import UserCard from "./UserCard"
 import { getFullProfile, registerView, isVerified, getUnsortedSearchResults, getFullLoggedProfile} from "../../../func";
-
+import io from 'socket.io-client';
 class Search extends Component {
 	constructor(props) {
 		super(props);
@@ -35,8 +35,14 @@ class Search extends Component {
 	}
 
 	async componentDidMount() {
-		// console.log("ver", isVerified())
-		console.log("your info now:", sessionStorage)
+		 console.log("sesh", sessionStorage)
+		const ENDPOINT = 'localhost:4001';
+		let socket = io(ENDPOINT)
+		socket.on('message', (message) => {
+			sessionStorage.setItem('newMessage', message.text);
+			sessionStorage.setItem('newMessageSender', message.user);
+		})
+		console.log("sesh storage", sessionStorage)
 		let verified = await isVerified()
 		if (!verified) {
 			this.setState({error:"please verify your account"})

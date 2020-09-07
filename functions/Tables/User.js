@@ -7,7 +7,7 @@ const { Password } = require("../Password");
 getAllUserMatches = async (login) => {
 	console.log("login =>", login);
 	let user = await Users.get.Single(login);
-	console.log("mathes! ",user);
+	//console.log("mathes! ",user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -44,12 +44,12 @@ getAllUserMatches = async (login) => {
 	AND Views.blocked = 'false'
 	AND Views.likedback = 'true'
 	;`;
-	console.log(query);
+	//console.log(query);
 	let result = await client
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
-			console.log(result.rows)
+		//	console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {
@@ -60,9 +60,9 @@ getAllUserMatches = async (login) => {
 	return result;
 };
 getAllUsersLikesOnSelf = async (login) => {
-	console.log("login =>", login);
+	//console.log("login =>", login);
 	let user = await Users.get.Single(login);
-	console.log(user);
+	//console.log(user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -111,9 +111,9 @@ getAllUsersLikesOnSelf = async (login) => {
 	return result;
 }
 getAllUsersViewsOnOthers = async (login) => {
-	console.log("login =>", login);
+//	console.log("login =>", login);
 	let user = await Users.get.Single(login);
-	console.log(user);
+//	console.log(user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -160,11 +160,11 @@ getAllUsersViewsOnOthers = async (login) => {
 	return result;
 };
 const getAllUserInfo = async (login) => {
-	console.log("login =>", login);
+//	console.log("login =>", login);
 	let user = await Users.get.Single(login);
 	if (!user)
 		return {error:"no such user"}
-	console.log("user", user);
+//	console.log("user", user);
 	let query = `SELECT
 		USERS.id,
 		USERS.display_name,
@@ -199,7 +199,7 @@ const getAllUserInfo = async (login) => {
 		.query(query)
 		.then((result) => {
 			// return BufferB64.All.B64(result.rows);
-			console.log(result.rows)
+		//	console.log(result.rows)
 			return result.rows;
 		})
 		.catch((error) => {
@@ -267,7 +267,7 @@ const getAllVerifiedUsers = async (username) => {
 		FROM PROFILES
 	) as PROFILES ON USERS.id = PROFILES.userId
 	WHERE AUTH.verified = 'TRUE' AND IMAGES.rank = '1' AND USERS.display_name != '${username}';`;
-	console.log(query)
+//	console.log(query)
 	let result = await client
 		.query(query)
 		.then((result) => {
@@ -341,7 +341,7 @@ const insertUser = async (data) => {
 
 const updateUser = async (login, data) => {
 	const values = validateUpdateData(data);
-	console.log(values);
+//	console.log(values);
 	let user = await Users.get.Single(login).then(async (user) => {
 		let query = await UpdateRecord("Users", values, { id: user.id });
 		let results = await client

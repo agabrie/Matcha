@@ -57,7 +57,7 @@ class ProfileCard extends Component {
 			gender: this.state.gender, 
 			sexual_preference: this.state.sexual_preference, 
 			biography: this.state.biography, 
-			location: this.state.location, 
+		//	location: this.state.location, 
 			date_of_birth: this.state.date_of_birth, 
 			fame: this.state.fame}
 		let newFame = this.state.fame
@@ -73,7 +73,8 @@ class ProfileCard extends Component {
 					newFame = newFame - 100
 					this.setState({matched:false})
 				}
-				this.setState({fame:newFame})
+				this.setState({fame:newFame,
+					likedUser: false})
 			} else {
 				registerLike(this.state.id, this.state.display_name)
 				updateFame(fullProfile, 'like')
@@ -85,7 +86,7 @@ class ProfileCard extends Component {
 					this.setState({message:`You have matched with ${this.state.display_name}!`})
 					this.toggleShow()
 				}
-				this.setState({fame:newFame})
+				this.setState({fame:newFame, likedUser:true})
 			}
 		})
 	}
@@ -184,13 +185,8 @@ class ProfileCard extends Component {
 							<InfoBar type="textarea" heading="age" value={age} />
 							<InfoBar type="textarea" heading="gender" value={symbol} />
 							<InfoBar type="textarea" heading="location" value={`${distance} km away`} />
-							<Link  to={`/chat?name=${sessionStorage.getItem("display_name")}&room=${display_name > sessionStorage.getItem("display_name") ? display_name : sessionStorage.getItem("display_name")}`}>
-							</Link>
-						</div>
-						{this.state.matched &&
-						<button className="btn mr-20" onClick={this.gotoChat}>Message</button>
-						}						
-						<button id="like" className="btn pl-20" onClick={() => this.handleLike()} >Like</button>
+						</div>				
+						<button id="like" className="btn pl-20" onClick={() => this.handleLike()} >{this.state.likedUser ? "Unlike" : "Like"}</button>
 						<AlertMessage show={this.state.show} toggleShow={this.toggleShow} message={this.state.message}/>
 						<InfoBar type="textarea" heading="Biography" value={biography} />
 						<InfoBar type="bar" heading="Fame Rating" value={fame} />

@@ -20,7 +20,7 @@ const Chat = () => {
 
 	useEffect(() => {
 		const {name, room} = queryString.parse(window.location.search);
-
+		console.log("query:", queryString.parse(window.location.search))
 		socket = io(ENDPOINT);
 
 		setName(name);
@@ -39,6 +39,10 @@ const Chat = () => {
 	useEffect(() => {
 		socket.on('message', (message) => {
 			setMessages([...messages, message])
+		
+			sessionStorage.setItem('newMessage', message.text);
+			sessionStorage.setItem('newMessageSender', message.user);
+	
 		})
 	}, [messages]);
 
@@ -47,6 +51,7 @@ const Chat = () => {
 		if(message) {
 			socket.emit('sendMessage', message, () => {
 				setMessage('')
+				
 			});
 		}
 	}

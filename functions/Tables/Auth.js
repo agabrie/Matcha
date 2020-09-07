@@ -104,14 +104,14 @@ const insertAuth = async (login, data) => {
 };
 
 const updateAuth = async (login, data) => {
-	console.log("hit auth update function",login,data)
+	//console.log("hit auth update function",login,data)
 	const values = validateData(data);
 	// console.log("valid data =>", values);
 	let user = await Auth.get.Single(login)
 		.then(async (user) => {
 			// console.log("auth data returned =>",user);
-			let query = await UpdateRecord("Auth", values, { userid: user.id });
-			console.log("auth update query =>", query);
+			let query = await UpdateRecord("Auth", values, { userid: user.userid });
+		//	console.log("auth update query =>", query);
 			
 		let results = await client.query(query.string, query.values)
 		.then(async result => {

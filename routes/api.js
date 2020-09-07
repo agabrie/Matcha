@@ -27,7 +27,7 @@ router.get('/users/:login/all', async function (req, res, next) {
 		;`;
 	let results = await client.query(query)
 		.then(result => {
-			console.log(result.rows)
+		//	console.log(result.rows)
 			return result.rows;
 		})
 		.catch(err => {
@@ -50,7 +50,7 @@ router.get("/users", async function (req, res, next) {
 router.get("/users/:login", async function (req, res, next) {
 	console.log("get user : ", req.params.login);
 	let result = await Users.get.Single(req.params.login);
-	console.log(result);
+//	console.log(result);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);
@@ -154,7 +154,7 @@ router.get("/auth/verify/:login", async function (req, res, next) {
 	// if (result.token === req.body.token) {
 	result = await Auth.get.Single(result.display_name);
 	result = formatResponse.User.Single(result);
-	console.log(result);
+//	console.log(result);
 		if (!result) res.send({ error: "no such user in database" });
 		res.send(result);
 	// } else {
@@ -165,8 +165,8 @@ router.get("/auth/verify/:login", async function (req, res, next) {
 router.post("/auth/verify", async function (req, res, next) {
 	console.log("verifying user",req.body);
 	let result = await Auth.get.Single(req.body.login);
-	console.log(result)
-	console.log(result.token,req.body.token)
+//	console.log(result)
+//	console.log(result.token,req.body.token)
 	if (result.token === req.body.token) {
 		result = await Auth.update.Single(result.display_name, {
 			verified: true,
@@ -204,7 +204,7 @@ router.put("/auth/:login", async function (req, res, next) {
 	console.log("auth update");
 	// console.log("req.body => ", req.body);
 	let result = await Auth.update.Single(req.params.login, req.body);
-	console.log(result);
+//	console.log(result);
 	result = formatResponse.User.Single(result);
 	if (!result) res.send({ error: "no such user in database" });
 	res.send(result);
@@ -417,14 +417,14 @@ router.post("/search/", async (req, res, next) => {
 	if (conditions) {
 		for (condition in conditions) {
 			let element = conditions[condition];
-			console.log(element);
+		//	console.log(element);
 			sortby += ` ${element.filter} ${element.direction}`;
 			if (i == numConditions - 1) break;
 			sortby += ", ";
 			i++;
 		}
 	}
-	console.log("sortby => ", sortby);
+//	console.log("sortby => ", sortby);
 	let agefilter = `WHERE age BETWEEN ${preferences.age.min} AND ${preferences.age.max}`;
 	let sexfilter = `AND ${
 		preferences.sexual_preference != "Both"
@@ -468,7 +468,7 @@ router.post("/search/", async (req, res, next) => {
 	${sortby}
 	`;
 	// ORDER BY age_diff ASC, fame DESC, age ASC;
-	console.log(query);
+	//console.log(query);
 	let result = await client
 		.query(query)
 		.then((result) => {
@@ -501,7 +501,7 @@ router.post("/forgotpass", async (req, res, next) => {
 })
 
 router.post("/resetpass/:login", async(req, res, next) => {
-	console.log('==>>', req.body);
+//	console.log('==>>', req.body);
 	let result = await Users.update.Single(req.params.login, req.body);
 	res.send(result);
 })
@@ -510,7 +510,7 @@ router.get("/location", async (req, res, next) => {
 	console.log("get Location!");
 	// console.log(req);
 	let locationData = await ip2location.fetch(await ipify({ useIPv6: false }));
-	console.log("location data!",locationData);
+//	console.log("location data!",locationData);
 	res.send(locationData);
 })
 

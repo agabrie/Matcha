@@ -58,7 +58,6 @@ class Header extends Component {
 				)}
 				{this.state.loggedInUser ? (
 					<div className="headercontent right">
-						<p>{sessionStorage.getItem("display_name")}</p>
 						<button className="btnContent" onClick={this.gotoSearch}>
 							Search
 						</button>
